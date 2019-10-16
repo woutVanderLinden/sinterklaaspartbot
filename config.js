@@ -1,0 +1,11 @@
+exports.prefix = ",";
+exports.server = 'sim.smogon.com';
+exports.port = 8000;
+exports.serverid = 'showdown';
+exports.avatar = 'supernerd';
+exports.nickName = "PartBot";
+exports.pass = process.env.PASS;
+exports.token = 'NTQ4NDUxMTMyMTgwMDA0ODg0.D1Fg8w.MY4sXWIr7o-DCvKu70bh9hVism8';
+exports.autoJoin = ['botdev', '1v1typechallenge', 'groupchat-1v1ombot-1v1oms', 'groupchat-1v1typechallenge-test', 'groupchat-heavystorming-teambuilding'];
+exports.status = false;
+exports.ignoreRooms = [];
