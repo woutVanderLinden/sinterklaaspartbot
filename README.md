@@ -33,6 +33,7 @@ If all goes well, you should get a prompt notifying you that your Bot has connec
 Node.js (> Node 8.0.0)
 
 
+
 Rank | Permissions
 -----|------------
 Locked | Limited access to help commands.
@@ -46,9 +47,8 @@ Admin | Complete access.
 
 Auth | Rank
 -----|-----
-\ | None
- + | Gamma
- %, $, - | Beta
+ \+ | Gamma
+ \%, $, - | Beta
  \*, @, #, &, ~ | Alpha
  
  
@@ -75,6 +75,9 @@ Auth | Rank
  
  ### Credits:
  PartMan - Developer, Administrator
+ 
  Ecuacion - client.js base
+ 
  1v1sp, armaldlo, tallydaorangez - 1v1 Type Challenge Resources
+ 
  Morfent, JetOU, JumboWhales, tlouk, XpRienzo - Making sure PartMan doesn't ruin the Bot with terrible code.
