@@ -75,6 +75,9 @@ Auth | Rank
  
  ### Credits:
  PartMan - Developer, Administrator
+ 
  Ecuacion - client.js base
+ 
  1v1sp, armaldlo, tallydaorangez - 1v1 Type Challenge Resources
+ 
  Morfent, JetOU, JumboWhales, tlouk, XpRienzo - Making sure PartMan doesn't ruin the Bot with terrible code.
