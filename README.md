@@ -61,7 +61,7 @@ Auth | Rank
  - [x] Fix authalts.
  - [x] Fix Bot.rooms\[].rank.
  - [ ] Implement warmup.
- - [ ] Add blocks for newly installed / unconfigured projects.
+ - [x] Add blocks for newly installed / unconfigured projects.
  - [ ] Add better help messages.
  - [ ] Add room-specific auth.
  - [ ] Add moderation / promotion commands.
