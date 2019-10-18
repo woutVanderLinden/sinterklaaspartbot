@@ -1,3 +1,30 @@
+/**************************
+*         Ranks           *
+**************************/
+
+global.admin = [];
+global.coder = [];
+global.alpha = [];
+global.beta = [];
+global.gamma = [];
+global.locked = [];
+
+global.adminalts = []; //Alts and Pseudo arrays store translated auth and alts for innate auth. Ideally, these should be empty when starting.
+global.coderalts = [];
+global.alphaalts = [];
+global.betaalts = [];
+global.gammaalts = [];
+global.lockedalts = [];
+
+global.pseudoalpha = [];
+global.pseudobeta = [];
+global.pseudogamma = [];
+
+
+/**************************
+*        Requires         *
+**************************/
+
 global.config = require('./config.js');
 global.prefix = config.prefix;
 global.tools = require('./data/tools.js')
@@ -32,9 +59,6 @@ global.ignoreRooms = config.ignoreRooms.map(room => room.replace(/[^0-9a-z-]/g, 
 global.unxa = 'Unexpected number of arguments.';
 global.tcroom = '1v1typechallenge';
 global.typelist = ['bug', 'dark', 'dragon', 'electric', 'fairy', 'fighting', 'fire', 'flying', 'ghost', 'grass', 'ground', 'ice', 'normal', 'poison', 'psychic', 'rock', 'steel', 'water'];
-global.AkasiAnse = 0;
-global.UnleashOurPassion = 1;
-
 
 
 /**************************
@@ -46,27 +70,6 @@ global.data = {
 	users: JSON.parse(fs.readFileSync('./data/DATA/users.json', 'utf8')),
 	items: require('./data/DATA/items.js').BattleItems
 }
-
-
-/**************************
-*         Ranks           *
-**************************/
-
-global.admin = ['partman', 'vampart'];
-global.adminalts = [];
-global.coder = [];
-global.coderalts = [];
-global.alpha = ['ironcrusher', 'unleashourpassion', '1v1sp', 'allfourtyone', 'armaldlo', 'tapiocatopic', 'yeche'];
-global.alphaalts = [];
-global.pseudoalpha = [];
-global.beta = ['666lesbian69', 'cabbbages', 'smajet', 'tallydaorangez', 'theseelgoesmeow', 'tlouk'];
-global.betaalts = [];
-global.pseudobeta = [];
-global.gamma = [];
-global.gammaalts = [];
-global.pseudogamma = [];
-global.locked = [];
-global.lockedalts = [];
 
 
 /**************************

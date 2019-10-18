@@ -1,5 +1,8 @@
 'use strict';
 let http = require('http'), SDClient = require('./client.js'), Discord = require('discord.js'), globaljs = require('./global.js'), options = {serverid: config.serverid, loginServer: 'https://play.pokemonshowdown.com/~~' + config.serverid +'/action.php', nickName: config.nickName, pass: config.pass, avatar: (config.avatar)?config.avatar:null, status: (config.status)?config.status:null, autoJoin: config.autoJoin};
+if (!config.prefix) return console.log('Missing configuration - prefix.'); //remove this line if you don't want a prefix
+if (!config.owner) return console.log('Missing configuration - owner.');
+if (!admin) return console.log('Missing administrator - update global.js /ranks/');
 global.Bot = new SDClient(config.server, config.port, options);
 Bot.connect();
 if (config.token) {
