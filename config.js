@@ -10,7 +10,7 @@ exports.owner = '';
 /* Customization */
 
 exports.avatar = 'supernerd';
-exports.autoJoin = ['botdev', '1v1typechallenge';
+exports.autoJoin = ['botdev', '1v1typechallenge'];
 exports.status = false;
 exports.ignoreRooms = [];
 
