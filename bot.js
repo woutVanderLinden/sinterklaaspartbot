@@ -1,13 +1,5 @@
 'use strict';
-let http = require('http');
-setInterval(() => {
-  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
-}, 240000);
-let SDClient = require('./client.js');
-let Discord = require('discord.js');
-let globaljs = require('./global.js');
-let client = new Discord.Client();
-let options = {serverid: config.serverid, loginServer: 'https://play.pokemonshowdown.com/~~' + config.serverid +'/action.php', nickName: config.nickName, pass: config.pass, avatar: (config.avatar)?config.avatar:null, status: (config.status)?config.status:null, autoJoin: config.autoJoin};
+let http = require('http'), SDClient = require('./client.js'), Discord = require('discord.js'), globaljs = require('./global.js'), client = new Discord.Client(), options = {serverid: config.serverid, loginServer: 'https://play.pokemonshowdown.com/~~' + config.serverid +'/action.php', nickName: config.nickName, pass: config.pass, avatar: (config.avatar)?config.avatar:null, status: (config.status)?config.status:null, autoJoin: config.autoJoin};
 global.Bot = new SDClient(config.server, config.port, options);
 Bot.connect();
 client.login(config.token);
