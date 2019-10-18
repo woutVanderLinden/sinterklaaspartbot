@@ -69,6 +69,7 @@ Auth | Rank
  - [ ] Implement Tour tracking.
  - [ ] Complete all command alternatives for roomrank.
  - [ ] Implement PM commands.
+ - [ ] Add CONTRIBUTING.md, PROTOCOL.md
  
  
  
