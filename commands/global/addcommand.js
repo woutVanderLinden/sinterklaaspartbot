@@ -7,7 +7,7 @@ module.exports = {
 		if (sarg.length < 4) return Bot.say(room, unxa);
 		let newName = tools.commandAlias(toId(sarg.shift()));
 		let newPerm = toId(sarg.shift());
-		let newRoom = toId(sarg.shift());
+		let newRoom = sarg.shift().toLowerCase().replace(/[^a-z0-9-]/g, '');
 		if (!newRoom) newRoom = room;
 		let newCool = parseInt(sarg.shift().replace(/[^0-9]/g, ''));
 		let newHelp = sarg.shift();
