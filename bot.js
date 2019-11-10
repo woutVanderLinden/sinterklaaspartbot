@@ -28,6 +28,7 @@ Bot.on('chat', function (room, time, by, message) {
   if (message === ',eval 1') return Bot.say(room, '1');
   let args = message.substr(prefix.length).split(' ');
   let commandName = tools.commandAlias(args.shift().toLowerCase());
+  if (args[0].toLowerCase() == 'constructor') return Bot.say(room, `/me constructs a constrictor to constrict ${by.substr(1)}`);
   tools.grantPseudo(by);
   if (['eval','output'].includes(commandName)) {
     if (!tools.hasPermission(toId(by), 'admin')) return Bot.say(room, 'Access denied.');
