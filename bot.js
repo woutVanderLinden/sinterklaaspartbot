@@ -13,7 +13,7 @@ locked = locked.map(user => toId(user));
 Bot.connect();
 let client = null;
 if (config.token) {
-  client = new Discord.client();
+  client = new Discord.Client();
   client.login(config.token);
   client.on("ready", () => {console.log(`Connected to Discord.`); if (config.discordStatus) client.user.setActivity(config.discordStatus)});
 }
