@@ -5,7 +5,7 @@ module.exports = {
 	commandFunction: function (Bot, room, time, by, args, client) {
     let qfol = './data/QUOTES/' + room;
 		let exec = args[0] || 'random';
-    if (!Bot.rooms[room].rank) return bot.say(room, 'Lemme get stuff set up, first.');
+    if (!Bot.rooms[room].rank) return Bot.say(room, 'Lemme get stuff set up, first.');
     switch (Bot.rooms[room].rank) {
       case '*': case '#': case '&': case '~': {
         switch (exec) {
