@@ -109,7 +109,8 @@ To enable the Shop, you first need to add the relevant .json file as ./data/SHOP
  - [x] Add a leaderboard renderer.
  - [x] Implement a Shop / Currency feature.
  - [ ] Implement a Discord command handler.
- - [ ] Uodate code to include recent changes.
+ - [ ] Update code to include recent changes.
+ - [ ] Add a functional homepage.
 
  
  
