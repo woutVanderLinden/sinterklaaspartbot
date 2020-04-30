@@ -1,5 +1,5 @@
 module.exports = {
-	cooldown: 0,
+	cooldown: 10,
 	help: `Adds a command. Syntax: ${prefix}addcommand (name);(permissions);(room);(cooldown);(help);(output)`,
 	permissions: 'admin',
 	commandFunction: function (Bot, room, time, by, args, client) {
@@ -20,7 +20,7 @@ module.exports = {
 		}
 		if (isNaN(newCool)) return Bot.say(room, 'Invalid cooldown time.');
 		if (!['admin', 'coder', 'alpha', 'beta', 'gamma', 'locked', 'none'].includes(newPerm)) return Bot.say(room, 'Invalid permissions level.');
-		let newData = `module.exports = {\n    cooldown: ${newCool},\n    help: \`${newHelp}\`,\n    permissions: \'${newPerm}\',\n    commandFunction: function (Bot, room, time, by, args, client) {\n        Bot.say(room, \`${newOutp}\`);\n    }\n}`;
+		let newData = `module.exports = {\n\tcooldown: ${newCool},\n\thelp: \`${newHelp}\`,\n\tpermissions: \'${newPerm}\',\n\tcommandFunction: function (Bot, room, time, by, args, client) {\n\t\tBot.say(room, \`${newOutp}\`);\n\t}\n}`;
 		fs.readdir('./commands/global', (e, files) => {
 			if (e) throw e;
 			let commands = files.filter(file => file.endsWith('.js')).map(file => file.substr(0, file.length - 3)).filter(file => file === file.toLowerCase());
@@ -46,7 +46,7 @@ module.exports = {
 			}
 			if (commands.includes(newName)) return Bot.say(room, 'That command already exists.');
 			fs.readdir('./commands', (e, rooms) => {
-				if (!rooms.includes(room)) {
+				if (!rooms.includes(newRoom) && room !== 'global') {
 					fs.mkdir('./commands/' + newRoom, (err) => {
 						if (err) throw err;
 						addCommandFile('./commands/' + newRoom + '/' + newName + '.js', newData);

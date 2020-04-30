@@ -1,0 +1,53 @@
+{
+  "img": {
+    "src": "https://i.pinimg.com/originals/16/fa/76/16fa7670d917797017ddb350c0ae6c3e.jpg"
+  },
+  "spc": [
+    "Water Gem",
+    "Water Gems",
+    "WG"
+  ],
+  "points": [
+    "Droplet",
+    "Droplets",
+    "Drops"
+  ],
+  "channel": "",
+  "temp": {},
+  "users": {
+    "johnsmith": {
+      "name": "John Smith",
+      "points": [
+        111,
+        2
+      ]
+    }
+  },
+  "inventory": {
+    "jplicense": {
+      "name": "JP License",
+      "cost": [
+        200,
+        1
+      ],
+      "id": "jplicense"
+    },
+    "jp": {
+      "name": "Joinphrase",
+      "cost": [
+        100,
+        0
+      ],
+      "id": "jp"
+    },
+    "jpc": {
+      "name": "JP Change",
+      "cost": [
+        25,
+        0
+      ],
+      "id": "jpc"
+    }
+  },
+  "jpl": []
+}

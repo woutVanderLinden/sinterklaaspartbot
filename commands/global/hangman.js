@@ -1,5 +1,5 @@
 module.exports = {
-    cooldown: 10000,
+    cooldown: 1000,
     help: `Creates a Hangman with the specified arguments.`,
     permissions: 'gamma',
     commandFunction: function (Bot, room, time, by, args, client) {
@@ -14,11 +14,13 @@ module.exports = {
             else if (arg === 'bst' || arg === 'b') hint = 'BST: ';
             else if (arg === 'stat' || arg === 's') hint = ['HP: ', 'Atk: ', 'Def: ', 'SpA: ', 'SpD: ', 'Spe: '][Math.floor(Math.random()*6)];
             else if (arg === 'egg' || arg === 'e') hint = 'Egg group(s): ';
+            else if (arg === 'none' || arg === 'n') hint = 'A Pokemon!';
             else return Bot.say(room, 'Unable to find requested hint.');
         }
         let pokedex = data.pokedex;
-        let mon = pokedex[Object.keys(pokedex)[Math.floor(Math.random()*Object.keys(pokedex).length)]]; 
-        let hintdata = '7';
+        let filDex = Object.keys(pokedex).filter(m => !pokedex[m].forme && pokedex[m].num > 0);
+        let mon = pokedex[filDex[Math.floor(Math.random() * filDex.length)]]; 
+        let hintdata = '8';
         let randPokeNum = mon.num;
         if (randPokeNum >= 1 && randPokeNum <= 151) hintdata = '1';
         if (randPokeNum >= 152 && randPokeNum <= 251) hintdata = '2';
@@ -26,6 +28,7 @@ module.exports = {
         if (randPokeNum >= 387 && randPokeNum <= 493) hintdata = '4';
         if (randPokeNum >= 494 && randPokeNum <= 649) hintdata = '5';
         if (randPokeNum >= 650 && randPokeNum <= 721) hintdata = '6';
+        if (randPokeNum >= 722 && randPokeNum <= 809) hintdata = '7';
         if (randPokeNum < 0) hintdata = 'CAP';
         if (hint === 'Colour: ') hintdata = mon.color;
         else if (hint === 'Type(s): ') hintdata = mon.types.join(' / ');
@@ -40,6 +43,7 @@ module.exports = {
             else if (hint === 'Spe: ') hintdata = mon.baseStats.spe;
             else return Bot.say(room, 'Error occurred.');
         }
-        Bot.say(room, '/hangman create ' + mon.species + ', ' + hint + hintdata);
+        else if (hint === 'A Pokemon!') hintdata = '';
+        Bot.say(room, '/hangman create ' + mon.name + ', ' + hint + hintdata);
     }
 }

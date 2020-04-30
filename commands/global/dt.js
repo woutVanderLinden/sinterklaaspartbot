@@ -1,0 +1,15 @@
+module.exports = {
+    cooldown: 1000,
+    help: `Displays the data for a Pokémon.`,
+    permissions: 'none',
+    commandFunction: function (Bot, room, time, by, args, client) {
+        if (!args[0]) return Bot.say(room, unxa);
+        let pokename = toId(args.join(''));
+        let pokemon = Object.keys(data.ssdex).filter(m => data.ssdex[m].id == pokename);
+        if (!pokemon.length) return Bot.say(room, 'No Pokémon found. :(');
+        let poke = data.ssdex[pokename];
+        let str = `<div class="message"><ul class="utilichart"><li class="result"><span class="col numcol">New</span> <span class="col iconcol"><span class="picon" style="background: transparent url(&quot;https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?a6&quot;) no-repeat scroll -0px -0px"></span></span> <span class="col pokemonnamecol" style="white-space: nowrap"><a href="https://bulbapedia.bulbagarden.net/wiki/${poke.name}_(Pok%C3%A9mon)" target="_blank" rel="noopener">${poke.name}</a></span> <span class="col typecol">${poke.types.map(type=>`<img src="https://play.pokemonshowdown.com/sprites/types/${type}.png" alt="${type}" width="32" height="14">`).join('')}</span> <span style="float: left ; min-height: 26px">${(poke.abilities.o && poke.abilities.t) ? `<span class="col twoabilitycol">${poke.abilities.o}<br>${poke.abilities.t}</span>` : `<span class="col abilitycol">${poke.abilities.o}</span>`}${(poke.abilities.h) ? `<span class="col abilitycol"><em>${poke.abilities.h}</em></span>` : `<span class="col abilitycol"></span>`}</span><span style="float: left ; min-height: 26px"><span class="col statcol"><em>HP</em><br>${poke.baseStats.hp}</span> <span class="col statcol"><em>Atk</em><br>${poke.baseStats.atk}</span> <span class="col statcol"><em>Def</em><br>${poke.baseStats.def}</span> <span class="col statcol"><em>SpA</em><br>${poke.baseStats.spa}</span> <span class="col statcol"><em>SpD</em><br>${poke.baseStats.spd}</span> <span class="col statcol"><em>Spe</em><br>${poke.baseStats.spe}</span> <span class="col bstcol"><em>BST<br>${poke.bst}</em></span> </span></li><li style="clear: both"></li></ul></div><div class="notice"><font size="1"><font color="#686868">Dex#:</font> ${poke.num}&nbsp;|  <font color="#686868">Gen:</font> UwU&nbsp;|  <font color="#686868">Height:</font> ${poke.ht} m&nbsp;|  <font color="#686868">Weight:</font> ${poke.wt} kg <em>(UwU BP)</em>&nbsp;|  <font color="#686868">Dex Colour:</font> ${poke.color}&nbsp;|  <font color="#686868">Egg Group(s):</font> ${poke.eggGroups.join(', ')}&nbsp;|  ${(poke.evo) ? `<font color="#686868">Evolution:</font> ${poke.evo}` : `<font color="#686868">Might evolve. ¯\\_(ツ)_/¯</font>`}</font></div>`;
+        if (tools.hasPermission(by, 'gamma', room)) return Bot.say(room, '/adduhtml POKEMON' + pokename + ',' + str);
+        else return Bot.say(room, '/pminfobox ' + by + ', ' + str);
+    }
+}
