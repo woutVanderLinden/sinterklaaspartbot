@@ -17,12 +17,12 @@ if (!config.prefix) return console.log('Missing configuration - prefix.');
 if (!config.owner) return console.log('Missing configuration - owner.');
 if (!config.auth.admin) return console.log('Missing administrator - administrator.');
 let client;
-if (config.useDiscord) = new Discord.Client();
 let app;
 let options = {serverid: config.serverid, loginServer: 'https://play.pokemonshowdown.com/~~' + config.serverid + '/action.php', nickName: config.nickName, pass: config.pass, avatar: (config.avatar) ? config.avatar : null, status: (config.status) ? config.status : null, autoJoin: config.autoJoin, app: app};
 global.Bot = new SDClient(config.server, config.port, options);
 Bot.connect();
-if (client) {
+if (config.useDiscord) {
+	client = new Discord.Client();
 	client.on('message', require('./discord.js').handler);
 	client.login(config.token);
 	client.on("ready", () => {
