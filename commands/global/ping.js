@@ -3,6 +3,6 @@ module.exports = {
     help: `Pings.`,
     permissions: 'none',
     commandFunction: function (Bot, room, time, by, args, client) {
-        Bot.say(room, `Pong!`);
+        Bot.say(room, `/w ${by}, Pong!`);
     }
 }

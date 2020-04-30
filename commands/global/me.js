@@ -4,7 +4,7 @@ module.exports = {
     permissions: 'locked',
     commandFunction: function (Bot, room, time, by, args, client) {
         if (args[0]) return Bot.say(room, unxa);
-        let rank = tools.rankLevel(by);
+        let rank = tools.rankLevel(by, room);
         let role;
         switch (rank) {
         	case 1:

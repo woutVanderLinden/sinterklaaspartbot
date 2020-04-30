@@ -24,21 +24,18 @@ module.exports = {
             inite.forEach(line => {
               addstr += /^ /.test(line) ? "\n" + line.substr(1) : "\n" + line;
             });
-            if (!fs.readdirSync("./data/QUOTES").includes(room + ".txt")) {
-              fs.writeFileSync("./data/QUOTES/" + room + ".txt", "");
-            }
             let qArr = JSON.parse(
-              fs.readFileSync("./data/QUOTES/" + room + ".txt", "utf8")
+              fs.readFileSync("./data/QUOTES/" + tcroom + ".txt", "utf8")
             );
             qArr.push(addstr);
             fs.writeFile(
-              "./data/QUOTES/" + room + ".txt",
+              "./data/QUOTES/" + tcroom + ".txt",
               JSON.stringify(qArr, null, 2),
               e => {
                 if (e) return Bot.log(e);
                 Bot.say(room, "Quote has been added.");
                 return Bot.log(
-                  by.substr(1) + " added a quote in " + room + ": \n" + addstr
+                  by.substr(1) + " added a quote in " + tcroom + ": \n" + addstr
                 );
               }
             );
@@ -62,10 +59,8 @@ module.exports = {
           case "list": {
             if (!tools.hasPermission(by, "gamma", room))
               return Bot.say(room, "Access denied.");
-            if (!fs.readdirSync("./data/QUOTES").includes(room + ".txt"))
-              return Bot.say(room, "No quotes for this room.");
             let qArr = JSON.parse(
-              fs.readFileSync("./data/QUOTES/" + room + ".txt", "utf8")
+              fs.readFileSync("./data/QUOTES/" + tcroom + ".txt", "utf8")
             );
             if (!qArr.length) return Bot.say(room, "No quotes for this room.");
             let outstr = "";
@@ -92,7 +87,7 @@ module.exports = {
               return Bot.say(room, "No quotes in this room.");
             if (!args[1]) return Bot.say(room, unxa);
             let qArr = JSON.parse(
-              fs.readFileSync("./data/QUOTES/" + room + ".txt", "utf8")
+              fs.readFileSync("./data/QUOTES/" + tcroom + ".txt", "utf8")
             );
             if (!qArr.length) return Bot.say(room, "No quotes for this room.");
             args.splice(0, 1);
@@ -102,13 +97,13 @@ module.exports = {
             let delstr = qArr[gno - 1];
             qArr.splice(gno - 1, 1);
             fs.writeFile(
-              "./data/QUOTES/" + room + ".txt",
+              "./data/QUOTES/" + tcroom + ".txt",
               JSON.stringify(qArr, null, 2),
               e => {
                 if (e) return Bot.log(e);
                 Bot.say(room, "Quote has been deleted.");
                 return Bot.log(
-                  by.substr(1) + " deleted a quote in " + room + ": \n" + delstr
+                  by.substr(1) + " deleted a quote in " + tcroom + ": \n" + delstr
                 );
               }
             );
@@ -116,10 +111,10 @@ module.exports = {
           }
           case "amt":
           case "amount": {
-            if (!fs.readdirSync("./data/QUOTES").includes(room + ".txt"))
+            if (!fs.readdirSync("./data/QUOTES").includes(tcroom + ".txt"))
               return Bot.say(room, "No quotes in this room.");
             let qArr = JSON.parse(
-              fs.readFileSync("./data/QUOTES/" + room + ".txt", "utf8")
+              fs.readFileSync("./data/QUOTES/" + tcroom + ".txt", "utf8")
             );
             if (!qArr.length) return Bot.say(room, "No quotes for this room.");
             return Bot.say(room, "This room has " + qArr.length + " quotes.");
@@ -129,10 +124,10 @@ module.exports = {
           case "search": {
             if (!tools.hasPermission(by, "gamma", room))
               return Bot.say(room, "Access denied.");
-            if (!fs.readdirSync("./data/QUOTES").includes(room + ".txt"))
+            if (!fs.readdirSync("./data/QUOTES").includes(tcroom + ".txt"))
               return Bot.say(room, "No quotes in this room.");
             let qArr = JSON.parse(
-              fs.readFileSync("./data/QUOTES/" + room + ".txt", "utf8")
+              fs.readFileSync("./data/QUOTES/" + tcroom + ".txt", "utf8")
             );
             if (!qArr.length) return Bot.say(room, "No quotes for this room.");
             if (!(args.length - 1)) return Bot.say(room, unxa);
@@ -159,10 +154,10 @@ module.exports = {
           }
           default: {
             let ano;
-            if (!fs.readdirSync("./data/QUOTES").includes(room + ".txt"))
+            if (!fs.readdirSync("./data/QUOTES").includes(tcroom + ".txt"))
               return Bot.say(room, "No quotes in this room.");
             let qArr = JSON.parse(
-              fs.readFileSync("./data/QUOTES/" + room + ".txt", "utf8")
+              fs.readFileSync("./data/QUOTES/" + tcroom + ".txt", "utf8")
             );
             if (!qArr.length) return Bot.say(room, "No quotes for this room.");
             if (exec == "random" || exec == "r")
@@ -341,15 +336,12 @@ module.exports = {
             inite.forEach(line => {
               addstr += /^ /.test(line) ? "\n" + line.substr(1) : "\n" + line;
             });
-            if (!fs.readdirSync("./data/QUOTES").includes(room + ".txt")) {
-              fs.writeFileSync("./data/QUOTES/" + room + ".txt", "[]");
-            }
             let qArr = JSON.parse(
-              fs.readFileSync("./data/QUOTES/" + room + ".txt", "utf8")
+              fs.readFileSync("./data/QUOTES/" + tcroom + ".txt", "utf8")
             );
             qArr.push(addstr);
             fs.writeFile(
-              "./data/QUOTES/" + room + ".txt",
+              "./data/QUOTES/" + tcroom + ".txt",
               JSON.stringify(qArr, null, 2),
               e => {
                 if (e) return Bot.log(e);
