@@ -17,15 +17,6 @@ exports.getRoutes = function (app) {
 			return res.send(file);
 		});
 	});
-  app.get('/hydrocity-staff-hydro-is-nerd', (req, res) => {
-    fs.readFile('./pages/hydrocity-challenges.html', 'utf8', (err, file) => {
-      if (err) {
-        console.log(err);
-        return res.send('No page found.');
-      }
-      return res.send(file);
-    });
-  });
 	app.get('/render', (req, res) => {
 		fs.readFile('./render.html', 'utf8', (err, file) => {
 			if (err) {
@@ -35,4 +26,5 @@ exports.getRoutes = function (app) {
 			return res.send(file);
 		});
 	});
+  });
 }
