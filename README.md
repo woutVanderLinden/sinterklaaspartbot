@@ -111,8 +111,6 @@ To enable the Shop, you first need to add the relevant .json file as ./data/SHOP
  - [ ] Implement a Discord command handler.
  - [ ] Update code to include recent changes.
  - [ ] Add a functional homepage.
-
- 
  
  
  ### Credits:

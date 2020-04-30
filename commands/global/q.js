@@ -1,12 +1,11 @@
 module.exports = {
-  cooldown: 1000,
-  help: `PartBot's quotes module.`,
-  permissions: "none",
-  commandFunction: function(Bot, room, time, by, args, client) {
-    let qfol = "./data/QUOTES/" + room;
-    let exec = args[0] || "random";
-    if (!Bot.rooms[room].rank)
-      return Bot.say(room, "Lemme get stuff set up, first.");
+	cooldown: 10,
+	help: `PartBot's quotes module.`,
+	permissions: 'none',
+	commandFunction: function (Bot, room, time, by, args, client) {
+    let qfol = './data/QUOTES/' + room;
+		let exec = args[0] || 'random';
+    if (!Bot.rooms[room].rank) return Bot.say(room, 'Lemme get stuff set up, first.');
     switch (Bot.rooms[room].rank) {
       case "*":
       case "#":
@@ -483,5 +482,5 @@ module.exports = {
         break;
       }
     }
-  }
-};
+	}
+}
