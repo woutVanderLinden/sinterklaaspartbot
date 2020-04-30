@@ -5,21 +5,30 @@ let Discord = require('discord.js');
 let globaljs = require('./global.js');
 let express = require('express');
 let rerouter;
-if (config.site) rerouter = require('./data/routes.js');
+if (config.site) {
+	rerouter = require('./data/routes.js');
+	app = express();
+	rerouter.getRoutes(app);
+	let server = app.listen(config.webPort, () => {
+		console.log('The website\'s up!');
+	});
+}
 if (!config.prefix) return console.log('Missing configuration - prefix.');
 if (!config.owner) return console.log('Missing configuration - owner.');
 if (!config.auth.admin) return console.log('Missing administrator - administrator.');
 let client;
 if (config.useDiscord) = new Discord.Client();
 let app;
-if (rerouter) app = express();
 let options = {serverid: config.serverid, loginServer: 'https://play.pokemonshowdown.com/~~' + config.serverid + '/action.php', nickName: config.nickName, pass: config.pass, avatar: (config.avatar) ? config.avatar : null, status: (config.status) ? config.status : null, autoJoin: config.autoJoin, app: app};
 global.Bot = new SDClient(config.server, config.port, options);
 Bot.connect();
 if (client) {
 	client.on('message', require('./discord.js').handler);
 	client.login(config.token);
-	client.on("ready", () => {console.log(`Connected to Discord.`); client.user.setActivity(config.activity)});
+	client.on("ready", () => {
+		console.log(`Connected to Discord.`);
+		client.user.setActivity(config.activity);
+	});
 }
 let standard_input = process.stdin;
 standard_input.setEncoding('utf-8');
@@ -156,5 +165,3 @@ Bot.on('pm', (by, message) => {
 	});
 	return;
 });
-rerouter.getRoutes(app);
-let server = app.listen(config.webPort, () => {console.log('The website\'s up!')});
