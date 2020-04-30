@@ -4,7 +4,10 @@ let SDClient = require('./client.js');
 let Discord = require('discord.js');
 let globaljs = require('./global.js');
 let express = require('express');
-let rerouter;
+let app, rerouter;
+if (!config.prefix) return console.log('Missing configuration - prefix.');
+if (!config.owner) return console.log('Missing configuration - owner.');
+if (!config.auth.admin) return console.log('Missing administrator - administrator.');
 if (config.site) {
 	rerouter = require('./data/routes.js');
 	app = express();
@@ -13,11 +16,7 @@ if (config.site) {
 		console.log('The website\'s up!');
 	});
 }
-if (!config.prefix) return console.log('Missing configuration - prefix.');
-if (!config.owner) return console.log('Missing configuration - owner.');
-if (!config.auth.admin) return console.log('Missing administrator - administrator.');
 let client;
-let app;
 let options = {serverid: config.serverid, loginServer: 'https://play.pokemonshowdown.com/~~' + config.serverid + '/action.php', nickName: config.nickName, pass: config.pass, avatar: (config.avatar) ? config.avatar : null, status: (config.status) ? config.status : null, autoJoin: config.autoJoin, app: app};
 global.Bot = new SDClient(config.server, config.port, options);
 Bot.connect();
