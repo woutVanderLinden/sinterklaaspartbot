@@ -5,14 +5,38 @@ exports.nickName = '';
 exports.pass = '';
 exports.token = '';
 exports.owner = '';
+exports.site = true;
+exports.useDiscord = true;
+exports.webPort = 8080;
 
 
 /* Customization */
 
 exports.avatar = 'supernerd';
-exports.autoJoin = ['botdev', '1v1typechallenge'];
+exports.autoJoin = ['botdevelopment'];
 exports.status = false;
 exports.ignoreRooms = [];
+exports.activity = '';
+
+/* Global Authority */
+
+exports.auth = {
+	admin: [],
+	adminalts: [],
+	coder: [],
+	coderalts: [],
+	alpha: [],
+	alphaalts: [],
+	pseudoalpha: [],
+	beta: [],
+	betaalts: [],
+	pseudobeta: [],
+	gamma: [],
+	gammaalts: [],
+	pseudogamma: [],
+	locked: [],
+	lockedalts: []
+}
 
 
 /* Magic-y stuff, don't touch unless you know what you're doing */
