@@ -26,5 +26,4 @@ exports.getRoutes = function (app) {
 			return res.send(file);
 		});
 	});
-  });
 }
