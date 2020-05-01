@@ -22,7 +22,9 @@ global.Bot = new SDClient(config.server, config.port, options);
 Bot.connect();
 if (config.useDiscord) {
 	client = new Discord.Client();
-	client.on('message', require('./discord.js').handler);
+	if(config.token) {
+	client.on('message', async => {});
+	}
 	client.login(config.token);
 	client.on("ready", () => {
 		console.log(`Connected to Discord.`);
