@@ -6,25 +6,6 @@ exports.handler = Bot => {
     if (data && data[0] == 'create') {
       if (['*', '#', '★'].includes(Bot.rooms[room].rank) && config.tourTimerRooms.includes(room)) Bot.say(room, '/tour autostart 5\n/tour autodq 2')
     }
-    if (room == 'hydrocity') {
-      if (!data) return;
-      if (data[0] == 'battlestart') {
-        Bot.say('', '/j ' + data[3]);
-        return setTimeout((room, text) => Bot.say(room, text), 1000, data[3], `G'luck, nerds.\n/part`);
-      }
-      if (data[0] == 'battleend') {
-        console.log(data);
-        if (data[3] == 'win') tools.addPoints(data[1], 3, room);
-        else if (data[3] == 'loss') tools.addPoints(data[2], 3, room);
-        else if (data[3] == 'draw') {
-          tools.addPoints(data[1], 1, room);
-          tools.addPoints(data[2], 1, room);
-        }
-        return;
-      }
-      if (data[0] == 'join') tools.addPoints(data[1], 3, room);
-      if (data[0] == 'leave') tools.addPoints(data[1], -3, room);
-    }
   });
   Bot.on('join', (by, room, time) => {
     if (!Bot.jps[room] || !Bot.jps[room][by]) return;
