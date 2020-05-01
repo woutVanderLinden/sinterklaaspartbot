@@ -9,7 +9,8 @@ global.toId = function (text) {
 
 global.url = require('url');
 global.https= require('https');
-global.fs = require('fs');global.config = require('./config.js');
+global.fs = require('fs');
+global.config = require('./config.js');
 global.tools = require('./data/tools.js')
 
 
