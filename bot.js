@@ -21,6 +21,10 @@ let options = {serverid: config.serverid, loginServer: 'https://play.pokemonshow
 global.Bot = new SDClient(config.server, config.port, options);
 Bot.connect();
 if (config.useDiscord) {
+	if (!config.token) {
+		console.log('Missing Discord token. If you wish to disable Discord, please set config.useDiscord to `false`.');
+		process.exit();
+	}
 	client = new Discord.Client();
 	client.on('message', require('./discord.js').handler);
 	client.login(config.token);
