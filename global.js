@@ -28,13 +28,7 @@ global.prefix = config.prefix;
 **************************/
 
 global.unxa = 'Unexpected number of arguments.';
-global.tcroom = 'groupchat-partbot-1v1tc';
-global.mmroom = 'groupchat-hydrocity-mentalmath';
-global.tctest = 'groupchat-partbot-1v1tc';
 global.typelist = ['bug', 'dark', 'dragon', 'electric', 'fairy', 'fighting', 'fire', 'flying', 'ghost', 'grass', 'ground', 'ice', 'normal', 'poison', 'psychic', 'rock', 'steel', 'water'];
-global.AkasiAnse = 0;
-global.UnleashOurPassion = 1;
-
 
 
 /**************************
@@ -49,27 +43,12 @@ global.data = {
 }
 
 
-
 /**************************
 *         Polls           *
 **************************/
 
 global.pollObject = {
-	'1v1typechallenge': {
-		votes: {},
-		active: false,
-		autostart: false,
-		official: false,
-		endTime: 0
-	}
 }
 
 global.blitzObject = {
-	'1v1typechallenge': {
-		active: false,
-    prepping: false,
-		autostart: false,
-		official: false,
-    starter: false
-	}
 }
