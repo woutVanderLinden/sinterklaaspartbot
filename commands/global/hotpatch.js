@@ -34,7 +34,7 @@ module.exports = {
                 });
                 break;
             }
-            case 'chat': {
+            case 'chat': case 'autores': {
             	delete require.cache[require.resolve('../../chat.js')];
             	Bot.say(room, 'Chat has been hotpatched.');
             	return Bot.log(by.substr(1) + ' hotpatched chat.');
