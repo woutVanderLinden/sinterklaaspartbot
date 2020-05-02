@@ -35,7 +35,7 @@ module.exports = {
                 break;
             }
             case 'chat': {
-            	delete require.cache[require.resolve('../../hydrocity.js')];
+            	delete require.cache[require.resolve('../../chat.js')];
             	Bot.say(room, 'Chat has been hotpatched.');
             	return Bot.log(by.substr(1) + ' hotpatched chat.');
             	break;
