@@ -1,6 +1,5 @@
 class Chess {
-	constructor (host, id) {
-		this.host = host;
+	constructor (id, restore) {
 		this.id = id;
 		this.started = false;
 		this.W = {
@@ -21,24 +20,26 @@ class Chess {
 			captures: [],
 			isPromoting: false
 		};
+		this.moves = [];
 		this.lastMoveP2 = false;
 		this.board = {};
 		['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].forEach(file => this.board[file] = ['', '', '', '', '', '', '', '', '']);
 		// pieces are saved as BN, WP, WQ, etc.
 		this.turn = 'W';
+		if (restore) Object.keys(restore).forEach(key => this[key] = restore[key]);
 		this.imgsrc = {
-			WK: '<IMG src="https://i.ibb.co/VMdPRNv/tile000.png" height="30" width="30" style="height: 30; width="30">',
-			WQ: '<IMG src="https://i.ibb.co/pd41dph/tile001.png" height="30" width="30" style="height: 30; width="30">',
-			WB: '<IMG src="https://i.ibb.co/rpXcgJZ/tile002.png" height="30" width="30" style="height: 30; width="30">',
-			WN: '<IMG src="https://i.ibb.co/pJTwBHC/tile003.png" height="30" width="30" style="height: 30; width="30">',
-			WR: '<IMG src="https://i.ibb.co/wSLmztb/tile004.png" height="30" width="30" style="height: 30; width="30">',
-			WP: '<IMG src="https://i.ibb.co/nnBGJ39/tile005.png" height="30" width="30" style="height: 30; width="30">',
-			BK: '<IMG src="https://i.ibb.co/x2yqdbQ/tile006.png" height="30" width="30" style="height: 30; width="30">',
-			BQ: '<IMG src="https://i.ibb.co/2ZGbCgs/tile007.png" height="30" width="30" style="height: 30; width="30">',
-			BB: '<IMG src="https://i.ibb.co/M6rq9zZ/tile008.png" height="30" width="30" style="height: 30; width="30">',
-			BN: '<IMG src="https://i.ibb.co/bXdF1Rg/tile009.png" height="30" width="30" style="height: 30; width="30">',
-			BR: '<IMG src="https://i.ibb.co/1q1HKXQ/tile010.png" height="30" width="30" style="height: 30; width="30">',
-			BP: '<IMG src="https://i.ibb.co/vzvCQnQ/tile011.png" height="30" width="30" style="height: 30; width="30">'
+			WK: '<IMG src="https://i.ibb.co/VMdPRNv/tile000.png" height="25" width="25" style="height: 25; width="25"/>',
+			WQ: '<IMG src="https://i.ibb.co/pd41dph/tile001.png" height="25" width="25" style="height: 25; width="25"/>',
+			WB: '<IMG src="https://i.ibb.co/rpXcgJZ/tile002.png" height="25" width="25" style="height: 25; width="25"/>',
+			WN: '<IMG src="https://i.ibb.co/pJTwBHC/tile003.png" height="25" width="25" style="height: 25; width="25"/>',
+			WR: '<IMG src="https://i.ibb.co/wSLmztb/tile004.png" height="25" width="25" style="height: 25; width="25"/>',
+			WP: '<IMG src="https://i.ibb.co/nnBGJ39/tile005.png" height="25" width="25" style="height: 25; width="25"/>',
+			BK: '<IMG src="https://i.ibb.co/x2yqdbQ/tile006.png" height="25" width="25" style="height: 25; width="25"/>',
+			BQ: '<IMG src="https://i.ibb.co/2ZGbCgs/tile007.png" height="25" width="25" style="height: 25; width="25"/>',
+			BB: '<IMG src="https://i.ibb.co/M6rq9zZ/tile008.png" height="25" width="25" style="height: 25; width="25"/>',
+			BN: '<IMG src="https://i.ibb.co/bXdF1Rg/tile009.png" height="25" width="25" style="height: 25; width="25"/>',
+			BR: '<IMG src="https://i.ibb.co/1q1HKXQ/tile010.png" height="25" width="25" style="height: 25; width="25"/>',
+			BP: '<IMG src="https://i.ibb.co/vzvCQnQ/tile011.png" height="25" width="25" style="height: 25; width="25"/>'
 		}
 		this.emosrc = {
 			WK: '<DIV style="font-size:25px;">&#x2654;</DIV>',
@@ -445,6 +446,18 @@ class Chess {
 	    }
 	    return squares;
 	}
+	getLocationsOfPiecesAgainst (piece, final, board) {
+		if (!board) board = this.board;
+		if (Array.isArray(final)) final = final.join('');
+		if (!/^[BW][PKQRBN]$/.test(piece)) return null;
+		let out = [];
+		Object.keys(board).forEach(l => {
+			for (let i = 1; i < 9; i++) {
+				if (board[l][i] == piece) out.push(l + i);
+			}
+		});
+		return out.filter(loc => this.getSquares(loc, this.board).includes(final));
+	}
 	checkChecks (side, board) {
 		if (!board) board = this.board;
 		let kSquare = null, checkedSquares = [], flag = false;
@@ -528,28 +541,38 @@ class Chess {
 	play (side, origin, final, callback) {
 		if (!side || !(typeof(side) === 'string') || !origin || !(typeof(origin) === 'string') || !final || !(typeof(final) === 'string') || !callback || !(typeof(callback) === 'function')) return console.log('Invalid arguments.');
 		if (!(this.turn === side)) return callback(0, 'Not your turn.');
-		let moves = this.getValidMoves(origin), piece = this.getPiece(origin);
+		let moves = this.getValidMoves(origin), piece = this.getPiece(origin), captureFlag = '';
 		if (piece[0] !== side) return;
 		piece = piece[1];
 		if (!moves.includes(final)) return callback(0, 'Invalid move.');
 		if (this.board[final[0]][final[1]] && !this.board[final[0]][final[1]].startsWith(side)) {
 			let capture = this.board[final[0]][final[1]];
+			captureFlag = 'x';
 			this[side].captures.push(capture[1]);
 			if (capture[1] === 'R' && capture[0] !== side && (['a1', 'a8', 'h1', 'h8'].includes(final)) && !this[(side === 'W' ? 'B' : 'W')]['R' + final[0] + 'm']) this[(side === 'W' ? 'B' : 'W')]['R' + final[0] + 'm'] = true;
 		}
 		if (piece === 'P' && !(final[0] === origin[0]) && !this.board[final[0]][final[1]]) {
 			this[side].captures.push('P');
+			captureFlag = 'x';
 			this.board[final[0]][origin[1]] = '';
 		}
 		if (piece === 'P' && Math.abs(final[1] - origin[1]) === 2) {
 			this.board[final[0]][final[1]] = side + 'P';
 			this.board[origin[0]][origin[1]] = '';
 			this.lastMoveP2 = origin[0];
+			this.moves.push(captureFlag ? `${origin[0]}x${final[0]}${final[1]}` : final);
 			this.switchSides();
 			if (!this.allValidMoves(this.turn, this.board).length) {
-				if (this.checkChecks(this.turn, this.board)) return callback(3);
-				else return callback(4);
+				if (this.checkChecks(this.turn, this.board)) {
+					this.moves[this.moves.length - 1] += '#';
+					return callback(3);
+				}
+				else {
+					this.moves[this.moves.length - 1] += '$';
+					return callback(4);
+				}
 			}
+			if (this.checkChecks(this.turn, this.board)) this.moves[this.moves.length - 1] += '+';
 			return callback(1);
 		}
 		this.lastMoveP2 = false;
@@ -562,11 +585,19 @@ class Chess {
 					this.board.h[origin[1]] = '';
 					this[side].Km = true;
 					this[side].Rhm = true;
+					this.moves.push('0-0');
 					this.switchSides();
 					if (!this.allValidMoves(this.turn, this.board).length) {
-						if (this.checkChecks(this.turn, this.board)) return callback(3);
-						else return callback(4);
+						if (this.checkChecks(this.turn, this.board)) {
+							this.moves[this.moves.length - 1] += '#';
+							return callback(3);
+						}
+						else {
+							this.moves[this.moves.length - 1] += '$';
+							return callback(4);
+						}
 					}
+					if (this.checkChecks(this.turn, this.board)) this.moves[this.moves.length - 1] += '+';
 					return callback(1);
 				}
 				if (final[0] === 'c') {
@@ -576,11 +607,19 @@ class Chess {
 					this.board.a[origin[1]] = '';
 					this[side].Km = true;
 					this[side].Ram = true;
+					this.moves.push('0-0-0');
 					this.switchSides();
 					if (!this.allValidMoves(this.turn, this.board).length) {
-						if (this.checkChecks(this.turn, this.board)) return callback(3);
-						else return callback(4);
+						if (this.checkChecks(this.turn, this.board)) {
+							this.moves[this.moves.length - 1] += '#';
+							return callback(3);
+						}
+						else {
+							this.moves[this.moves.length - 1] += '$';
+							return callback(4);
+						}
 					}
+					if (this.checkChecks(this.turn, this.board)) this.moves[this.moves.length - 1] += '+';
 					return callback(1);
 				}
 			}
@@ -590,25 +629,60 @@ class Chess {
 		this.board[origin[0]][origin[1]] = '';
 		this.board[final[0]][final[1]] = side + piece;
 		if (piece === 'P' && [1, 8].includes(parseInt(final[1]))) {
-			this[side].isPromoting = true;
+			this[side].isPromoting = 1;
+			if (captureFlag) this[side].isPromoting = origin[0];
 			return callback(2, final);
+		}
+		switch (piece) {
+			case 'P': {
+				this.moves.push(captureFlag ? `${origin[0]}x${final[0]}${final[1]}` : final);
+				break;
+			}
+			case 'K': {
+				this.moves.push(`K${captureFlag}${final}`);
+				break;
+			}
+			default: {
+				let pos = this.getLocationsOfPiecesAgainst(this.turn + piece, final);
+				if (!pos) return;
+				if (!pos.filter(loc => loc[0] == origin[0]).length) this.moves.push(piece + captureFlag + final);
+				else if (!pos.filter(loc => loc[1] == origin[1]).length) this.moves.push(piece + origin[0] + captureFlag + final);
+				else this.moves.push(piece + origin + captureFlag + final);
+				break;
+			}
 		}
 		this.switchSides();
 		if (!this.allValidMoves(this.turn, this.board).length) {
-			if (this.checkChecks(this.turn, this.board)) return callback(3);
-			else return callback(4);
+			if (this.checkChecks(this.turn, this.board)) {
+				this.moves[this.moves.length - 1] += '#';
+				return callback(3);
+			}
+			else {
+				this.moves[this.moves.length - 1] += '$';
+				return callback(4);
+			}
 		}
+		if (this.checkChecks(this.turn, this.board)) this.moves[this.moves.length - 1] += '+';
 		return callback(1);
 	}
 	promote (piece, square, side, callback) {
 		if (!(this.turn === side) || !this[side].isPromoting || !(this.board[square[0]][square[1]]) === side + 'P') return null;
+		let captureFlag = this[side].isPromoting == 1 ? '' : this[side].isPromoting + 'x';
 		this[side].isPromoting = false;
 		this.board[square[0]][square[1]] = side + piece;
+		this.moves.push(captureFlag + square + '=' + piece);
 		this.switchSides();
 		if (!this.allValidMoves(this.turn, this.board).length) {
-			if (this.checkChecks(this.turn, this.board)) return callback(3);
-			else return callback(4);
+			if (this.checkChecks(this.turn, this.board)) {
+				this.moves[this.moves.length - 1] += '#';
+				return callback(3);
+			}
+			else {
+				this.moves[this.moves.length - 1] += '$';
+				return callback(4);
+			}
 		}
+		if (this.checkChecks(this.turn, this.board)) this.moves[this.moves.length - 1] += '+';
 		return callback(1);
 	}
 	getColourOf (square, flag) {
@@ -622,54 +696,53 @@ class Chess {
 		if (['b', 'd', 'f', 'h'].includes(square[0])) b = 1;
 		return ((a + b) % 2) ? this.colours.B : this.colours.W;
 	}
-	boardHTML (room, side, selected, highlighted, lastPlayed) {
-		let html = '', imgsrc;
-		if (room.includes('groupchat')) imgsrc = this.emosrc;
+	boardHTML (side, selected, highlighted, lastPlayed) {
+		let html = '', imgsrc, room = this.id;
+		if (room.startsWith('groupchat-')) imgsrc = this.emosrc;
 		else imgsrc = this.imgsrc;
 		if (selected && this.getPiece(selected)[0] !== side) return;
 		switch (side) {
 			case 'W': {
-				html += `<TABLE style="border-collapse:collapse;" border="1">\n\t<TR style="height: 35;">\n\t\t<TH width="15"></TH>\n\t\t<TH width="35">A</TH>\n\t\t<TH width="35">B</TH>\n\t\t<TH width="35">C</TH>\n\t\t<TH width="35">D</TH>\n\t\t<TH width="35">E</TH>\n\t\t<TH width="35">F</TH>\n\t\t<TH width="35">G</TH>\n\t\t<TH width="35">H</TH>\n\t\t<TH width="35"></TH>\n\t</TR>\n`;
+				html += `<TABLE style="border-collapse:collapse;" border="1"><TR style="height: 15;"><TH width="15" height="15"></TH><TH width="35">A</TH><TH width="35">B</TH><TH width="35">C</TH><TH width="35">D</TH><TH width="35">E</TH><TH width="35">F</TH><TH width="35">G</TH><TH width="35">H</TH><TH width="15"></TH></TR>`;
 				let j = 0;
 				for (let i = 8; i > 0; i--) {
-					html += `\t<TR style="height: 35;">\n\t\t<TH>${i}</TH>\n`;
+					html += `<TR style="height: 35;"><TD height="35"><B><CENTER>${i}</CENTER></B></TD>`;
 					html += Object.keys(this.board).map(file => {
 						if (selected && (file + i === selected)) return [2, this.board[file][i], file];
 						if (highlighted && highlighted.includes(file + i)) return [1, this.board[file][i], file];
 						return [0, this.board[file][i], file];
 					}).map(piece => {
-						if (!piece[0]) return `\t\t<TD bgcolor="${this.getColourOf(j++)}" style="height: 35;"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} select ${piece[2]}${i}" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
-						if (piece[0] === 1) return `\t\t<TD bgcolor="${this.getColourOf(j++, 'hl')}" style="height: 35;"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} play ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
-						else return `\t\t<TD bgcolor="${this.getColourOf(j++, 'sel')}" style="height: 35;"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} deselect" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
-					}).join('\n');
-					html += `\n\t\t<TH>${i}</TH>\n\t</TR>\n`;
+						if (!piece[0]) return `<TD bgcolor="${this.getColourOf(j++)}" height="35" width="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} select ${piece[2]}${i}" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+						if (piece[0] === 1) return `<TD bgcolor="${this.getColourOf(j++, 'hl')}" height="35" width="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} play ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+						else return `<TD bgcolor="${this.getColourOf(j++, 'sel')}" height="35" width="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} deselect" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+					}).join('');
+					html += `<TH>${i}</TH></TR>`;
 					j++;
 				}
-				html += '\n\t<TR style="height: 35;">\n\t\t<TH width="35"></TH>\n\t\t<TH width="35">A</TH>\n\t\t<TH width="35">B</TH>\n\t\t<TH width="35">C</TH>\n\t\t<TH width="35">D</TH>\n\t\t<TH width="35">E</TH>\n\t\t<TH width="35">F</TH>\n\t\t<TH width="35">G</TH>\n\t\t<TH width="35">H</TH>\n\t\t<TH width="35"></TH>\n\t</TR>\n</TABLE>';
+				html += '<TR height="15"><TH height="15"></TH><TH height="15">A</TH><TH height="15">B</TH><TH height="15">C</TH><TH height="15">D</TH><TH height="15">E</TH><TH height="15">F</TH><TH height="15">G</TH><TH height="15">H</TH><TH height="15"></TH></TR></TABLE>';
 				break;
 			}
 			case 'B': {
-				html += `<TABLE style="border-collapse:collapse;" border="1">\n\t<TR style="height: 35;">\n\t\t<TH width="15"></TH>\n\t\t<TH width="35">H</TH>\n\t\t<TH width="35">G</TH>\n\t\t<TH width="35">F</TH>\n\t\t<TH width="35">E</TH>\n\t\t<TH width="35">D</TH>\n\t\t<TH width="35">C</TH>\n\t\t<TH width="35">B</TH>\n\t\t<TH width="35">A</TH>\n\t\t<TH width="35"></TH>\n\t</TR>\n`;
+				html += `<TABLE style="border-collapse:collapse;" border="1"><TR style="height: 15;"><TH width="15" height="15"></TH><TH width="35" height="15">H</TH><TH width="35" height="15">G</TH><TH width="35" height="15">F</TH><TH width="35" height="15">E</TH><TH width="35" height="15">D</TH><TH width="35" height="15">C</TH><TH width="35" height="15">B</TH><TH width="35" height="15">A</TH><TH width="15" height="15"></TH></TR>`;
 				let j = 0;
 				for (let i = 1; i < 9; i++) {
-					html += `\t<TR style="height: 35;">\n\t\t<TH>${i}</TH>\n`;
+					html += `<TR style="height: 35;"><TD height="35"><B><CENTER>${i}</CENTER></B></TD>`;
 					html += Object.keys(this.board).reverse().map(file => {
 						if (selected && (file + i === selected)) return [2, this.board[file][i], file];
 						if (highlighted && highlighted.includes(file + i)) return [1, this.board[file][i], file];
 						return [0, this.board[file][i], file];
 					}).map(piece => {
-						if (!piece[0]) return `\t\t<TD bgcolor="${this.getColourOf(j++)}" style="height: 35;"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} select ${piece[2]}${i}" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
-						if (piece[0] === 1) return `\t\t<TD bgcolor="${this.getColourOf(j++, 'hl')}" style="height: 35;"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} play ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
-						else return `\t\t<TD bgcolor="${this.getColourOf(j++, 'sel')}" style="height: 35;"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} deselect" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
-					}).join('\n');
-					html += `\n\t\t<TH>${i}</TH>\n\t</TR>\n`;
+						if (!piece[0]) return `<TD bgcolor="${this.getColourOf(j++)}" height="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} select ${piece[2]}${i}" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+						if (piece[0] === 1) return `<TD bgcolor="${this.getColourOf(j++, 'hl')}" height="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} play ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+						else return `<TD bgcolor="${this.getColourOf(j++, 'sel')}" height="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} deselect" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+					}).join('');
+					html += `<TH width="15">${i}</TH></TR>`;
 					j++;
 				}
-				html += '\n\t<TR style="height: 35;">\n\t\t<TH width="15"></TH>\n\t\t<TH width="35">H</TH>\n\t\t<TH width="35">G</TH>\n\t\t<TH width="35">F</TH>\n\t\t<TH width="35">E</TH>\n\t\t<TH width="35">D</TH>\n\t\t<TH width="35">C</TH>\n\t\t<TH width="35">B</TH>\n\t\t<TH width="35">A</TH>\n\t\t<TH width="35"></TH>\n\t</TR>\n</TABLE>';
+				html += '<TR style="height: 35;"><TH width="15"></TH><TH width="35">H</TH><TH width="35">G</TH><TH width="35">F</TH><TH width="35">E</TH><TH width="35">D</TH><TH width="35">C</TH><TH width="35">B</TH><TH width="35">A</TH><TH width="15"></TH></TR></TABLE>';
 				break;
 			}
 			default: {
-				console.log('>>>');
 				break;
 			}
 		}
