@@ -4,7 +4,7 @@ exports.handler = Bot => {
   Bot.on('chatsuccess', (room, time, by, message) => Bot.rooms[room].rank = by.charAt(0));
   Bot.on('tour', (room, data) => {
     if (data && data[0] == 'create') {
-      if (['*', '#', '★'].includes(Bot.rooms[room].rank) && config.tourTimerRooms.includes(room)) Bot.say(room, '/tour autostart 5\n/tour autodq 2')
+      if (['*', '#', '★'].includes(Bot.rooms[room].rank) && config.tourTimerRooms && config.tourTimerRooms.includes(room)) Bot.say(room, '/tour autostart 5\n/tour autodq 2')
     }
   });
   Bot.on('join', (by, room, time) => {
