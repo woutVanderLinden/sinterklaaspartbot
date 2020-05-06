@@ -16,6 +16,7 @@ exports.avatar = 'supernerd';
 exports.autoJoin = ['botdevelopment'];
 exports.status = false;
 exports.ignoreRooms = [];
+exports.tourTimerRooms = [];
 exports.activity = '';
 
 /* Global Authority */
