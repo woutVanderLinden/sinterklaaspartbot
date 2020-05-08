@@ -66,13 +66,47 @@ PartBot has the following structure:
 2. bot.js is the primary file, and contains the handlers for Chat and PMs. It also initializes the PS client, the Discord client, and the website, apart from redirecting the handlers for Discord, the website, ChatError, Join, Pop-up, ChatSuccess, Tour, and Raw. This file also requires global.js.
 3. Chat commands are stored in the ./commands folder, but are in various subdirectories. For each command, two directories are scanned. These are the global directory, and the room directory. This allows for certain commands to be exclusive to specific rooms, while others can be used in any room. Each command has the following keys: cooldown (time before the command can be used again in ms), permissions (minimum access level required to use the command), help (message to be displayed when the Help command is used), and commandFunction (the function that is executed when the command is called). commandFunction takes the following arguments: Bot, room, time, by, args, client. Here, Bot is the global Bot object, room is the ID of the room, time is the time when the message was sent, by is the name (including rank) of the user who used the comman, args is an array of the command arguments (message split on space), and client is the Discord client.
 4. All PM commands are stored in a single ./pmcommands directory. Each command has the following keys: permissions, help, and commandFunction. commandFunction takes the following arguments: Bot, by, args, client.
-5. minorhandler.js handles the emits for ChatError, Join, Pop-up, ChatSuccess, Tour, and Raw. The arguments for these can be found in client.js.
-6. discord.js handles the Discord messages, for now. A proper handler is in the works.
-7. chat.js handles autoresponses. Simply edit the initial array check to add the room ID in order to enable autores for the room.
-8. data/tools.js has the major tools that are used throughout the Bot's code. tools is a global object that can be used to call a tool anywhere.
+5. ./minorhandler.js handles the emits for ChatError, Join, Pop-up, ChatSuccess, Tour, and Raw. The arguments for these can be found in client.js.
+6. ./discord.js handles the Discord messages, for now. A proper handler is in the works.
+7. ./chat.js handles autoresponses. Simply edit the initial array check to add the room ID in order to enable autores for the room.
+8. ./data/tools.js has the major tools that are used throughout the Bot's code. tools is a global object that can be used to call a tool anywhere, and also defines most prototypes.
 
 
-### Shop
+### Globals
+PartBot's code has a variety of global variables, all of which can be found from global.js. Commonly used ones include:
+1. ``toId``: The single most-used function in PartBot's code. Coverts a string input to its ID.
+1. ``unxa``: "Unexpected number of arguments."
+1. ``tools``: A global object with various useful functions. Go through ``./data/tools.js`` to view / edit them.
+1. ``data``: A global object that stores most of the data (Pokedex, moves, etc). Check the requires in ``./globals.js`` to view the individual sources, which are mstly in ``./data/DATA``.
+1. ``Bot``: The PS client. The class is defined in ``./client.js``, but the instance is global. Primary functions include ``Bot.say(roomid, text)`` and ``Bot.pm(userid, text)``. State is mostly stored under various keys in the main object, and room data can be found in ``Bot.rooms``. Most games are assigned to the ``Bot.rooms[roomid]`` object. (The other clients are ``client`` (Discord) and ``app`` (website), but neither of those are globally scoped.)
+
+
+### Discord Setup
+While PartBot's Discord handler is still in the works, you can easily add one.
+Once you've set up the configuration file, there are still a couple steps left to set up Discord. If you have ``useDiscord`` set to false, ignore these steps.
+1. Open ./discord.js and replace the strings ``'ADMIN_ID'`` and ``'CLIENT_ID'`` with your Discord ID and the Bot's Discord ID, respectively.
+
+(Yeah, that was it)
+
+#### Quick Help:
+- How do I get the token for my Bot?
+
+  First, open the [Discord Developer Portal](https://discord.com/developers). If you haven't already done so, create an Application and set it up. After converting the application to a Bot, go to the Bot section and copy your token. This token grants access to your application, so keep it private.
+
+- How do I get my Discord ID?
+
+  Go to Discord settings and enable Developer Mode. Once enabled, right click your name and copy the ID.
+
+- How do I get my Bot's Discord ID?
+
+  In the Discord Developer Portal, open your application. The ID should be under General Information. You could also right-click the Bot's username in Discord and directly copy the ID.
+
+- How do I invite my Bot to a server?
+
+  You can only invite the Bot to servers in which you have the ``Manage Server`` permission. Open your application on the Discord Developer Portal, and go to OAuth2. In Scopes, select Bot, and scroll down to select the relevant permissions. After this, simply visit the link that pops up below Scopes. This link may be shared and used multiple times.
+
+
+### Shop / Leaderboard
 PartBot has a fully-functioning Shop feature that supports two currencies.
 
 To enable the Shop, you first need to add the relevant .json file as ./data/SHOPS/(room).json. This must be an object with the following keys:
@@ -83,6 +117,8 @@ To enable the Shop, you first need to add the relevant .json file as ./data/SHOP
  - users: ``{...userid: {name: string, points: [number, number]}}`` - This is an object that stores all the points that users have. points is an array with the first term containing the number of regular points, and the second containing the number of special points.
  - inventory: ``{...itemid: {name: string, cost: [number, number], id: string}}`` - This is an object that stores all the items in the shop. id is a string that is the value of itemid, and the cost contains the cost of the item in both currencies.
  - jpl: ``[...userid]`` - jpl is an array that contains the user IDs of all users who are permitted to have a joinphrase in the room. If this does not exist, this check is bypassed.
+
+As of now, the Leaderboard is directly tied to the Shop - you can't have the leaderboard without a Shop in the room. A proper leaderboard system is in the works, though.
  
  
 #### To-do:
@@ -94,7 +130,7 @@ To enable the Shop, you first need to add the relevant .json file as ./data/SHOP
  - [x] Fix authalts.
  - [x] Fix Bot.rooms\[].rank.
  - [x] Add Bot.rooms\[].title
- - [ ] Handle canHTML cases in all commands.
+ - [x] Handle canHTML cases in all commands.
  - [ ] Implement warmup.
  - [x] Add blocks for newly installed / unconfigured projects.
  - [x] Add better help messages.
@@ -104,13 +140,15 @@ To enable the Shop, you first need to add the relevant .json file as ./data/SHOP
  - [x] Complete all command alternatives for roomrank.
  - [x] Implement PM commands.
  - [ ] Add CONTRIBUTING.md.
- - [ ] Complete the Chess module.
+ - [x] Complete the Chess module.
  - [x] Complete the Exploding Voltorb module.
  - [x] Add a leaderboard renderer.
  - [x] Implement a Shop / Currency feature.
  - [ ] Implement a Discord command handler.
- - [ ] Update code to include recent changes.
+ - [x] Update code to include recent changes.
  - [ ] Add a functional homepage.
+ - [ ] Add independent leaderboard.
+ - [ ] Add proper website navigation.
  
  
  ### Credits:
