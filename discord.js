@@ -1,6 +1,6 @@
 exports.handler = async message => {
   let client = message.client;
-  if (message.mentions && message.mentions.users && message.mentions.users.has('CLIENT_ID')) return message.channel.send(`Hi, I'm ${Bot.status.nickName}! I'm a bot by ${config.owner}. My command character is \`\`\`${prefix}\`\`\`.`);
+  if (message.mentions && message.mentions.users && message.mentions.users.has(client.user.id)) return message.channel.send(`Hi, I'm ${Bot.status.nickName}! I'm a bot by ${config.owner}. My command character is \`\`\`${prefix}\`\`\`.`);
   if (message.author.id == 'ADMIN_ID' && message.content.toLowerCase().startsWith(`${prefix}eval `)) {
     try {
       let out = eval(message.content.substr(prefix.length + 5));
