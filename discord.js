@@ -33,12 +33,12 @@ exports.handler = async message => {
       client.timers[message.author.id]
     }
     if(command == "ping") {
-      message.channel.send('Pong!').then(msg => msg.edit(`Server ping: ${tools.humanTime(Date.now() - message.createdAt)}\nAPI Latency: ${tools.humanTime(client.ping)}`));
+      message.channel.send('Pong!').then(msg => msg.edit(`Server ping: ${tools.humanTime(Date.now() - message.createdAt)}\nAPI Latency: ${tools.humanTime(msg.createdAt - message.createdAt)}`));
     }
     if(command == "avatar") {
       message.channel.send(message.author.displayAvatarURL());
     }
-     if (command == "say") {
+    if (command == "say") {
       message.channel.send(args.join(" "));
     }
   }
