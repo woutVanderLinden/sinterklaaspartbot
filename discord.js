@@ -38,5 +38,8 @@ exports.handler = async message => {
     if(command == "avatar") {
       message.channel.send(message.author.displayAvatarURL());
     }
+     if (command == "say") {
+      message.channel.send(args.join(" "));
+    }
   }
 }
