@@ -29,7 +29,7 @@ if (config.useDiscord) {
 	client.on('message', require('./discord.js').handler);
 	client.login(config.token);
 	client.on("ready", () => {
-		console.log(`Connected to Discord.`);
+		console.log(`Connected to Discord as ${client.user.tag}.`);
 		client.user.setActivity(config.activity);
 	});
 }
