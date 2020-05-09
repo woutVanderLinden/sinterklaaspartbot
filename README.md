@@ -117,38 +117,21 @@ As of now, the Leaderboard is directly tied to the Shop - you can't have the lea
  
  
 #### To-do:
- - [x] Fix permissions issues.
- - [x] Implement Bot avatars.
- - [x] Implement Bot status.
- - [x] Add room-specific commands.
- - [x] Use EventEmitter.
- - [x] Fix authalts.
- - [x] Fix Bot.rooms\[].rank.
- - [x] Add Bot.rooms\[].title
- - [x] Handle canHTML cases in all commands.
+
  - [ ] Implement warmup.
- - [x] Add blocks for newly installed / unconfigured projects.
- - [x] Add better help messages.
- - [x] Add room-specific auth.
  - [ ] Add moderation / promotion commands.
- - [x] Implement Tour tracking.
- - [x] Complete all command alternatives for roomrank.
- - [x] Implement PM commands.
  - [ ] Add CONTRIBUTING.md.
- - [x] Complete the Chess module.
- - [x] Complete the Exploding Voltorb module.
- - [x] Add a leaderboard renderer.
- - [x] Implement a Shop / Currency feature.
  - [ ] Implement a Discord command handler.
- - [x] Update code to include recent changes.
  - [ ] Add a functional homepage.
  - [ ] Add independent leaderboard.
  - [ ] Add proper website navigation.
+ - [ ] Add a Discord crash guard.
+ - [ ] Add GAMES.md.
  
  
  ### Credits:
- PartMan - Lead Developer, Administrator
+ PartMan - Lead Developer
  
  Ecuacion - client.js base
  
- Morfent, JetOU, JumboWhales, tlouk, XpRienzo - Making sure PartMan doesn't ruin the Bot with terrible code.
+ Morfent, JetOU, JumboWhales, XpRienzo - Various aid and contributions.
