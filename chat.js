@@ -1,7 +1,7 @@
 exports.check = function (message, by, room) {
 	if (![].includes(room)) return;;
 	by = by.substr(1);
-    if (/kicks.*snom/.test(message)) return Bot.say(room, '/me kicks ' + by);
+	if (/kicks.*snom/.test(message)) return Bot.say(room, '/me kicks ' + by);
 	if (toId(message) == 'kden' && toId(by) == 'joltofjustice') return Bot.say(room, 'Kden.');
 	if (/^\/me flee/.test(message)) return Bot.say(room, `/me catches ${by}`);
 	if (/^me runs/.test(message)) return Bot.say(room, `/me chases ${by} down`);
