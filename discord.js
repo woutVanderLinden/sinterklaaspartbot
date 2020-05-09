@@ -18,6 +18,7 @@ exports.handler = async message => {
   }
   if (message.content.startsWith(prefix)) {
     let args = message.content.substr(prefix.length).split(' '), command = toId(args.shift());
+    
     if (command == 'timer') {
       if (!client.timers) client.timers = {};
       if (!args.length) return message.channel.send(unxa);
@@ -30,6 +31,15 @@ exports.handler = async message => {
       client.timers[message.author.id] = setTimeout(message => message.reply('time\'s up!'), ttime, message);
       return message.channel.send(`A timer has been set for ${tools.humanTime(ttime)}.`);
       client.timers[message.author.id]
+    }
+     if(command == "ping") {
+      
+      message.reply('Pong!');
+        
+    }
+    if(command == "avatar") {
+      message.reply(message.author.displayAvatarURL());
+      
     }
   }
 }
