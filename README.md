@@ -11,7 +11,6 @@ Features:
 * Room-specific auth overrides
 * Room-exclusive commands
 * Pre-implemented demonstrations
-* Logs
 * Alt-tracking for auth
 * Various games, including Quo Vadis, Exploding Voltorb, Chess, and Blackjack.
 * Joinphrases
