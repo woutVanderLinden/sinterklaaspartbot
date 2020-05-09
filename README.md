@@ -13,7 +13,7 @@ Features:
 * Pre-implemented demonstrations
 * Logs
 * Alt-tracking for auth
-* Various games, including Quo Vadis, Exploding Voltorb, and Blackjack.
+* Various games, including Quo Vadis, Exploding Voltorb, Chess, and Blackjack.
 * Joinphrases
 * Fully functional website
 
@@ -84,7 +84,7 @@ PartBot's code has a variety of global variables, all of which can be found from
 ### Discord Setup
 While PartBot's Discord handler is still in the works, you can easily add one.
 Once you've set up the configuration file, there are still a couple steps left to set up Discord. If you have ``useDiscord`` set to false, ignore these steps.
-1. Open ./discord.js and replace the strings ``'ADMIN_ID'`` and ``'CLIENT_ID'`` with your Discord ID and the Bot's Discord ID, respectively.
+1. Open ./discord.js and replace the string ``'ADMIN_ID'`` with your Discord ID.
 
 (Yeah, that was it)
 
@@ -96,10 +96,6 @@ Once you've set up the configuration file, there are still a couple steps left t
 - How do I get my Discord ID?
 
   Go to Discord settings and enable Developer Mode. Once enabled, right click your name and copy the ID.
-
-- How do I get my Bot's Discord ID?
-
-  In the Discord Developer Portal, open your application. The ID should be under General Information. You could also right-click the Bot's username in Discord and directly copy the ID.
 
 - How do I invite my Bot to a server?
 
