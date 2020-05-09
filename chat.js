@@ -1,5 +1,5 @@
 exports.check = function (message, by, room) {
-	if (!['hydrocity'].includes(room)) return;;
+	if (![].includes(room)) return;;
 	by = by.substr(1);
   if (/kicks.*snom/.test(message)) return Bot.say(room, '/me kicks ' + by);
 	if (toId(message) == 'kden' && toId(by) == 'joltofjustice') return Bot.say(room, 'Kden.');
