@@ -149,7 +149,7 @@ Client.prototype.connect = function (retry) {
 	}
 	if (this.status.connected) return this.error("Already connected");
 	this.closed = false;
-	var webSocket = new WebSocketClient();
+	var webSocket = new WebSocketClient({maxReceivedFrameSize: 104857600});
 	this.webSocket = webSocket;
 	var self = this;
 	self.rooms = {};
