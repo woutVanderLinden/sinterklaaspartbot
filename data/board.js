@@ -3,7 +3,7 @@ exports.board = function (inputHeaders, input, sort, styling, widths, rank, limi
 	headers: [] - headers is an array of the array headers; ie, the title row. The length of headers must match the number of columns.
 	input: [[]] - input is a nested array of the input of the table.  input.length may be arbitrarily long, but must be at least one. Each element in input must be an array of the same length as headers.
 	sort: function - sort is a single function that is run on each input element. The elements in input are then sorted in (descending) order of these outputs. This function runs on each data row, and takes the whole row as an spread input.
-	styling: [] - styling is the styilng applied to separate elements. Each element is of the form css, such that style="${styling[i]}"" is applied. Has three elements: [0] is header styling, [1] is odd row styling, [2] is even row styling.
+	styling: [] - styling is the styling applied to separate elements. Each element is of the form css, such that style="${styling[i]}"" is applied. Has three elements: [0] is header styling, [1] is odd row styling, [2] is even row styling.
 	widths: [] - width is an array that takes the width of each column. If not found, the board automatically equalizes all column widths. This is simply of the form 'npx' or 'n%'.
 	rank: '' - creates a new column at the beginning with the ranks. The label on this column is the value. if undefined, does not create the column. widths must account for this. sort must not.
 	limit: number - Maximum entries to display.
