@@ -28,18 +28,18 @@ class Chess {
 		this.turn = 'W';
 		if (restore) Object.keys(restore).forEach(key => this[key] = restore[key]);
 		this.imgsrc = {
-			WK: '<IMG src="https://i.ibb.co/VMdPRNv/tile000.png" height="25" width="25" style="height: 25; width="25"/>',
-			WQ: '<IMG src="https://i.ibb.co/pd41dph/tile001.png" height="25" width="25" style="height: 25; width="25"/>',
-			WB: '<IMG src="https://i.ibb.co/rpXcgJZ/tile002.png" height="25" width="25" style="height: 25; width="25"/>',
-			WN: '<IMG src="https://i.ibb.co/pJTwBHC/tile003.png" height="25" width="25" style="height: 25; width="25"/>',
-			WR: '<IMG src="https://i.ibb.co/wSLmztb/tile004.png" height="25" width="25" style="height: 25; width="25"/>',
-			WP: '<IMG src="https://i.ibb.co/nnBGJ39/tile005.png" height="25" width="25" style="height: 25; width="25"/>',
-			BK: '<IMG src="https://i.ibb.co/x2yqdbQ/tile006.png" height="25" width="25" style="height: 25; width="25"/>',
-			BQ: '<IMG src="https://i.ibb.co/2ZGbCgs/tile007.png" height="25" width="25" style="height: 25; width="25"/>',
-			BB: '<IMG src="https://i.ibb.co/M6rq9zZ/tile008.png" height="25" width="25" style="height: 25; width="25"/>',
-			BN: '<IMG src="https://i.ibb.co/bXdF1Rg/tile009.png" height="25" width="25" style="height: 25; width="25"/>',
-			BR: '<IMG src="https://i.ibb.co/1q1HKXQ/tile010.png" height="25" width="25" style="height: 25; width="25"/>',
-			BP: '<IMG src="https://i.ibb.co/vzvCQnQ/tile011.png" height="25" width="25" style="height: 25; width="25"/>'
+			WK: '<IMG src="https://i.ibb.co/VMdPRNv/tile000.png" height="25" width="25" style="height: 25; width="25">',
+			WQ: '<IMG src="https://i.ibb.co/pd41dph/tile001.png" height="25" width="25" style="height: 25; width="25">',
+			WB: '<IMG src="https://i.ibb.co/rpXcgJZ/tile002.png" height="25" width="25" style="height: 25; width="25">',
+			WN: '<IMG src="https://i.ibb.co/pJTwBHC/tile003.png" height="25" width="25" style="height: 25; width="25">',
+			WR: '<IMG src="https://i.ibb.co/wSLmztb/tile004.png" height="25" width="25" style="height: 25; width="25">',
+			WP: '<IMG src="https://i.ibb.co/nnBGJ39/tile005.png" height="25" width="25" style="height: 25; width="25">',
+			BK: '<IMG src="https://i.ibb.co/x2yqdbQ/tile006.png" height="25" width="25" style="height: 25; width="25">',
+			BQ: '<IMG src="https://i.ibb.co/2ZGbCgs/tile007.png" height="25" width="25" style="height: 25; width="25">',
+			BB: '<IMG src="https://i.ibb.co/M6rq9zZ/tile008.png" height="25" width="25" style="height: 25; width="25">',
+			BN: '<IMG src="https://i.ibb.co/bXdF1Rg/tile009.png" height="25" width="25" style="height: 25; width="25">',
+			BR: '<IMG src="https://i.ibb.co/1q1HKXQ/tile010.png" height="25" width="25" style="height: 25; width="25">',
+			BP: '<IMG src="https://i.ibb.co/vzvCQnQ/tile011.png" height="25" width="25" style="height: 25; width="25">'
 		}
 		this.emosrc = {
 			WK: '<DIV style="font-size:25px;">&#x2654;</DIV>',
@@ -625,7 +625,7 @@ class Chess {
 			}
 			this[side].Km = true;
 		}
-		if (piece === 'R' && (['a1', 'a8', 'h1', 'h8'].includes(origin)) && !this[(side === 'W' ? 'B' : 'W')]['R' + origin[0] + 'm']) this[(side === 'W' ? 'B' : 'W')]['R' + origin[0] + 'm'] = true;
+		if (piece === 'R' && (['a1', 'a8', 'h1', 'h8'].includes(origin))) this[side]['R' + origin[0] + 'm'] = true;
 		this.board[origin[0]][origin[1]] = '';
 		this.board[final[0]][final[1]] = side + piece;
 		if (piece === 'P' && [1, 8].includes(parseInt(final[1]))) {
@@ -700,21 +700,21 @@ class Chess {
 		let html = '', imgsrc, room = this.id;
 		if (room.startsWith('groupchat-')) imgsrc = this.emosrc;
 		else imgsrc = this.imgsrc;
-		if (selected && this.getPiece(selected)[0] !== side) return;
+		if (selected && this.getPiece(selected)[0] !== side) selected = highlighted = null;
 		switch (side) {
 			case 'W': {
-				html += `<TABLE style="border-collapse:collapse;" border="1"><TR style="height: 15;"><TH width="15" height="15"></TH><TH width="35">A</TH><TH width="35">B</TH><TH width="35">C</TH><TH width="35">D</TH><TH width="35">E</TH><TH width="35">F</TH><TH width="35">G</TH><TH width="35">H</TH><TH width="15"></TH></TR>`;
+				html += `<TABLE style="border-collapse:collapse;" border="1"><TR style="height: 15;"><TH width="15" height="15"></TH><TH width="40">A</TH><TH width="40">B</TH><TH width="40">C</TH><TH width="40">D</TH><TH width="40">E</TH><TH width="40">F</TH><TH width="40">G</TH><TH width="40">H</TH><TH width="15"></TH></TR>`;
 				let j = 0;
 				for (let i = 8; i > 0; i--) {
-					html += `<TR style="height: 35;"><TD height="35"><B><CENTER>${i}</CENTER></B></TD>`;
+					html += `<TR style="height: 40;"><TD height="40"><B><CENTER>${i}</CENTER></B></TD>`;
 					html += Object.keys(this.board).map(file => {
 						if (selected && (file + i === selected)) return [2, this.board[file][i], file];
 						if (highlighted && highlighted.includes(file + i)) return [1, this.board[file][i], file];
 						return [0, this.board[file][i], file];
 					}).map(piece => {
-						if (!piece[0]) return `<TD bgcolor="${this.getColourOf(j++)}" height="35" width="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} select ${piece[2]}${i}" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
-						if (piece[0] === 1) return `<TD bgcolor="${this.getColourOf(j++, 'hl')}" height="35" width="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} play ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
-						else return `<TD bgcolor="${this.getColourOf(j++, 'sel')}" height="35" width="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} deselect" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+						if (!piece[0]) return `<TD bgcolor="${this.getColourOf(j++)}" height="40" width="40"><BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${this.id} select ${piece[2]}${i}" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+						if (piece[0] === 1) return `<TD bgcolor="${this.getColourOf(j++, 'hl')}" height="40" width="40"><BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${this.id} play ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+						else return `<TD bgcolor="${this.getColourOf(j++, 'sel')}" height="40" width="40"><BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${this.id} deselect" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
 					}).join('');
 					html += `<TH>${i}</TH></TR>`;
 					j++;
@@ -723,23 +723,23 @@ class Chess {
 				break;
 			}
 			case 'B': {
-				html += `<TABLE style="border-collapse:collapse;" border="1"><TR style="height: 15;"><TH width="15" height="15"></TH><TH width="35" height="15">H</TH><TH width="35" height="15">G</TH><TH width="35" height="15">F</TH><TH width="35" height="15">E</TH><TH width="35" height="15">D</TH><TH width="35" height="15">C</TH><TH width="35" height="15">B</TH><TH width="35" height="15">A</TH><TH width="15" height="15"></TH></TR>`;
+				html += `<TABLE style="border-collapse:collapse;" border="1"><TR style="height: 15;"><TH width="15" height="15"></TH><TH width="40" height="15">H</TH><TH width="40" height="15">G</TH><TH width="40" height="15">F</TH><TH width="40" height="15">E</TH><TH width="40" height="15">D</TH><TH width="40" height="15">C</TH><TH width="40" height="15">B</TH><TH width="40" height="15">A</TH><TH width="15" height="15"></TH></TR>`;
 				let j = 0;
 				for (let i = 1; i < 9; i++) {
-					html += `<TR style="height: 35;"><TD height="35"><B><CENTER>${i}</CENTER></B></TD>`;
+					html += `<TR style="height: 40;"><TD height="40"><B><CENTER>${i}</CENTER></B></TD>`;
 					html += Object.keys(this.board).reverse().map(file => {
 						if (selected && (file + i === selected)) return [2, this.board[file][i], file];
 						if (highlighted && highlighted.includes(file + i)) return [1, this.board[file][i], file];
 						return [0, this.board[file][i], file];
 					}).map(piece => {
-						if (!piece[0]) return `<TD bgcolor="${this.getColourOf(j++)}" height="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} select ${piece[2]}${i}" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
-						if (piece[0] === 1) return `<TD bgcolor="${this.getColourOf(j++, 'hl')}" height="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} play ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
-						else return `<TD bgcolor="${this.getColourOf(j++, 'sel')}" height="35"><BUTTON name="send" value="/w ${Bot.status.nickName}, ${prefix}chess ${this.id} deselect" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+						if (!piece[0]) return `<TD bgcolor="${this.getColourOf(j++)}" height="40"><BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${this.id} select ${piece[2]}${i}" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+						if (piece[0] === 1) return `<TD bgcolor="${this.getColourOf(j++, 'hl')}" height="40"><BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${this.id} play ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
+						else return `<TD bgcolor="${this.getColourOf(j++, 'sel')}" height="40"><BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${this.id} deselect" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</BUTTON></TD>`;
 					}).join('');
 					html += `<TH width="15">${i}</TH></TR>`;
 					j++;
 				}
-				html += '<TR style="height: 35;"><TH width="15"></TH><TH width="35">H</TH><TH width="35">G</TH><TH width="35">F</TH><TH width="35">E</TH><TH width="35">D</TH><TH width="35">C</TH><TH width="35">B</TH><TH width="35">A</TH><TH width="15"></TH></TR></TABLE>';
+				html += '<TR style="height: 35;"><TH width="15"></TH><TH width="40">H</TH><TH width="40">G</TH><TH width="40">F</TH><TH width="40">E</TH><TH width="40">D</TH><TH width="40">C</TH><TH width="40">B</TH><TH width="40">A</TH><TH width="15"></TH></TR></TABLE>';
 				break;
 			}
 			default: {
