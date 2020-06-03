@@ -81,7 +81,7 @@ module.exports = {
 						Bot.pm(game[game.turn].name, 'Your turn!');
 					}
 					else if (run === 2) {
-						Bot.say(room, `/adduhtml CHESS,<CENTER>${game.boardHTML(game.turn)}</CENTER><BR/><CENTER><B>Promotion time!</B><BR/><BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${room} promote ${info} Queen">Queen</BUTTON> <BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${room} promote ${info} Rook">Rook</BUTTON> <BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${room} promote ${info} Bishop">Bishop</BUTTON> <BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${room} promote ${info} Knight">Knight</BUTTON></CENTER>`);
+						Bot.say(room, `/adduhtml CHESS,<CENTER>${game.boardHTML(game.turn)}</CENTER><BR><CENTER><B>Promotion time!</B><BR><BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${room} promote ${info} Queen">Queen</BUTTON> <BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${room} promote ${info} Rook">Rook</BUTTON> <BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${room} promote ${info} Bishop">Bishop</BUTTON> <BUTTON name="send" value="/msg ${Bot.status.nickName}, ${prefix}chess ${room} promote ${info} Knight">Knight</BUTTON></CENTER>`);
 						Bot.pm(game[game.turn].name, 'Your turn!');
 					}
 					else if (run === 3) {
