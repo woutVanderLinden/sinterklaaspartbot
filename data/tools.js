@@ -1,5 +1,5 @@
 /************************
-*		 Utility		 *
+*		Utility		 *
 ************************/
 
 exports.quoteParse = function (quote) {
@@ -69,6 +69,7 @@ exports.pmCommandAlias = function (alias) {
 
 exports.Matrix = require('./matrix.js').Matrix;
 exports.Chess = require('./chess.js').Chess;
+exports.CR = require('./chainreaction.js').CR;
 
 exports.spliceRank = function (user) {
 	let rank = user.charAt(0);
@@ -152,15 +153,14 @@ exports.listify = function (array) {
 	return tarr.join(', ')+((array.length>1)?', and '+tarre:((tarre)?' and '+tarre:''));
 }
 
-exports.uploadToHastebin = function (text, callback) {
+exports.uploadToPastie = function (text, callback) {
 	if (typeof callback !== 'function') return false;
-	let action = url.parse('https://hastebin.com/documents');
+	let action = url.parse('https://pastie.io/documents');
 	let options = {
 		hostname: action.hostname,
 		path: action.pathname,
 		method: 'POST',
 	};
-
 	let request = https.request(options, response => {
 		response.setEncoding('utf8');
 		let data = '';
@@ -174,18 +174,16 @@ exports.uploadToHastebin = function (text, callback) {
 				key = pageData.key;
 			} catch (e) {
 				if (/^[^<]*<!DOCTYPE html>/.test(data)) {
-					if (e.message.startsWith('Unexpected token < in JSON at position 0')) return callback('Hastebin is wonky at the moment. Surprisingly, this isn\'t PartMan\'s fault.');
-					return callback('Cloudflare-related error uploading to Hastebin: ' + e.message);
+					if (e.message.startsWith('Unexpected token < in JSON at position 0')) return callback('pastie.io is wonky at the moment. Surprisingly, this isn\'t PartMan\'s fault.');
+					return callback('Cloudflare-related error uploading to Pastie: ' + e.message);
 				} else {
-					return callback('Unknown error uploading to Hastebin: ' + e.message);
+					return callback('Unknown error uploading to Pastie: ' + e.message);
 				}
 			}
-			callback('https://hastebin.com/raw/' + key);
+			callback('https://pastie.io/raw/' + key);
 		});
 	});
-
 	request.on('error', error => console.log('Login error: ' + error.stack));
-
 	if (text) request.write(text);
 	request.end();
 }
@@ -217,6 +215,7 @@ exports.scrabblify = function (text) {
 		else if ('K'.includes(letter)) return 5;
 		else if ('JX'.includes(letter)) return 8;
 		else if ('ZQ'.includes(letter)) return 10;
+		else if ('1234567890'.includes(letter)) return parseInt(letter);
 		else return 0;
 	}
 	return tarr.reduce((x, y) => {return x + points(y)}, 0);
@@ -557,8 +556,8 @@ exports.runEarly = function (timer) {
 exports.getPorts = function (name, source) {
 	if (!Array.isArray(source)) return null;
 	let front = source.filter(elem => {
-    if (!elem) return false;
-    elem = toId(elem);
+		if (!elem) return false;
+		elem = toId(elem);
 		if (name.startsWith(elem)) return true;
 		for (let i = 2; i < elem.length; i++) {
 			if (name.startsWith(elem.slice(elem.length - i, elem.length))) return true;
@@ -566,8 +565,8 @@ exports.getPorts = function (name, source) {
 		return false;
 	});
 	let end = source.filter(elem => {
-    if (!elem) return false;
-    elem = toId(elem);
+		if (!elem) return false;
+		elem = toId(elem);
 		if (elem.startsWith(name)) return true;
 		for (let i = 2; i < name.length; i++) {
 			if (elem.startsWith(name.slice(name.length - i, name.length))) return true;
@@ -577,11 +576,49 @@ exports.getPorts = function (name, source) {
 	return [front.sort(), end.sort()];
 }
 
+exports.toPGN = function (game) {
+	let out = [];
+	game.moves.forEach((move, index) => {
+		if (index % 2 == 0) out.push((index / 2 + 1) + '.');
+		out.push(move);
+	});
+	out.push(game.result);
+	return `[White "${game.W.name}"]\n[Black "${game.B.name}"]\n\n` + out.join(' ');
+}
+
 exports.board = require('./boards.js').render;
+
+exports.getEffectiveness = function (mon1, mon2) {
+	if (Array.isArray(mon1)) mon1 = mon1.map(t => tools.toName(toId(t)));
+	if (Array.isArray(mon2)) mon2 = mon2.map(t => tools.toName(toId(t)));
+	if (typeof(mon1) == 'string') {
+		if (data.pokedex[toId(mon1)]) mon1 = data.pokedex[toId(mon1)].types;
+		else if (typelist.includes(mon1.toLowerCase())) mon1 = [tools.toName(mon1)];
+	}
+	if (typeof(mon2) == 'string') {
+		if (data.pokedex[toId(mon2)]) mon2 = data.pokedex[toId(mon2)].types;
+		else if (typelist.includes(mon2.toLowerCase())) mon2 = [tools.toName(mon2)];
+	}
+	if (!Array.isArray(mon1) || !Array.isArray(mon2)) return null;
+	let x = 1;
+	mon1.forEach(offType => {
+		if (!data.typechart[offType]) return;
+		mon2.forEach(defType => {
+			if (!data.typechart[defType]) return;
+			switch (data.typechart[defType].damageTaken[offType]) {
+				case 0: x *= 1; break;
+				case 1: x *= 2; break;
+				case 2: x *= 0.5; break;
+				case 3: x *= 0; break;
+			}
+		});
+	});
+	return x;
+}
 
 
 /************************
-*	 Prototypes		*
+*	Prototypes	 *
 ************************/
 
 String.prototype.replaceAll = function (text, repl) {
@@ -608,5 +645,16 @@ Array.prototype.remove = function (...terms) {
 		if (this.includes(term)) this.splice(this.indexOf(term), 1);
 		else out = false;
 	});
+	return out;
+}
+
+Array.prototype.random = function (amount) {
+	if (!amount || typeof amount !== 'number') return this[Math.floor(Math.random() * this.length)];
+	let sample = Array.from(this), i = 0, out = [];
+	while (sample.length && i++ < amount) {
+		let term = sample[Math.floor(Math.random() * sample.length)];
+		out.push(term);
+		sample.remove(term);
+	}
 	return out;
 }
