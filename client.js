@@ -3,7 +3,7 @@
 var util = require('util');
 var https = require('https');
 var url = require('url');
-var WebSocketClient = require('./websocket').client;
+var WebSocketClient = require('websocket').client;
 var config = require('./config.js');
 var fs = require('fs');
 
