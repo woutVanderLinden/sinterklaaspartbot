@@ -133,7 +133,7 @@ Bot.on('pm', (by, message) => {
 	let commandName = tools.pmCommandAlias(args.shift());
 	if (!commandName) return;
 	if (['eval','output'].includes(commandName)) {
-		if (!tools.hasPermission(toId(by), 'admin')) return Bot.say(room, 'Access denied.');
+		if (!tools.hasPermission(toId(by), 'admin')) return Bot.pm(by, 'Access denied.');
 		try {
 			let outp = eval(args.join(' '));
 			switch (typeof outp) {
