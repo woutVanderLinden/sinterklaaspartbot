@@ -4,8 +4,6 @@ var util = require('util');
 var https = require('https');
 var url = require('url');
 var WebSocketClient = require('websocket').client;
-var config = require('./config.js');
-var fs = require('fs');
 
 function toId (text) {
 	if (typeof text !== 'string') return text;
@@ -31,10 +29,10 @@ class Client extends EventEmitter {
 			retryLogin: 10 * 1000,
 			autoConnect: true,
 			autoReconnect: true,
-			autoReconnectDelay: 30 * 1000,
+			autoReconnectDelay: 15 * 1000,
 			autoJoin: [],
 			showErrors: true,
-			debug: false,
+			debug: false
 		}
 		if (typeof opts === 'object') {
 			for (var i in opts) 
@@ -47,11 +45,12 @@ class Client extends EventEmitter {
 		this.pageData = {};
 	
 		this.rooms = {};
+		this.battleRooms = {};
 
 		this.jps = {};
 		this.jpcool = {};
 		fs.readdir('./data/JPS', (err, files) => {
-			if (err) return;
+			if (err) return console.log(err);
 			files.forEach(room => {
 				fs.readFile(`./data/JPS/${room}`, 'utf8', (e, file) => {
 					if (e) return console.log(e);
@@ -97,7 +96,7 @@ class Client extends EventEmitter {
 			user = toId(user);
 			let out;
 			try {
-				return out = Object.keys(this.rooms).filter(room => this.rooms[room].users.includes(user));
+				return out = Object.keys(this.rooms).filter(room => this.rooms[room].users.find(u => toId(u) === user));
 			} catch (e) {
 				if (e) return out = [];
 			}
@@ -116,14 +115,11 @@ Client.prototype.init = function () {
 }
 
 Client.prototype.serve = function (user, html) {
-	if (!config.site) return null;
+	if (!config.site) return;
 	let id = toId(user);
 	if (!this.keys[id]) this.keys[id] = 7000 + Math.floor(Math.random() * 93000);
 	this.pageData[id] = html;
-	this.app.get(`/${id}-${this.keys[id]}`, (req, res) => {
-		return res.send(`<head>\n\t<title>${user.substr(1)}</title>\n\t<link rel="icon" href="https://cdn.glitch.com/26f69991-dcb5-4447-bd9e-4b58070b20bc%2Fpngkey.com-gengar-png-9726433.png">\n</head>\n<body>\t${this.pageData[id]}</body>`);
-	});
-	return this.pm(user, `http://${process.env.PROJECT_DOMAIN}.glitch.me/${id}-${Bot.keys[id]}`);
+	return this.pm(user, `${websiteLink}/user/${id}/${Bot.keys[id]}`);
 }
 
 Client.prototype.sendHTML = function (user, html) {
@@ -134,8 +130,7 @@ Client.prototype.sendHTML = function (user, html) {
 	if (!this.keys) return undefined;
 	let id = toId(user);
 	if (!this.keys[id]) this.keys[id] = 7000 + Math.floor(Math.random() * 93000);
-	if (config.site) return this.serve(user, html);
-	return null;
+	return this.serve(user, html);
 }
 
 
@@ -322,7 +317,7 @@ Client.prototype.rename = function (nick, pass) {
 Client.prototype.send = function (data, delay) {
 	var connection = this.connection;
 	var self = this;
-	if (!delay) delay = 1000;
+	if (!delay) delay = 1200;
 	if (connection && connection.connected) {
 		if (!(data instanceof Array)) {
 			data = [data.toString()];
@@ -393,7 +388,7 @@ Client.prototype.setAvatar = function (avatar) {
 }
 
 Client.prototype.setStatus = function (status) {
-	this.send('botdevelopment|/status ' + status);
+	this.send('|/status ' + status);
 }
 
 Client.prototype.leaveRooms = function (rooms) {
@@ -406,10 +401,15 @@ Client.prototype.leaveRooms = function (rooms) {
 	if (cmds.length) this.send(cmds);
 }
 
-Client.prototype.log = function (text) {
-	fs.appendFile('./logs.txt', `\n${text}`, function (e) {
-		if (e) console.log (e);
-		console.log(text);
+Client.prototype.log = function (thing) {
+	fs.appendFile('./logs.txt', `\n${require('util').format(thing)}`, function (e) {
+		if (e) return console.log (e);
+		console.log(thing);
+		try {
+			// client.channels.cache.get(LOG ID HERE).send("```\n" + require('util').format(thing).substr(0, 1990) + "```");
+		} catch (e) {
+			console.log(e);
+		}
 	});
 }
 
@@ -462,6 +462,7 @@ Client.prototype.receiveMsg = function (message) {
 Client.prototype.receiveLine = function (room, message, isIntro) {
 	var larg = message.substr(1).split('|');
 	Bot.emit('line', room, message, isIntro, larg);
+	if (room.startsWith('battle-')) Bot.emit('battle', room, message, isIntro, larg);
 	switch (larg[0]) {
 		case 'formats':
 			break;
@@ -474,10 +475,11 @@ Client.prototype.receiveLine = function (room, message, isIntro) {
 			break;
 		case 'updateuser':
 			this.status.nickName = larg[1].substr(1);
-			console.log('Connected to Pokémon Showdown.');
+			if (this.status.nickName.startsWith('Guest ')) break;
+			Bot.log('Connected to Pokémon Showdown.');
 			if (!this.opts.status) this.setStatus('say ' + this.status.nickName + '? for help.');
+			else this.setStatus(this.opts.status);
 			if (parseInt(larg[2])) this.joinRooms(config.autoJoin);
-			if (this.opts.status) this.setStatus(this.opts.status);
 			if (this.opts.avatar) this.setAvatar(this.opts.avatar);
 			break;
 		case 'c': {
@@ -502,23 +504,29 @@ Client.prototype.receiveLine = function (room, message, isIntro) {
 			if (!this.rooms[room]) {
 				this.rooms[room] = {rank: false, users: []};
 				if (this.baseAuth[room]) this.rooms[room].auth = Object.assign({}, this.baseAuth[room]);
-				tools.loadShops([room]);
+				tools.loadShops(room);
+				tools.loadLB(room);
 				this.jpcool[room] = {};
 			}
-			setTimeout(()=>Bot.say(room, '.'), 1000);
+			setTimeout(() => Bot.say(room, '.'), 1000);
+			Bot.emit('joinRoom', room);
 			break;
 		case 'users': {
 			let args = larg[1].split(',');
 			let amt = parseInt(args.shift());
 			if (args.length !== amt) console.log('User initialization error: length did not match.', room);
-			args.forEach(user => Bot.rooms[room].users.push(toId(user)));
+			args.forEach(user => Bot.rooms[room].users.push(user));
 			break;
 		}
 		case 'title':
 			if (this.rooms[room]) this.rooms[room].title = larg[1];
+			if (!room.startsWith('groupchat-') && !room.startsWith('battle-')) console.log(`Joined ${larg[1]}.`);
 			break;
 		case 'deinit':
-			if (this.rooms[room]) delete this.rooms[room];
+			if (this.rooms[room]) {
+				if (!room.startsWith('groupchat-') && !room.startsWith('battle-')) console.log(`Left ${this.rooms[room].title}.`);
+				delete this.rooms[room];
+			}
 			break;
 		case 'popup':
 			Bot.emit('popup', larg.join('|').substr(6));
@@ -556,14 +564,14 @@ Client.prototype.receiveLine = function (room, message, isIntro) {
 			break;
 		}
 		case 'j': case 'J': 
-			this.rooms[room].users.push(toId(larg[1]));
+			this.rooms[room].users.push(larg[1]);
 			Bot.emit('join', toId(larg[1]), room, Date.now());
 			break;
 		case 'n': case 'N': 
 			var by = toId(larg[1]);
 			var old = toId(larg[2]);
-			while (this.rooms[room].users.includes(old)) this.rooms[room].users.splice(this.rooms[room].users.indexOf(old), 1);
-			this.rooms[room].users.push(by);
+			this.rooms[room].users.remove(this.rooms[room].users.find(u => toId(u) === toId(old)));
+			this.rooms[room].users.push(larg[1]);
 			let rank = tools.rankLevel(old);
 			if (old === toId(this.status.nickName)) {
 				this.rooms[room].rank = larg[1].charAt(0);
@@ -617,13 +625,17 @@ Client.prototype.receiveLine = function (room, message, isIntro) {
 			}
 			break;
 		case 'l': case 'L':
-			var user = toId(larg[1]);
-			while (this.rooms[room].users.includes(user)) this.rooms[room].users.splice(this.rooms[room].users.indexOf(user), 1);
+			let user = toId(larg[1]);
+			this.rooms[room].users.remove(this.rooms[room].users.find(u => toId(u) === user));
 			break;
-    case 'raw': {
-      Bot.emit('raw', room, larg.join('|'), isIntro);
-      break;
-    }
+		case 'raw': {
+			Bot.emit('raw', room, larg.join('|'), isIntro);
+			break;
+		}
+		case 'updatechallenges': {
+			Bot.emit('updatechallenges', larg.slice(1).join('|'));
+			break;
+		}
 		default: {
 			Bot.emit('other', room, larg.join('|'));
 			break;
@@ -632,7 +644,7 @@ Client.prototype.receiveLine = function (room, message, isIntro) {
 }
 
 /*********************************
-*	   Connection Timer          *
+*		Connection Timer					*
 *********************************/
 
 Client.prototype.startConnectionTimeOut = function () {
