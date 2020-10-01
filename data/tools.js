@@ -1,19 +1,19 @@
 /************************
-*		Utility		 *
+*        Utility        *
 ************************/
 
 exports.quoteParse = function (quote) {
 	return quote.split('\n').map(text => {
 		if (!text) return;
-		if (/^(|\[[0-2][0-9](\:[0-5][0-9]){1,2}\] )(|[\★\☆\-\$\+\%\@\*\#\&\~])[0-9A-Za-z][^\:]{1,17}\: .{1,}/.test(text)) {
-			let first = text.match(/^(|\[[0-2][0-9](\:[0-5][0-9]){1,2}\] )(|[\★\☆\-\$\+\%\@\*\#\&\~])[0-9A-Za-z]/)[0];
-			let subm = first.match(/(|[\★\☆\-\$\+\%\@\*\#\&\~])[0-9A-Za-z]$/)[0].length;
+		if (/^(|\[[0-2][0-9](\:[0-5][0-9]){1,2}\] )(|[\★\☆\-\$\+\%\@\*\#\&\~\^])[0-9A-Za-z][^\:]{1,17}\: .{1,}/.test(text)) {
+			let first = text.match(/^(|\[[0-2][0-9](\:[0-5][0-9]){1,2}\] )(|[\★\☆\-\$\+\%\@\*\#\&\~\^])[0-9A-Za-z]/)[0];
+			let subm = first.match(/(|[\★\☆\-\$\+\%\@\*\#\&\~\^])[0-9A-Za-z]$/)[0].length;
 			let second = text.substr(first.length - subm);
-			let third = second.match(/^(|[\★\☆\-\$\+\%\@\*\#\&\~])[0-9A-Za-z][^\:]{1,17}\:/)[0];
+			let third = second.match(/^(|[\★\☆\-\$\+\%\@\*\#\&\~\^])[0-9A-Za-z][^\:]{1,17}\:/)[0];
 			let rank = ((['☆', '-', '$', '+', '%', '@', '*', '#', '&', '~', '★'].includes(third[0])) ? (third[0]) : '');
 			return '<DIV class="chat chatmessage-partbot"><SMALL>' + first.substr(0, first.length - subm) + rank + '</SMALL>' + tools.colourize(third.substr(rank.length)) + '<EM>' + second.substr(third.length) + '</EM></DIV>';
 		}
-		if (/^(|\[[0-2][0-9](\:[0-5][0-9]){1,2}\] )• (|[\★\☆\-\$\+\%\@\*\#\&\~])\[[A-Za-z0-9][^\:]{1,17}\] .{1,}/.test(text)) {
+		if (/^(|\[[0-2][0-9](\:[0-5][0-9]){1,2}\] )• (|[\★\☆\-\$\+\%\@\*\#\&\~\^])\[[A-Za-z0-9][^\:]{1,17}\] .{1,}/.test(text)) {
 			let darr = text.split('• ');
 			let time = darr.shift();
 			let first = darr.join('• ');
@@ -22,7 +22,7 @@ exports.quoteParse = function (quote) {
 			let stuff = first.substr(name.length + 2 + rank.length);
 			return '<DIV class="chat chatmessage-partbot"><SMALL>' + time + '</SMALL>' + tools.colourize('• ', name) + '<EM><SMALL>' + rank + '</SMALL>' + name + '<I>' + stuff + '</I></EM></DIV>';
 		}
-		if (/^((?:(?:|[☆+%@*#&~$★-])[a-zA-Z0-9][^;]* joined\.?)|(?:(?:|[☆+%@*#&~$★-])[a-zA-Z0-9][^;]* left\.?)|(?:(?:|[★☆+%@*#&~$-])[a-zA-Z0-9][^;]* joined); (?:(?:|[★☆+%@*#&~$-])[a-zA-Z0-9][^;]* left\.?))$/.test(text)) {
+		if (/^((?:(?:|[☆+%@*#&~$★\^-])[a-zA-Z0-9][^;]* joined\.?)|(?:(?:|[☆+%@*#&~$★\^-])[a-zA-Z0-9][^;]* left\.?)|(?:(?:|[★☆+%@*#&~$\^-])[a-zA-Z0-9][^;]* joined); (?:(?:|[★☆+%@*#&~$\^-])[a-zA-Z0-9][^;]* left\.?))$/.test(text)) {
 			return '<DIV class="message"><SMALL style="color: #555555"> ' + text + '<BR></SMALL></DIV>';
 		}
 		if (/^\[[0-2][0-9](\:[0-5][0-9]){1,2}\] /.test(text)) {
@@ -54,35 +54,31 @@ exports.grantPseudo = function (user, room) {
 }
 
 
-let aliasDB = JSON.parse(String(fs.readFileSync('./data/ALIASES/commands.json')));
-let pmAliasDB = JSON.parse(String(fs.readFileSync('./data/ALIASES/pmcommands.json')));
+exports.aliasDB = require('./ALIASES/commands.json');
+exports.pmAliasDB = require('./ALIASES/pmcommands.json');
 
 exports.commandAlias = function (alias) {
-	if (aliasDB[toId(alias)]) alias = aliasDB[toId(alias)];
+	if (exports.aliasDB[toId(alias)]) alias = exports.aliasDB[toId(alias)];
 	return toId(alias);
 }
 
 exports.pmCommandAlias = function (alias) {
-	if (pmAliasDB[toId(alias)]) alias = pmAliasDB[toId(alias)];
+	if (exports.pmAliasDB[toId(alias)]) alias = exports.pmAliasDB[toId(alias)];
 	return toId(alias);
 }
-
-exports.Matrix = require('./matrix.js').Matrix;
-exports.Chess = require('./chess.js').Chess;
-exports.CR = require('./chainreaction.js').CR;
 
 exports.spliceRank = function (user) {
 	let rank = user.charAt(0);
 	let name = toId(user);
 	switch (rank) {
 		case '~': case '&': case '#': case '@': case '*': case '☆':
-			if (Bot.auth.pseudoalpha.includes(name)) Bot.auth.pseudoalpha.splice(Bot.auth.pseudoalpha.indexOf(name), 1);
+			if (Bot.auth.pseudoalpha.includes(name)) Bot.auth.pseudoalpha.remove(name);
 			break;
 		case '%': case '–': case '$':
-			if (Bot.auth.pseudobeta.includes(name)) Bot.auth.pseudobeta.splice(Bot.auth.pseudobeta.indexOf(name), 1);
+			if (Bot.auth.pseudobeta.includes(name)) Bot.auth.pseudobeta.remove(name);
 			break;
 		case '+':
-			if (Bot.auth.pseudogamma.includes(name)) Bot.auth.pseudogamma.splice(Bot.auth.pseudogamma.indexOf(name), 1);;
+			if (Bot.auth.pseudogamma.includes(name)) Bot.auth.pseudogamma.remove(name);;
 			break;
 		default:
 			break;
@@ -94,10 +90,10 @@ exports.rankLevel = function (user, room) {
 	if (Bot.auth.admin.includes(name) || Bot.auth.adminalts.includes(name)) return 10;
 	else if (Bot.auth.coder.includes(name) || Bot.auth.coderalts.includes(name)) return 9;
 	else if (Bot.auth.locked.includes(name) || Bot.auth.lockedalts.includes(name)) return 1;
-	else if (room && Bot.rooms[room].auth && typeof Bot.rooms[room].auth[name] == 'number') return Bot.rooms[room].auth[name];
-	else if (Bot.auth.alpha.includes(name) || Bot.auth.alphaalts.includes(name) || Bot.auth.pseudoalpha.includes(name)) return 5;
-	else if (Bot.auth.beta.includes(name) || Bot.auth.betaalts.includes(name) || Bot.auth.pseudobeta.includes(name)) return 4;
-	else if (Bot.auth.gamma.includes(name) || Bot.auth.gammaalts.includes(name) || Bot.auth.pseudogamma.includes(name)) return 3;
+	else if (room && room !== 'global' && Bot.rooms[room] && Bot.rooms[room].auth && typeof Bot.rooms[room].auth[name] == 'number') return Bot.rooms[room].auth[name];
+	else if (Bot.auth.alpha.includes(name) || Bot.auth.alphaalts.includes(name) || (room !== 'global' && Bot.rooms[room] && /^[~&#@\*]/.test(Bot.rooms[room].users.find(u => toId(u) === name)))) return 5;
+	else if (Bot.auth.beta.includes(name) || Bot.auth.betaalts.includes(name) || (room !== 'global' && Bot.rooms[room] && /^[%]/.test(Bot.rooms[room].users.find(u => toId(u) === name)))) return 4;
+	else if (Bot.auth.gamma.includes(name) || Bot.auth.gammaalts.includes(name) || (room !== 'global' && Bot.rooms[room] && /^[+\^]/.test(Bot.rooms[room].users.find(u => toId(u) === name)))) return 3;
 	else return 2;
 	return 0;
 }
@@ -150,7 +146,7 @@ exports.listify = function (array) {
 	if (tarr.length == 2) return tarr.join(' and ');
 	let tarre = false;
 	if (tarr.length > 1) tarre = tarr.pop();
-	return tarr.join(', ')+((array.length>1)?', and '+tarre:((tarre)?' and '+tarre:''));
+	return tarr.join(', ') + ((array.length > 1) ? ', and ' + tarre : ((tarre) ? ' and ' + tarre : ''));
 }
 
 exports.uploadToPastie = function (text, callback) {
@@ -188,6 +184,38 @@ exports.uploadToPastie = function (text, callback) {
 	request.end();
 }
 
+exports.uploadToLichess = function (text, callback) {
+	if (typeof callback !== 'function') return false;
+	let action = url.parse('https://lichess.org/api/import');
+	let content = require('querystring').stringify({pgn: text});
+	let options = {
+		hostname: action.hostname,
+		path: action.pathname,
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/x-www-form-urlencoded',
+			'Content-Length': content.length
+		}
+	}
+	let request = https.request(options, response => {
+		response.setEncoding('utf8');
+		let data = '';
+		response.on('data', chunk => {
+			data += chunk;
+		});
+		response.on('end', () => {
+			let url;
+			try {
+				url = JSON.parse(data);
+			} catch (e) {}
+			callback(url.url);
+		});
+	});
+	request.on('error', error => console.log('Login error: ' + error.stack));
+	request.write(content);
+	request.end();
+}
+
 exports.warmup = function (room, commandName) {
 	if (!cooldownObject[room] || !cooldownObject[room][commandName]) return;
 	cooldownObject[room][commandName] = false;
@@ -201,24 +229,6 @@ exports.setCooldown = function (commandName, room, commandRequire) {
 	cooldownObject[room][commandName] = true;
 	setTimeout(tools.warmup, commandRequire.cooldown, room, commandName);
 	return;
-}
-
-exports.scrabblify = function (text) {
-	if (!typeof text === 'string') return 0;
-	let tarr = text.toUpperCase().split('');
-	function points(letter) {
-		if (!typeof letter === 'string' || !letter.length === 1) return 0;
-		if ('EAOTINRSLU'.includes(letter)) return 1;
-		else if ('DG'.includes(letter)) return 2;
-		else if ('CMBP'.includes(letter)) return 3;
-		else if ('HFWYV'.includes(letter)) return 4;
-		else if ('K'.includes(letter)) return 5;
-		else if ('JX'.includes(letter)) return 8;
-		else if ('ZQ'.includes(letter)) return 10;
-		else if ('1234567890'.includes(letter)) return parseInt(letter);
-		else return 0;
-	}
-	return tarr.reduce((x, y) => {return x + points(y)}, 0);
 }
 
 exports.toName = function (username) {
@@ -267,12 +277,80 @@ exports.toName = function (username) {
 	}
 }
 
+exports.HSL = function (name, original) {
+	name = toId(name);
+	let out = {source: name, hsl: null};
+	if (require('./DATA/config.js').Config.customcolors[name] && name !== 'constructor' && !original) {
+		out.base = exports.HSL(name, true);
+		name = require('./DATA/config.js').Config.customcolors[name];
+		out.source = name;
+	}
+	let hash = require('crypto').createHash('md5').update(name, 'utf8').digest('hex');
+	let H = parseInt(hash.substr(4, 4), 16) % 360;
+	let S = parseInt(hash.substr(0, 4), 16) % 50 + 40;
+	let L = Math.floor(parseInt(hash.substr(8, 4), 16) % 20 + 30);
+	let C = (100 - Math.abs(2 * L - 100)) * S / 100 / 100;
+	let X = C * (1 - Math.abs((H / 60) % 2 - 1));
+	let m = L / 100 - C / 2;
+	let R1;
+	let G1;
+	let B1;
+	switch (Math.floor(H / 60)) {
+		case 1:
+			R1 = X;
+			G1 = C;
+			B1 = 0;
+			break;
+		case 2:
+			R1 = 0;
+			G1 = C;
+			B1 = X;
+			break;
+		case 3:
+			R1 = 0;
+			G1 = X;
+			B1 = C;
+			break;
+		case 4:
+			R1 = X;
+			G1 = 0;
+			B1 = C;
+			break;
+		case 5:
+			R1 = C;
+			G1 = 0;
+			B1 = X;
+			break;
+		case 0:
+		default:
+			R1 = C;
+			G1 = X;
+			B1 = 0;
+			break;
+	}
+	let R = R1 + m;
+	let G = G1 + m;
+	let B = B1 + m;
+	let lum = R * R * R * 0.2126 + G * G * G * 0.7152 + B * B * B * 0.0722;
+	let HLmod = (lum - 0.2) * -150;
+	if (HLmod > 18) HLmod = (HLmod - 18) * 2.5;
+	else if (HLmod < 0) HLmod = (HLmod - 0) / 3;
+	else HLmod = 0;
+	let Hdist = Math.min(Math.abs(180 - H), Math.abs(240 - H));
+	if (Hdist < 15) HLmod += (15 - Hdist) / 3;
+	L += HLmod;
+	out.hsl = [
+		H,
+		S,
+		L
+	]
+	return out;
+}
+
 exports.colourize = function (text, name, useOriginal) {
-	let ccjs = JSON.parse(String(fs.readFileSync('./data/DATA/customcolors.json')));
-	let typejs = JSON.parse(String(fs.readFileSync('./data/DATA/typecolors.json')));
+	let ccjs = require('./DATA/config.js').Config.customcolors;
 	if (!name) name = toId(text);
-	if (Object.keys(typejs).includes(toId(name)) && !useOriginal) return `<STRONG style="color:#${typejs[toId(name)]}">${text}</STRONG>`;
-	if (Object.keys(ccjs).includes(toId(name)) && !useOriginal) name = ccjs[name];
+	if (ccjs[toId(name)] && !useOriginal) name = ccjs[name];
 	let hash = require('crypto').createHash('md5').update(toId(name), 'utf8').digest('hex');;
 	let H = parseInt(hash.substr(4, 4), 16) % 360;
 	let S = parseInt(hash.substr(0, 4), 16) % 50 + 40;
@@ -304,7 +382,7 @@ exports.colourize = function (text, name, useOriginal) {
 		HLmod += (15 - Hdist) / 3;
 	}
 	L += HLmod;
-	return '<STRONG style=\"' + `color:hsl(${H},${S}%,${L}%);` + '\">' + text + '</STRONG>';
+	return '<strong style=\"' + `color:hsl(${H},${S}%,${L}%);` + '\">' + text + '</strong>';
 }
 
 exports.modeArray = function (arr) {
@@ -315,7 +393,7 @@ exports.modeArray = function (arr) {
 		else arrObj['elem' + elem]++;
 	});
 	let maxF = Object.values(arrObj).sort((a, b) => b - a)[0];
-	return Object.keys(arrObj).filter(elem => (arrObj[elem] == maxF)).map(elem => elem.substr(4)).sort();
+	return Object.keys(arrObj).filter(elem => (arrObj[elem] === maxF)).map(elem => elem.substr(4)).sort();
 }
 
 exports.humanTime = function (millis) {
@@ -368,47 +446,158 @@ exports.getSetsFrom = function (link) {
 	return output;
 }
 
+exports.runEarly = function (timer) {
+	if (!timer) return false;
+	timer._onTimeout(...timer._timerArgs);
+	clearTimeout(timer);
+	return true;
+}
+
+exports.getPorts = function (name, source) {
+	if (!Array.isArray(source)) return null;
+	let front = source.filter(elem => {
+		if (!elem) return false;
+		elem = toId(elem);
+		if (name.startsWith(elem)) return true;
+		for (let i = 2; i < elem.length; i++) {
+			if (name.startsWith(elem.slice(elem.length - i, elem.length))) return true;
+		}
+		return false;
+	});
+	let end = source.filter(elem => {
+		if (!elem) return false;
+		elem = toId(elem);
+		if (elem.startsWith(name)) return true;
+		for (let i = 2; i < name.length; i++) {
+			if (elem.startsWith(name.slice(name.length - i, name.length))) return true;
+		}
+		return false;
+	});
+	return [front.sort(), end.sort()];
+}
+
+exports.board = require('./TABLE/boards.js').render;
+
+exports.getEffectiveness = function (mon1, mon2) {
+	if (Array.isArray(mon1)) mon1 = mon1.map(t => tools.toName(toId(t)));
+	if (Array.isArray(mon2)) mon2 = mon2.map(t => tools.toName(toId(t)));
+	if (typeof(mon1) == 'string') {
+		if (data.pokedex[toId(mon1)]) mon1 = data.pokedex[toId(mon1)].types;
+		else if (typelist.includes(mon1.toLowerCase())) mon1 = [tools.toName(mon1)];
+	}
+	if (typeof(mon2) == 'string') {
+		if (data.pokedex[toId(mon2)]) mon2 = data.pokedex[toId(mon2)].types;
+		else if (typelist.includes(mon2.toLowerCase())) mon2 = [tools.toName(mon2)];
+	}
+	if (!Array.isArray(mon1) || !Array.isArray(mon2)) return null;
+	let x = 1;
+	mon1.forEach(offType => {
+		if (!data.typechart[offType]) return;
+		mon2.forEach(defType => {
+			if (!data.typechart[defType]) return;
+			switch (data.typechart[defType].damageTaken[offType]) {
+				case 0: x *= 1; break;
+				case 1: x *= 2; break;
+				case 2: x *= 0.5; break;
+				case 3: x *= 0; break;
+			}
+		});
+	});
+	return x;
+}
+
+exports.toSprite = function (mon, full) {
+	const cds = require('./DATA/iconcoords.json');
+	if (typelist.includes(toId(mon))) {
+		mon = toId(mon);
+		mon = mon[0].toUpperCase() + mon.substr(1);
+		return `<img src="https://play.pokemonshowdown.com/sprites/types/${mon}.png" alt="${mon}" class="pixelated" width="32" height="14">`;
+	}
+	if (!cds[toId(mon)]) return mon;
+	mon = toId(mon);
+	if (!full) return `<span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll ${cds[mon][0]}px ${cds[mon][1]}px;"></span>`;
+	return `<span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll ${cds[mon][0]}px ${cds[mon][1]}px; display: inline-block; width: 40px; height: 30px;"></span>`;
+}
+
+
+/************************
+*         Shops         *
+************************/
+
 exports.loadShops = function (...shops) {
 	if (!shops.length) shops = fs.readdirSync('./data/SHOPS').map(shop => shop.slice(0, shop.length - 5));
-	shops.map(shop => toId(shop));
+	shops.map(shop => shop.toLowerCase().replace(/[^a-z0-9-]/g, ''));
 	shops.forEach(shop => {
-	if (!Bot.rooms[shop]) return console.log(`Not in ${shop} to load Shop.`);
-	fs.readFile(`./data/SHOPS/${shop}.json`, 'utf8', (err, file) => {
-		if (err) return;
-		let dat = JSON.parse(file);
-		Bot.rooms[shop].shop = dat;
-		console.log(`Loaded ${Bot.rooms[shop].title} Shop.`);
-	});
+		if (!Bot.rooms[shop]) return console.log(`Not in ${shop} to load Shop.`);
+		fs.readFile(`./data/SHOPS/${shop}.json`, 'utf8', (err, file) => {
+			if (err) return;
+			let dat = JSON.parse(file);
+			Bot.rooms[shop].shop = dat;
+			console.log(`Loaded the ${Bot.rooms[shop].title} Shop.`);
+		});
 	});
 }
 
 exports.updateShops = function (...shops) {
 	if (!shops.length) shops = fs.readdirSync('./data/SHOPS').map(shop => shop.slice(0, shop.length - 5));
-	shops.map(shop => toId(shop));
+	shops.map(shop => shop.toLowerCase().replace(/[^a-z0-9-]/g, ''));
 	shops.forEach(shop => {
-	if (!Bot.rooms[shop]) return console.log(`Not in ${shop} to update Shop.`);
-	fs.writeFile(`./data/SHOPS/${shop}.json`, JSON.stringify(Bot.rooms[shop].shop, null, 2), (err) => {
-		if (err) return;
-		console.log(`Updated ${Bot.rooms[shop].title} Shop.`);
-	});
+		if (!Bot.rooms[shop]) return console.log(`Not in ${shop} to update Shop.`);
+		fs.writeFile(`./data/SHOPS/${shop}.json`, JSON.stringify(Bot.rooms[shop].shop, null, 2), (err) => {
+			if (err) return;
+		});
 	});
 }
 
-exports.addPoints = function (username, points, room) {
-	let user = toId(username);
-	if (!room || !Bot.rooms[room].shop) return false;
-	if (!Bot.rooms[room].shop.users[user]) Bot.rooms[room].shop.users[user] = {name: username, points: [0, 0]};
-	Bot.rooms[room].shop.users[user].points[0] += points;
-	tools.updateShops(room);
+exports.loadLB = function (...rooms) {
+	if (!rooms.length) rooms = fs.readdirSync('./data/POINTS').map(room => room.slice(0, room.length - 5));
+	rooms.map(room => room.toLowerCase().replace(/[^a-z0-9-]/g, ''));
+	rooms.forEach(room => {
+		if (!Bot.rooms[room]) return console.log(`Not in ${room} to load the leaderboard.`);
+		fs.readFile(`./data/POINTS/${room}.json`, 'utf8', (err, file) => {
+			if (err) return;
+			let dat = JSON.parse(file);
+			Bot.rooms[room].lb = dat;
+			console.log(`Loaded the ${Bot.rooms[room].title} leaderboard.`);
+		});
+	});
 }
 
-exports.addSpecial = function (username, points, room) {
-	user = toId(username);
-	if (!room || !Bot.rooms[room].shop) return false;
-	if (!Bot.rooms[room].shop.users[user]) Bot.rooms[room].shop.users[user] = {name: username, points: [0, 0]};
-	Bot.rooms[room].shop.users[user].points[1] += points;
-	tools.updateShops(room);
+exports.updateLB = function (...rooms) {
+	if (!rooms.length) rooms = fs.readdirSync('./data/POINTS').map(room => room.slice(0, room.length - 5));
+	rooms.map(room => room.toLowerCase().replace(/[^a-z0-9-]/g, ''));
+	rooms.forEach(room => {
+		if (!Bot.rooms[room]) return console.log(`Not in ${room} to update leaderboard.`);
+		fs.writeFile(`./data/POINTS/${room}.json`, JSON.stringify(Bot.rooms[room].lb, null, 2), (err) => {
+			if (err) return;
+		});
+	});
 }
+
+exports.addPoints = function (type, username, points, room) {
+	return new Promise ((resolve, reject) => {
+		if (typeof type !== 'number') return reject(new Error ('Type must be a number.'));
+		let user = toId(username);
+		if (!room || !Bot.rooms[room].lb) return reject(new Error ('Invalid room / no leaderboard'));
+		if (type >= Bot.rooms[room].lb.points.length) return reject(new Error ('Type is too high!'));
+		if (!Bot.rooms[room].lb.users[user]) Bot.rooms[room].lb.users[user] = {name: username, points: Array.from({length: Bot.rooms[room].lb.points.length}).map(t => 0)};
+		Bot.rooms[room].lb.users[user].points[type] += points;
+		tools.updateLB(room);
+		return resolve(username);
+	});
+}
+
+
+/************************
+*        Games          *
+************************/
+
+exports.Chess = require('./GAMES/chess.js').Chess;
+exports.CR = require('./GAMES/chainreaction.js').CR;
+exports.Othello = require('./GAMES/othello.js').Othello;
+exports.Scrabble = require('./GAMES/scrabble.js').Scrabble;
+exports.LO = require('./GAMES/lightsout.js').LO;
+exports.Mastermind = require('./GAMES/mastermind.js').Mastermind;
 
 exports.newDeck = function (type, amt) {
 	if (!type) type = 'regular';
@@ -432,11 +621,11 @@ exports.newDeck = function (type, amt) {
 			for (let i = 0; i < 4; i++) deck.push('skitty');
 			for (let i = 0; i < 4; i++) deck.push('lugia');
 			for (let i = 0; i < 3; i++) deck.push('espurr');
-			for (let i = 0; i < 4; i++) deck.push('flareon');
-			for (let i = 0; i < 4; i++) deck.push('jolteon');
-			for (let i = 0; i < 4; i++) deck.push('vaporeon');
-			for (let i = 0; i < 4; i++) deck.push('espeon');
-			for (let i = 0; i < 4; i++) deck.push('umbreon');
+			for (let i = 0; i < 7; i++) deck.push('flareon');
+			for (let i = 0; i < 7; i++) deck.push('jolteon');
+			for (let i = 0; i < 7; i++) deck.push('vaporeon');
+			for (let i = 0; i < 7; i++) deck.push('espeon');
+			for (let i = 0; i < 7; i++) deck.push('umbreon');
 			for (let i = 1; i < amt; i++) post.push('voltorb');
 			for (let i = 0; i < 6; i++) post.push('quagsire')
 			return [deck, post];
@@ -499,7 +688,7 @@ exports.cardWeight = function (card) {
 	if (!card) return null;
 	if (/\d/.test(card[0])) return parseInt(card);
 	if (['J', 'Q', 'K'].includes(card[0])) return 10;
-	if (card[0] == 'A') return 1;
+	if (card[0] === 'A') return 1;
 	return null;
 }
 
@@ -546,36 +735,6 @@ exports.handHTML = function (hand) {
 	return '<CENTER> ' + hand.filter(card => ['espeon', 'espurr', 'flareon', 'jolteon', 'liepard', 'lugia', 'meowth', 'quagsire', 'skitty', 'snorlax', 'umbreon', 'vaporeon', 'voltorb'].includes(card)).map(card => `<IMG src="${exports.toShuffleImage(card)}" height="48" width="48">`).join('') + '</CENTER>';
 }
 
-exports.runEarly = function (timer) {
-	if (!timer) return false;
-	timer._onTimeout(...timer._timerArgs);
-	clearTimeout(timer);
-	return true;
-}
-
-exports.getPorts = function (name, source) {
-	if (!Array.isArray(source)) return null;
-	let front = source.filter(elem => {
-		if (!elem) return false;
-		elem = toId(elem);
-		if (name.startsWith(elem)) return true;
-		for (let i = 2; i < elem.length; i++) {
-			if (name.startsWith(elem.slice(elem.length - i, elem.length))) return true;
-		}
-		return false;
-	});
-	let end = source.filter(elem => {
-		if (!elem) return false;
-		elem = toId(elem);
-		if (elem.startsWith(name)) return true;
-		for (let i = 2; i < name.length; i++) {
-			if (elem.startsWith(name.slice(name.length - i, name.length))) return true;
-		}
-		return false;
-	});
-	return [front.sort(), end.sort()];
-}
-
 exports.toPGN = function (game) {
 	let out = [];
 	game.moves.forEach((move, index) => {
@@ -583,42 +742,30 @@ exports.toPGN = function (game) {
 		out.push(move);
 	});
 	out.push(game.result);
-	return `[White "${game.W.name}"]\n[Black "${game.B.name}"]\n\n` + out.join(' ');
+	return `[White "${game.W.name.replace(/"/g, '')}"]\n[Black "${game.B.name.replace(/"/g, '')}"]\n\n` + out.join(' ');
 }
 
-exports.board = require('./boards.js').render;
-
-exports.getEffectiveness = function (mon1, mon2) {
-	if (Array.isArray(mon1)) mon1 = mon1.map(t => tools.toName(toId(t)));
-	if (Array.isArray(mon2)) mon2 = mon2.map(t => tools.toName(toId(t)));
-	if (typeof(mon1) == 'string') {
-		if (data.pokedex[toId(mon1)]) mon1 = data.pokedex[toId(mon1)].types;
-		else if (typelist.includes(mon1.toLowerCase())) mon1 = [tools.toName(mon1)];
+exports.scrabblify = function (text) {
+	if (!typeof text === 'string') return 0;
+	let tarr = text.toUpperCase().split('');
+	function points(letter) {
+		if (!typeof letter === 'string' || !letter.length === 1) return 0;
+		if ('EAOTINRSLU'.includes(letter)) return 1;
+		else if ('DG'.includes(letter)) return 2;
+		else if ('CMBP'.includes(letter)) return 3;
+		else if ('HFWYV'.includes(letter)) return 4;
+		else if ('K'.includes(letter)) return 5;
+		else if ('JX'.includes(letter)) return 8;
+		else if ('ZQ'.includes(letter)) return 10;
+		else if ('1234567890'.includes(letter)) return parseInt(letter);
+		else return 0;
 	}
-	if (typeof(mon2) == 'string') {
-		if (data.pokedex[toId(mon2)]) mon2 = data.pokedex[toId(mon2)].types;
-		else if (typelist.includes(mon2.toLowerCase())) mon2 = [tools.toName(mon2)];
-	}
-	if (!Array.isArray(mon1) || !Array.isArray(mon2)) return null;
-	let x = 1;
-	mon1.forEach(offType => {
-		if (!data.typechart[offType]) return;
-		mon2.forEach(defType => {
-			if (!data.typechart[defType]) return;
-			switch (data.typechart[defType].damageTaken[offType]) {
-				case 0: x *= 1; break;
-				case 1: x *= 2; break;
-				case 2: x *= 0.5; break;
-				case 3: x *= 0; break;
-			}
-		});
-	});
-	return x;
+	return tarr.reduce((x, y) => {return x + points(y)}, 0);
 }
 
 
 /************************
-*	Prototypes	 *
+*      Prototypes       *
 ************************/
 
 String.prototype.replaceAll = function (text, repl) {
@@ -656,5 +803,13 @@ Array.prototype.random = function (amount) {
 		out.push(term);
 		sample.remove(term);
 	}
+	return out;
+}
+
+Array.prototype.removeDuplicates = function () {
+	let out = [];
+	this.forEach(element => {
+		if (!out.includes(element)) out.push(element);
+	});
 	return out;
 }
