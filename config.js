@@ -8,6 +8,7 @@ exports.owner = '';
 exports.site = true;
 exports.useDiscord = true;
 exports.webPort = 8080;
+exports.websiteLink = 'http://partbot.partman.co.in'; // You can also use an IP:port here
 
 
 /* Customization */
