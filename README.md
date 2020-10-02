@@ -53,7 +53,7 @@ Auth | Rank
 -----|-----
  \+ | Gamma
  \%, $, - | Beta
- \*, @, #, &, ~ | Alpha
+ \*, @, #, &, ~ | Alpha (~ is still supported for sideservers)
 
 
 For room-specific authority, edit the ./data/DATA/roomauth.json file, and add the auth as a property of the room key (it already has an example).
@@ -62,12 +62,12 @@ For room-specific authority, edit the ./data/DATA/roomauth.json file, and add th
 ### Structure
 PartBot has the following structure:
 1. All responses from PS are captured and emitted in client.js.
-2. bot.js is the primary file, and contains the handlers for Chat and PMs. It also initializes the PS client, the Discord client, and the website, apart from redirecting the handlers for Discord, the website, ChatError, Join, Pop-up, ChatSuccess, Tour, and Raw. This file also requires global.js.
-3. Chat commands are stored in the ./commands folder, but are in various subdirectories. For each command, two directories are scanned. These are the global directory, and the room directory. This allows for certain commands to be exclusive to specific rooms, while others can be used in any room. Each command has the following keys: cooldown (time before the command can be used again in ms), permissions (minimum access level required to use the command), help (message to be displayed when the Help command is used), and commandFunction (the function that is executed when the command is called). commandFunction takes the following arguments: Bot, room, time, by, args, client. Here, Bot is the global Bot object, room is the ID of the room, time is the time when the message was sent, by is the name (including rank) of the user who used the comman, args is an array of the command arguments (message split on space), and client is the Discord client.
+2. bot.js is the primary file, and contains the handler for PMs. It also initializes the PS client, the Discord client, and the website, apart from redirecting the handlers for Chat, Discord, the website, ChatError, Join, Pop-up, ChatSuccess, Tour, and Raw. This file also requires global.js.
+3. Chat is handled in ./chat.js. Chat commands are stored in the ./commands folder, but are in various subdirectories. For each command, two directories are scanned. These are the global directory, and the room directory. This allows for certain commands to be exclusive to specific rooms, while others can be used in any room. Each command has the following keys: cooldown (time before the command can be used again in ms), permissions (minimum access level required to use the command), help (message to be displayed when the Help command is used), and commandFunction (the function that is executed when the command is called). commandFunction takes the following arguments: Bot, room, time, by, args, client. Here, Bot is the global Bot object, room is the ID of the room, time is the time when the message was sent, by is the name (including rank) of the user who used the comman, args is an array of the command arguments (message split on space), and client is the Discord client.
 4. All PM commands are stored in a single ./pmcommands directory. Each command has the following keys: permissions, help, and commandFunction. commandFunction takes the following arguments: Bot, by, args, client.
 5. ./minorhandler.js handles the emits for ChatError, Join, Pop-up, ChatSuccess, Tour, and Raw. The arguments for these can be found in client.js.
-6. ./discord.js handles the Discord messages, for now. A proper handler is in the works.
-7. ./chat.js handles autoresponses. Simply edit the initial array check to add the room ID in order to enable autores for the room.
+6. ./discord.js handle the Discord part of the Bot. Commands are stored in ./discord, and each command has the commandFunction with arguments `args`, `message`, and `Bot`. Other keys on the command object include `pm` (set as true to enable the command in DMs, or set as a function to run instead of commandFunction in DMs), admin (Boolean for whether the command is admin-only), help, and guildOnly (restricts the command to the given guild ID / array of guild IDs).
+7. ./autores.js handles autoresponses. Simply edit the initial array check to add the room ID in order to enable autores for the room.
 8. ./data/tools.js has the major tools that are used throughout the Bot's code. tools is a global object that can be used to call a tool anywhere, and also defines most prototypes.
 
 
@@ -121,11 +121,8 @@ As of now, the Leaderboard is directly tied to the Shop - you can't have the lea
  - [ ] Implement warmup.
  - [ ] Add moderation / promotion commands.
  - [ ] Add CONTRIBUTING.md.
- - [ ] Implement a Discord command handler.
- - [ ] Add a functional homepage.
- - [ ] Add independent leaderboard.
+ - [ ] Add independent leaderboard. (Written, needs to be merged)
  - [ ] Add proper website navigation.
- - [ ] Add a Discord crash guard.
  - [ ] Add GAMES.md.
  
  
