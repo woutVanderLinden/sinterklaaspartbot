@@ -1,5 +1,6 @@
 module.exports = {
 	help: `Just use the buttons.`,
+	noDisplay: true,
 	permissions: 'none',
 	commandFunction: function (Bot, by, args, client) {
 		let crCom = require('../commands/global/chainreaction.js').commandFunction;
