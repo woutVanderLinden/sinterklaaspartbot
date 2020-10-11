@@ -49,6 +49,7 @@ standard_input.on('data', function(data) {
 require('./minorhandler').handler(Bot);
 require('./battle.js').handler(Bot);
 
+Bot.chatHandler = require('./chat.js');
 Bot.on('chat', (room, time, by, message) => {
 	return Bot.chatHandler(room, time, by, message);
 });
@@ -83,7 +84,7 @@ Bot.on('pm', (by, message) => {
 				case 'function': outp = outp.toString(); break;
 				case 'undefined': outp = 'undefined'; break;
 			}
-			if ((!String(outp).split('\n')[1] && String(outp.length > 300))) Bot.pm(by, String(outp));
+			if ((!String(outp).split('\n')[1] && String(outp.length) > 300)) Bot.pm(by, String(outp));
 			else Bot.pm(by, '!code ' + String(outp));
 		} catch (e) {console.log(e); Bot.pm(by, e.message); Bot.log(e)};
 		return;
