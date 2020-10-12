@@ -107,4 +107,5 @@ Bot.on('pm', (by, message) => {
 		}
 	});
 	return;
+	};
 });
