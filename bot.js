@@ -59,7 +59,7 @@ Bot.on('pm', (by, message) => {
 		for (let room of config.autoJoin) {if (message.startsWith(`/invite ${room}`)) return Bot.joinRooms([room])};
 		if (['%', '@', '&', '~'].includes(by.charAt(0)) || tools.hasPermission(by, 'beta')) return Bot.joinRooms([message.split('/invite')[1]]);
 		return Bot.pm(by, "Sorry, only global staff can invite me.");
-	
+	}
 	if (Bot.userCallbacks[toId(by)]) {
 		if (Bot.userCallbackData[toId(by)]) Bot.userCallbacks[toId(by)](by, message, ...Bot.userCallbackData[toId(by)]);
 		else Bot.userCallbacks[toId(by)](by, message);
