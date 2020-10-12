@@ -1,5 +1,8 @@
 # Logs
 logs.txt
 
+# Config
+config.js
+
 # Modules
 node_modules/
