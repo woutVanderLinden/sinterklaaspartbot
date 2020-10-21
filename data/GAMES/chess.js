@@ -31,7 +31,7 @@ class Chess {
 		// pieces are saved as BN, WP, WQ, etc.
 		this.turn = 'W';
 		if (restore) Object.keys(restore).forEach(key => this[key] = restore[key]);
-		this.imgsrc = {
+		if (websiteLink) this.imgsrc = {
 			WK: `<img src="${websiteLink}/public/chess/WK.png" height="25" width="25" style="height: 25; width: 25" />`,
 			WQ: `<img src="${websiteLink}/public/chess/WQ.png" height="25" width="25" style="height: 25; width: 25" />`,
 			WB: `<img src="${websiteLink}/public/chess/WB.png" height="25" width="25" style="height: 25; width: 25" />`,
@@ -44,6 +44,20 @@ class Chess {
 			BN: `<img src="${websiteLink}/public/chess/BN.png" height="25" width="25" style="height: 25; width: 25" />`,
 			BR: `<img src="${websiteLink}/public/chess/BR.png" height="25" width="25" style="height: 25; width: 25" />`,
 			BP: `<img src="${websiteLink}/public/chess/BP.png" height="25" width="25" style="height: 25; width: 25" />`
+		}
+		else this.imgsrc = {
+			WK: `<img src="http://partbot.partman.co.in/public/chess/WK.png" height="25" width="25" style="height: 25; width: 25" />`,
+			WQ: `<img src="http://partbot.partman.co.in/public/chess/WQ.png" height="25" width="25" style="height: 25; width: 25" />`,
+			WB: `<img src="http://partbot.partman.co.in/public/chess/WB.png" height="25" width="25" style="height: 25; width: 25" />`,
+			WN: `<img src="http://partbot.partman.co.in/public/chess/WN.png" height="25" width="25" style="height: 25; width: 25" />`,
+			WR: `<img src="http://partbot.partman.co.in/public/chess/WR.png" height="25" width="25" style="height: 25; width: 25" />`,
+			WP: `<img src="http://partbot.partman.co.in/public/chess/WP.png" height="25" width="25" style="height: 25; width: 25" />`,
+			BK: `<img src="http://partbot.partman.co.in/public/chess/BK.png" height="25" width="25" style="height: 25; width: 25" />`,
+			BQ: `<img src="http://partbot.partman.co.in/public/chess/BQ.png" height="25" width="25" style="height: 25; width: 25" />`,
+			BB: `<img src="http://partbot.partman.co.in/public/chess/BB.png" height="25" width="25" style="height: 25; width: 25" />`,
+			BN: `<img src="http://partbot.partman.co.in/public/chess/BN.png" height="25" width="25" style="height: 25; width: 25" />`,
+			BR: `<img src="http://partbot.partman.co.in/public/chess/BR.png" height="25" width="25" style="height: 25; width: 25" />`,
+			BP: `<img src="http://partbot.partman.co.in/public/chess/BP.png" height="25" width="25" style="height: 25; width: 25" />`
 		}
 		this.emosrc = {
 			WK: '<div style="font-size:25px;">♔</div>',

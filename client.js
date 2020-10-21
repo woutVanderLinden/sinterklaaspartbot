@@ -115,7 +115,7 @@ Client.prototype.init = function () {
 }
 
 Client.prototype.serve = function (user, html) {
-	if (!config.site) return;
+	if (!websiteLink) return null;
 	let id = toId(user);
 	if (!this.keys[id]) this.keys[id] = 7000 + Math.floor(Math.random() * 93000);
 	this.pageData[id] = html;

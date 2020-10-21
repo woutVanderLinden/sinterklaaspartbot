@@ -2,7 +2,7 @@
 logs.txt
 
 # Config
-config.js
+/config.js
 
 # Modules
 node_modules/

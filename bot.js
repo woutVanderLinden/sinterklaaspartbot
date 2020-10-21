@@ -1,5 +1,4 @@
 'use strict';
-const http = require('http');
 const SDClient = require('./client.js');
 const Discord = require('discord.js');
 const globaljs = require('./global.js');
@@ -16,10 +15,10 @@ if (config.useDiscord) global.client = new Discord.Client({partials: ['MESSAGE',
 
 Bot.connect();
 
-if (config.site) {
+if (websiteLink) {
 	Bot.router = require('./router.js')
 	app.get(/.*/, (req, res) => Bot.router(req, res));
-	let server = app.listen(config.webPort, () => console.log(`The website\'s up at ${websiteLink}!`));
+	Bot.server = app.listen(config.webPort, () => console.log(`The website\'s up at ${websiteLink}!`));
 }
 
 if (config.useDiscord) {

@@ -2,7 +2,7 @@ exports.handler = async message => {
 	if (message.author.bot) return;
 	if (!message.content.startsWith(prefix) && message.mentions && message.mentions.users && message.mentions.users.has('548451132180004884')) return message.channel.send(`Hi, I'm ${Bot.status.nickName}! I'm a bot by ${config.owner}. My command character is \`\`${prefix}\`\`.`);
 	if (!message.content.startsWith(prefix)) return require('./discord_chat.js').handle(message, Bot);
-	const admins = [ADMIN_ID]; // You may add more here
+	const admins = config.discordAdmins;
 	let args = message.content.substr(prefix.length).split(' '), commandName = toId(args.shift());
 	if (!commandName) return;
 	commandName = require('./data/ALIASES/discord.json')[commandName] || commandName;
