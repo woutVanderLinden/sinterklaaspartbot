@@ -2,7 +2,10 @@
 logs.txt
 
 # Config
-/config.js
+config.js
+
+# Track the PS config file
+!data/DATA/config.js
 
 # Modules
 node_modules/
