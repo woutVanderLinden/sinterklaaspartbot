@@ -1,5 +1,5 @@
 {
-  "name": "PartBot",
+  "name": "partbot",
   "version": "3.5.2",
   "main": "bot.js",
   "dependencies": {

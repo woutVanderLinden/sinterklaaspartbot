@@ -20,7 +20,7 @@ Features:
 ### Setup
 
 1. Download the project and unzip it.
-1. Navigate to config.js and enter the Bot prefix, Bot username, Bot password, Bot avatar, Bot status, Bot owner, and an array of rooms you'd like the Bot to join. Scroll down and add the IDs of the users that you would like to set in their respective ranks. For more details on ranks, read below.
+1. Create a copy of config-example.js and save it as config.js. Enter the Bot prefix, Bot username, Bot password, Bot avatar, Bot status, Bot owner, and an array of rooms you'd like the Bot to join. Scroll down and add the IDs of the users that you would like to set in their respective ranks. For more details on ranks, read below.
 1. Open your Terminal and enter the following:
 ```
 npm install
