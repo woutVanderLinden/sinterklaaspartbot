@@ -23,21 +23,21 @@ exports.activity = '';
 /* Global Authority */
 
 exports.auth = {
-    admin: [],
-    adminalts: [],
-    coder: [],
-    coderalts: [],
-    alpha: [],
-    alphaalts: [],
-    pseudoalpha: [],
-    beta: [],
-    betaalts: [],
-    pseudobeta: [],
-    gamma: [],
-    gammaalts: [],
-    pseudogamma: [],
-    locked: [],
-    lockedalts: []
+	admin: [],
+	adminalts: [],
+	coder: [],
+	coderalts: [],
+	alpha: [],
+	alphaalts: [],
+	pseudoalpha: [],
+	beta: [],
+	betaalts: [],
+	pseudobeta: [],
+	gamma: [],
+	gammaalts: [],
+	pseudogamma: [],
+	locked: [],
+	lockedalts: []
 }
 
 
