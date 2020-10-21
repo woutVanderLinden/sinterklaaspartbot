@@ -1,4 +1,7 @@
 'use strict';
+
+if (!require('fs').existsSync('./config.js')) return console.log("Unable to find config.js! Please make sure you have copied config-example.js as config.js and added the data.");
+
 const SDClient = require('./client.js');
 const Discord = require('discord.js');
 const globaljs = require('./global.js');
