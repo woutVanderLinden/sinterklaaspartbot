@@ -1,3 +1,16 @@
+/*****************************************************
+                    OF MAJOR NOTE
+
+PartBot's battle AI is absolutely terrible and will 
+often attempt to use the move 'null' if a status move 
+is in the moveset. It also doesn't recognize a lot of
+moves and mechanics. Contributions and improvements 
+are always welcome.
+
+The actual logic is stored in ./data/BATTLE/ai.js
+
+*****************************************************/
+
 exports.handler = function (Bot) {
 	Bot.on('battle', (room, message, isIntro, args) => {
 		args = Array.from(args);
@@ -168,16 +181,3 @@ exports.handler = function (Bot) {
 		}
 	});
 }
-
-/*****************************************************
-                    OF MAJOR NOTE
-
-PartBot's battle AI is absolutely terrible and will 
-often attempt to use the move 'null' is a status move 
-is in the moveset. It also doesn't recognize a lot of
-moves and mchanics. Contributions and improvements 
-are always welcome.
-
-The actual logic is stored in ./data/BATTLE/ai.js
-
-*****************************************************/
