@@ -15,6 +15,7 @@ if (!config.auth.admin) return console.log('Missing administrator - administrato
 let options = {serverid: config.serverid, loginServer: 'https://play.pokemonshowdown.com/~~' + config.serverid + '/action.php', nickName: config.nickName, pass: config.pass, avatar: (config.avatar) ? config.avatar : null, status: (config.status) ? config.status : null, autoJoin: config.autoJoin, app: app};
 global.Bot = new SDClient(config.server, config.port, options);
 if (config.useDiscord) global.client = new Discord.Client({partials: ['MESSAGE', 'REACTION']});
+else global.client = null;
 
 Bot.connect();
 
