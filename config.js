@@ -1,24 +1,21 @@
-const debug = true;
+const debug = false;
 
-exports.prefix = "]";
+exports.prefix = "PREFIX_HERE";
 exports.PORT = 8080;
-exports.server = 'sim.smogon.com';
-exports.port = 8000;
-exports.serverid = 'showdown';
 exports.avatar = 'supernerd';
-exports.nickName = "PartProfessor";
-exports.pass = require('../config.js').pass;
-exports.token = require('../config.js').token;
-exports.autoJoin = debug ? ['botdevelopment'] : ['botdevelopment'];
-exports.status = false;
-exports.ignoreRooms = [];
-exports.websiteLink = ``;
+exports.nickName = "USERNAME_HERE";
+exports.pass = "PASSWORD_HERE";
+exports.token = "DISCORD_TOKEN_HERE"; // leave blank to disable Discord
+exports.autoJoin = debug ? ['botdevelopment'] : ['botdevelopment']; // The second is the rooms to be joined normally
+exports.status = false; // Set to a string if you want a status
+exports.ignoreRooms = []; // Will be phased out
+exports.websiteLink = ``; // Local address; IP addresses and hosted domains both work
 exports.logRooms = []; // Please do not use this without permission from a room owner
 
-exports.owner = 'PartMan';
+exports.owner = 'YOUR_USERNAME_HERE';
 
 exports.auth = {
-	admin: ['partman', 'fakepart', 'vampart', 'partoru', 'thealter'],
+	admin: ['ADMIN_USERID_HERE'],
 	adminalts: [],
 	coder: [],
 	coderalts: [],
@@ -34,3 +31,7 @@ exports.auth = {
 	locked: [],
 	lockedalts: []
 }
+
+exports.server = 'sim.smogon.com';
+exports.port = 8000;
+exports.serverid = 'showdown';
