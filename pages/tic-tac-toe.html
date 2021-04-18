@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>
+			Tic-Tac-Toe
+		</title>
+		<link rel="icon" href="/public/icon.png">
+		<style>
+			.inline {
+				display: inline-flex;
+				border-style: solid;
+				clear: none;
+				float: center;
+				height: 20px;
+				width: 20px;
+				text-align: center;
+			}
+			button {
+				background: none;
+				border: none;
+				height: 20px;
+				width: 20px;
+			}
+		</style>
+		<script>
+			let mainBoard = Array.from(Array(3)).map(e => [0, 0, 0]);
+			function other (player) {
+				return (player == 'X') ? 'O': 'X';
+			}
+			function setBoard () {
+				for (let i = 0; i < 3; i++) {
+					for (let j = 0; j < 3; j++) {
+						let content;
+						switch(mainBoard[i][j]) {
+							case 0: content = `<button onclick="clickOn(${i}, ${j})"></button>`; break;
+							default: content = mainBoard[i][j];
+						}
+						document.getElementById(`T${i}${j}`).innerHTML = content;
+					}
+				}
+				return true;
+			}
+			function getMoves (board) {
+				let out = [];
+				for (let i = 0; i < 3; i++) {
+					for (let j = 0; j < 3; j++) {
+						if (!board[i][j]) out.push([i, j]);
+					}
+				}
+				return out;
+			}
+			function isWon (board) {
+				if (!board) board = mainBoard;
+				let squares = {X: [], O: []};
+				for (let i = 0; i < 3; i++) {
+					for (let j = 0; j < 3; j++) {
+						if (board[i][j]) squares[board[i][j]].push([i, j]);
+					}
+				}
+				for (let i = 0; i < 3; i++) {
+					if (squares.X.filter(term => term[0] == i).length == 3) return 'X';
+					if (squares.X.filter(term => term[1] == i).length == 3) return 'X';
+					if (squares.O.filter(term => term[0] == i).length == 3) return 'O';
+					if (squares.O.filter(term => term[1] == i).length == 3) return 'O';
+				}
+				if (board[0][0] == board[1][1] && board[1][1] == board[2][2]) return board[0][0];
+				if (board[2][0] == board[1][1] && board[1][1] == board[0][2]) return board[1][1];
+				return 0;
+			}
+			function simPlay (move, turn, board) {
+				if (!Array.isArray(move)) return;
+				board = JSON.parse(JSON.stringify(board));
+				board[move[0]][move[1]] = turn;
+				return board;
+			}
+			function play (move, turn) {
+				if (!Array.isArray(move)) return;
+				mainBoard[move[0]][move[1]] = turn;
+				setBoard();
+				let won = isWon(mainBoard);
+				if (won) return alert(`${won} won!`);
+				let bestMove = miniMax(mainBoard, 'O', 0, true);
+				if (!bestMove) return alert('It\'s a draw! GG!');
+				mainBoard[bestMove[0]][bestMove[1]] = 'O';
+				setBoard();
+				won = isWon(mainBoard);
+				if (won) return alert(`${won} won! GG!`);
+				return true;
+			}
+			function clickOn (i, j) {
+				let run = play([i, j], 'X');
+				if (run) return;
+				let reset = confirm('Do you want to play again?');
+				if (!reset) return;
+				mainBoard = Array.from(Array(3)).map(e => [0, 0, 0]);
+				setBoard();
+				return;
+			}
+
+			function miniMax (board, turn, weight, original) {
+				let won = isWon(board);
+				if (won) {
+					if (won == 'O') return 100;
+					else return -100;
+				}
+				let moves = getMoves(board);
+				if (!moves.length) return 0;
+				let weights = {};
+				moves.forEach(move => weights[move.join(',')] = (miniMax(simPlay(move, turn, board), other(turn), weight) - 1));
+				let expected = Object.values(weights).reduce((acc, cur) => (acc - cur) * (turn == 'O' ? 1 : -1) > 0 ? acc : cur);
+				for (let term in weights) {
+					if (weights[term] == expected) {
+						if (original) return term.split(',');
+						return weights[term];
+					}
+				}
+				return null;
+			}
+		</script>
+	</head>
+	<body>
+		<center>
+			<table>
+				<tr>
+					<td class="inline" id="T00"><button onclick="clickOn(0, 0)"></button></td>
+					<td class="inline" id="T01"><button onclick="clickOn(0, 1)"></button></td>
+					<td class="inline" id="T02"><button onclick="clickOn(0, 2)"></button></td>
+				</tr>
+				<tr>
+					<td class="inline" id="T10"><button onclick="clickOn(1, 0)"></button></td>
+					<td class="inline" id="T11"><button onclick="clickOn(1, 1)"></button></td>
+					<td class="inline" id="T12"><button onclick="clickOn(1, 2)"></button></td>
+				</tr>
+				<tr>
+					<td class="inline" id="T20"><button onclick="clickOn(2, 0)"></button></td>
+					<td class="inline" id="T21"><button onclick="clickOn(2, 1)"></button></td>
+					<td class="inline" id="T22"><button onclick="clickOn(2, 2)"></button></td>
+				</tr>
+		</table>
+		</center>
+	</body>
+</html>

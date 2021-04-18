@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		<title>Yeet Maze</title>
+		<link rel="stylesheet" href="style.css"/>
+		<script src="https://code.jquery.com/pep/0.4.1/pep.js"></script>
+		<script src="https://cdn.babylonjs.com/babylon.js"></script>
+		<script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+		<script src="maze.js"></script>
+	</head>
+	<body>
+		<canvas id="renderCanvas" touch-action="none"></canvas>
+		<script>
+			let canvas = document.getElementById("renderCanvas"), engine = new BABYLON.Engine(canvas, true);
+		</script>
+		<script src="scene.js"></script>
+		<script>
+			let scene = createScene();
+			engine.runRenderLoop(function () {
+				scene.render();
+			});
+			window.addEventListener("resize", function () {
+				engine.resize();
+			});
+		</script>
+	</body>
+</html>

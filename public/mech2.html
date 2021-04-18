@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<meta charset="utf8">
+<html>
+	<head>
+		<title>Mech Sessional</title>
+		<script>
+			const {sin, cos, tan, asin, acos, atan, sqrt, PI} = Math;
+			const vals = {
+				a: 1.2,
+				b: 2.46,
+				d: 10,
+				g: 10,
+				h: 8.75,
+				l: 10,
+				s: 6
+			}
+			let skew = 20, base = [vals.g + 4.5 + vals.s / 2, - (vals.l + vals.b + 2)];
+
+			let ctx, cbx, animation, iteration = 0;
+
+			window.onload = function () {
+				ctx = document.getElementById('screen').getContext('2d');
+				ctx.lineWidth = 3;
+
+				cbx = document.getElementById('backgr').getContext('2d');
+				cbx.lineWidth = 3;
+				cbx.strokeStyle = '#778899';
+
+				animation = window.setInterval(() => draw(genState(iteration++ * PI / 180)), 5);
+			}
+
+			function genState (theta) {
+				theta %= 2 * PI;
+				const coords = {
+					LA: [null, null],
+					LB: [null, null],
+					LC: [null, null],
+					LO: [null, null],
+					LP: [null, null]
+				}
+
+				coords.LO = [base[0] - vals.s / 2, base[1]];
+				coords.LP = [coords.LO[0] - vals.g, coords.LO[1]];
+				coords.LA = [coords.LO[0] + vals.a * cos(theta), coords.LO[1] + vals.a * sin(theta)];
+				let AP = sqrt((coords.LA[0] - coords.LP[0]) ** 2 + (coords.LA[1] - coords.LP[1]) ** 2), angleA = acos((AP ** 2 + vals.h ** 2 - vals.b ** 2) / (2 * AP * vals.h)), uAPx = (coords.LP[0] - coords.LA[0]) / AP, uAPy = (coords.LP[1] - coords.LA[1]) / AP, uABx = uAPx * cos(angleA) + uAPy * sin(angleA), uABy = - uAPx * sin(angleA) + uAPy * cos(angleA);
+				coords.LB = [coords.LA[0] + vals.h * uABx, coords.LA[1] + vals.h * uABy];
+				let angleL = atan((coords.LB[1] - coords.LP[1]) / (coords.LB[0] - coords.LP[0])) + vals.d * PI / 180;
+				coords.LC = [coords.LB[0] + vals.l * cos(angleL), coords.LB[1] + vals.l * sin(angleL)];
+				['A', 'B', 'C', 'O', 'P'].forEach(char => coords[`R${char}`] = [2 * vals.g + 9 + vals.s - coords[`L${char}`][0], coords[`L${char}`][1]]);
+				Object.values(coords).forEach(v => {
+					v[0] *= skew;
+					v[1] *= -skew;
+				});
+				return coords;
+			}
+			function draw (iCoords) {
+				const coords = {};
+				ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+				(() => {
+					let nA = [2 * skew, iCoords.LC[1]], nB = [(2 * vals.g + vals.s + 9 - 2) * skew, iCoords.LC[1]];
+					ctx.beginPath();
+					ctx.moveTo(...nA);
+					ctx.lineTo(...nB);
+					ctx.stroke();
+					cbx.beginPath();
+					cbx.moveTo(...nA);
+					cbx.lineTo(...nB);
+					cbx.stroke();
+					ctx.fillStyle = 'white';
+					ctx.beginPath();
+					ctx.rect(iCoords.LC[0] - 12, iCoords.LC[1] - 8, 24, 16);
+					ctx.stroke();
+					ctx.fill();
+					ctx.beginPath();
+					ctx.rect(iCoords.RC[0] - 12, iCoords.RC[1] - 8, 24, 16);
+					ctx.stroke();
+					ctx.fill();
+					ctx.fillStyle = 'black';
+				})();
+				['OA', 'AB', 'BP', 'BC'].forEach(line => {
+					['L', 'R'].forEach(side => {
+						ctx.beginPath();
+						ctx.moveTo(...iCoords[side + line[0]]);
+						ctx.lineTo(...iCoords[side + line[1]]);
+						ctx.stroke();
+					});
+				});
+				Object.values(iCoords).forEach(pair => {
+					ctx.beginPath();
+					ctx.arc(pair[0], pair[1], 5, 0, 2 * Math.PI, false);
+					ctx.fill();
+				});
+			}
+			function runEval () {
+				try {
+					eval(`vals.${document.getElementById('eval').value}`);
+					base = [vals.g + 4.5 + vals.s / 2, - (vals.l + vals.b + 2)];
+					ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+					cbx.clearRect(0, 0, cbx.canvas.width, cbx.canvas.height);
+				} catch (e) {
+					console.log(e);
+					alert(e.message);
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<canvas id="backgr" height="600px" width="3800px" style="position: absolute; left: 0; top: 0; z-index: 1;">Error</canvas>
+		<canvas id="screen" height="600px" width="3800px" style="position: absolute; left: 0; top: 0; z-index: 2;">Error</canvas>
+		<input type="text" id="eval" style="z-index: 5; position: absolute; top: 610px; width: 100px;"/><button onclick="runEval()" style="z-index: 5; position: absolute; top: 610px; left: 140px;">Set</button>
+	</body>
+</html>

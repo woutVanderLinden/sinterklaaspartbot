@@ -1,0 +1,355 @@
+ZarelYesterday at 9:19 PM
+so there's a thing I've been wanting to talk about for a while, and I suppose pre's resignation makes it more important than ever
+I've heard repeatedly over the years that there are two main things that make developing for PS a poor experience:
+- I have very high standards for accepting pull requests
+- I leave open pull requests I'm unsure about or don't have time for, and forget about them
+I've been told that most developers eventually quit over these problems
+I've personally tried to address them the best I can, and I definitely think I'm a noticeable margin better at these things than I used to be
+I also am not very sure how bad at these I actually am in a relative scale; I think these are difficult problems to solve. For pull request standards, I can't help but notice that I have the lowest standards out of anyone else I've met in any pull request: every time I've disagreed with pre (or anyone else) in code review, it's because he was demanding something that I thought would be nice but was also excessive to demand out of someone contributing to us for free. And when I've submitted my own pull requests to a different open-source project, I nearly always get hit with much higher standards than what I personally request out of PS developers.
+And I've submitted one-liner bugfixes to other open-source projects that go ignored for months or years.
+AnnikaYesterday at 9:28 PM
+I don't think the standards for PS contributions are particularly high for a project of this scale
+ZarelYesterday at 9:33 PM
+My requirements have always been flexible, and I've always been very willing to teach people how to meet them. I've also been very willing to compromise for requirements developers find really bad for their workflows: I let a line length exception go through for random team files, for instance. And for style issues that can't be enforced by linter, I don't even bother reminding people; it's just too understandable that people will make mistakes without an automatic checker.
+If there's something specific you think my standards are too high on, please please bring it to my attention. I try to be flexible where I can and will probably grant an exception.
+And if I leave a pull request open for a long time, please remind me about it. I will close pull requests I've rejected, and draft pull requests I want changes on (if they haven't been fixed within a weekish). If it's open, that means I needed time to think about it and probably forgot about it, and I encourage you to bump it so I can take another look at it.
+InstructYesterday at 9:37 PM
+I mean
+MartyYesterday at 9:39 PM
+What would really be helpful is if you started with your own pull requests https://github.com/smogon/pokemon-showdown/pull/7036
+GitHub
+Put item/move/ability descriptions in data/text/ by Zarel · Pull Re...
+This adds some new data/text/ files, which are the new home for item/move/ability descriptions, as well as in-game messages, in one place for ease of translation.
+InstructYesterday at 9:40 PM
+I think the latter is easier to check'
+see: marty's post above
+ZarelYesterday at 9:41 PM
+I currently have a pretty big backlog and GitHub doesn't even put my own pull requests in the notification backlog
+would be nice if someone else bumped my own pull requests so they're there
+but I would be surprised if someone thinks my own pull requests are a bigger deal that other people's pull requests that have been waiting
+MartyYesterday at 9:42 PM
+I have intentionally not written any descriptions for 5 weeks so that you could land that with fewer conflicts
+And I pinged you about it in this channel two or so weeks ago
+ZarelYesterday at 9:43 PM
+oh yeah, I remember now
+can you bump the PR? I usually triage by looking at my GitHub notifications, so it'll be nice to have it in the list
+I wish GitHub had a way for me to put it in my notifications myself but I don't think that exists
+Zarel
+ pinned 
+a message
+ to this channel. 
+See all the pins.
+Yesterday at 9:59 PM
+PartMan (PartMan7)Yesterday at 10:23 PM
+Can't comment about others, nor do I really have any experience with making PRs other than here, but I'm surprised you take that much time out for individual PRs.
+My only issues with contributing so far have been with me myself.
+AnnikaYesterday at 10:25 PM
+I have certainly gotten frustrated with PS development on occasion, i think we all have, but for me that mainly came down to me misunderstanding things; certainly if I had issues they would not be that our standards for PRs are too high
+and I find it easy enough to respectfully voice my concerns
+InstructYesterday at 10:34 PM
+yeah tbh
+I don't notice it because I don't contribute much outside of one large project here and there
+and usually I get a relatively punctual response due to valid reasons but I can speak for timeliness. Again cant say for "high standards" because I haven't  ran into too much issues in that sector as well, again probably from my lack of frequent PRs
+AstridToday at 2:45 PM
+Hi I was a dev for 5 years and honestly Zarel when it comes to development you are borderline impossible to work with. You are extremely stuck in your own vision and are completely unwilling to compromise. I have had many pull requests get stuck for months because they werent done the way you wanted them to be done. It isn't as much a quality thing as you putting huge emphasis on tiny details and other things that dont matter. You also very consistently demand to be the person doing review or writing certain things, and then not following up on them or being downright unresponsive. I have gotten beyond frustrated at times that I couldn't get work done because I had to wait for you to approve a pull request for MONTHS.
+It's easy to ask this within your own circle of devs who still want to work for you (for 0 pay), but have you actually ever gone and asked people who left why they're leaving, what their frustrations are, and idk actually listened to them?
+I remember a lot of times people have voices their frustrations with how development is done on PS just to get waved away by you because you don't consider it an issue.
+After this many devs quit, all citing you specifically as the reason, maybe the issue IS you?
+You post here wanting confirmation that you're not the problem and your standards are fine, but that's a really hard sell at this point.
+It's exactly what frustrated me to no end for years, you are super fast to point fingers at others and ignoring your own role. You also have this expectation to get the same treatment as every other dev but that's also not realistic. You own the project, you're the single project manager, you can't keep basically treating it like your pet project others sometimes help with.
+Hope I'm making some sense. I've had thoughts like this piled up for a while, but I felt like it'd be pointless to even voice them, because I saw the chance of you actually listening to others to be 0
+ZarelYesterday at 9:33 PM
+I definitely didn't post here wanting confirmation.
+I posted here knowing it was a problem and wondering if there were ways to fix it, and also wondering how much of an effect my most recent efforts have had. I knew that just asking people currently active on PS wouldn't tell me the whole story but it might be a start.
+I think it was at least in part intended as a warning: "I know I have this problem and I'm working on this but if you contribute to PS you should know that it's been a problem in the past."
+ZarelYesterday at 9:45 PM
+it's... it's easy for you to pile features onto a codebase like a house of cards when I'm the one who has to fix it when it comes tumbling down.
+This is, in some sense, a cry for help: If there's a better way, I'd love to be shown it. I thought pre, who also saw and told me about the problem, would have a solution, but instead he was even more demanding than me in pull requests.
+but without a solution to the problem, all I can do is acknowledge it publicly, as I'm doing now
+is there a better way? all I'm saying is that I've tried; I've looked in plenty of places; the open-source projects I've submitted PRs to definitely did not have a better way and were in most ways worse
+all I can say is that I'm sorry
+the other thing I can do is silo parts, make it so they're sufficiently independent that someone else can own them, give OMs to TI and plugins to specific people to be done their way rather than mine, and of course I've done that already
+AstridYesterday at 9:58 PM
+I feel honestly like the system where everything relies solely on you is unsustainable. You need the people around you and you need to listen to them. You have had so many talented people come to help PS but whenever their vision doesnt align with yours, they feel like they hit a brick wall. These people contribute to PS because they care about it. These people provide their own vision and perspective because they feel like it's best for PS. And often they feel like you're unwilling to listen. I understand that you feel like it is a house of cards that can tumble down, but everyone shares that fear. You need to learn to work WITH people more. The way you make everything go through you or go the way you want makes people feel like they're working for you. PS is a project by a development team. Siloing is nice but this extends to the greater vision of the project.
+In general I feel like you antagonize a lot of the people trying to help you. In the past you have sketched an "everyone is against me" narrative in multiple cases but in reality I think everyone in the end is on your side. We were/are here to improve the site because we care about the project. We want it to succeed just as much as you do. Not every bit of criticism and disagreement is meant as an attack on you. Assume the best out of those around you, listen to others, we really want to help.
+ZarelYesterday at 10:03 PM
+I don't think that's actionable, though. I already work with people as much as I can. I've never felt like everyone is against me.
+AnnikaYesterday at 10:03 PM
+I don't want to speak for others but personally I think that we all want the same thing and we're all on the same team. although I may have disagreements at times I have a lot of respect for Zarel and the other ps programmers
+InstructYesterday at 10:03 PM
+I can assure you that those who contribute to the site actually want to improve it, not make it worse
+The ImmortalYesterday at 10:06 PM
+While some of your points may be valid, it’s wrong to place all the fault on Zarel. Excluding formats related stuff which I take responsibility for, other areas don’t have consistent reviewers. Thus leaving PRs to Zarel’s responsibility, which piles up.
+AstridYesterday at 10:08 PM
+Which I think is a symptom of how the project is managed.
+ZarelYesterday at 10:09 PM
+I already know that everyone is on the same side; that doesn't answer the question of "how to solve the problem"...
+The one PR I let peach review took like four months to get merged.
+AstridYesterday at 10:10 PM
+I think it starts with having some responsibility given to people for project management
+and having this black on white
+peachYesterday at 10:13 PM
+if you’re talking about the mafia PRs then i really don’t think that’s indicative of anything, it’s not something that anyone in the site outside of mafia cares about and i had to communicate with other people
+AstridYesterday at 10:14 PM
+give people responsibility for parts of the code, not just chat plugins but core things, put it black on white, hold people accountable for reviewing code, idk just spitballing here
+peachYesterday at 10:14 PM
+i would really prefer not to be used as an example for this, zarel
+ZarelYesterday at 10:14 PM
+sorry
+AnnikaYesterday at 10:14 PM
+what do you mean by "put it black on white"?
+ZarelYesterday at 10:14 PM
+I don't know what it means to put things black on white
+AstridYesterday at 10:14 PM
+oh maybe that's just a thing in dutch
+just write it down somewhere
+AnnikaYesterday at 10:15 PM
+personally I would be happy to review things it's just that there has been a total of one PR relating to something I codeown
+The ImmortalYesterday at 10:15 PM
+codeowners is sort of that
+ZarelYesterday at 10:15 PM
+I don't really like holding people accountable, people already feel bad enough when I just comment on their code that caused a crash so they know and can learn from it
+but like demoting someone from codeowners for causing too many crashes feels like it would make contributing even scarier
+AstridYesterday at 10:16 PM
+uhu
+ZarelYesterday at 10:17 PM
+@Annika you (and everyone else) are free to review things you don't codeown
+AstridYesterday at 10:17 PM
+also this is what i mean with pointing fingers
+ZarelYesterday at 10:17 PM
+I'd especially appreciate approvals
+AstridYesterday at 10:17 PM
+you immediately point at peach
+AnnikaYesterday at 10:17 PM
+oh
+AstridYesterday at 10:17 PM
+how do you think that makes people feel about contributing?
+miaYesterday at 10:17 PM
+can't you only approve if you have push access?
+AnnikaYesterday at 10:17 PM
+I had been code reviewing but I thought it was above my pay grade to approve things
+ZarelYesterday at 10:18 PM
+oh huh I didn't know; a comment that says "I think this is ready" would be nice even if you can't actually send an approval review
+AnnikaYesterday at 10:18 PM
+I'm pretty sure you can approve you just can't merge
+AstridYesterday at 10:18 PM
+maybe when there's a new PR, react to it on discord or whatever other organization tool that you are dibsing it for a review
+so zarel can check with the reviewer from time to time
+and others can also see who is reviewing what, and what doesn't have anyone reviewing it
+you can figure out some system idk
+i'm just spitballing here, ignore me since I don't have a horse in this race
+ZarelYesterday at 10:21 PM
+@mia you have the triage role, which I think is sufficient to do a regular code review
+miaYesterday at 10:21 PM
+yeah it is
+I just don't review much unless I'm certain bc I don't really wanna fuck it up
+ZarelYesterday at 10:21 PM
+I mean an approval/rejection code review specifically
+miaYesterday at 10:21 PM
+ah
+AstridYesterday at 10:21 PM
+@mia even if you don't get it 100%
+if you can get 90% of the mistakes out
+it saves zarel a LOT of time to just do a final pass through
+ZarelYesterday at 10:22 PM
+practice always helps! you can say "I'm not sure but" if you're afraid of being wrong
+InstructYesterday at 10:23 PM
+I’ll try to help out with staff bros related ventures, specifically bugfixes after ssb4 goes through and any subsequent updates
+miaYesterday at 10:23 PM
+good to know then; I'll do that more
+AstridYesterday at 10:24 PM
+also, perhaps maybe have a few core devs who want to help new devs
+I know it can be really hard to know who you can ask questions when you're newer
+so making sure there's people new contributors feel comfortable asking questions or going through things with is huge
+AnnikaYesterday at 10:40 PM
+i can try to be more proactive with reviewing to the point of approval
+miaYesterday at 10:42 PM
+yeah, same
+AstridYesterday at 10:42 PM
+and when you inevitably stop caring about doing reviews proactively
+not an attack, just that's what generally ends up happening
+AnnikaYesterday at 10:44 PM
+i mean tbc, i dont think thatll make everything better or that that is the only thing that should happen just that itll help
+AstridYesterday at 10:44 PM
+it's putting a bandaid on it
+thecommondudeYesterday at 10:48 PM
+Do u guys iteratively review code till it's absolutely perfect as deemed by the maintainers before merging?
+AstridYesterday at 10:49 PM
+basically
+thecommondudeYesterday at 10:49 PM
+No wonder u have such a huge backlog then
+Everytime u throw up a new review, u add another dependency on the pr maker to fix it which they will take their sweet time to do. After like the 5th or 6th review they will pack it up and leave. Voila stagnant prs. Infinite backlogs
+Instead, why not review once if needed, and then do a code cleanup post merge? It would be a much faster and efficient way of handling stuff and resolving the backlog issue u guys have.
+As long as the code is functional and upto a decent standard, minor cleans post pr merges are not uncommon, infact they are encouraged in most Foss projects.
+sparkychildYesterday at 10:57 PM
+From my experience, Zarel usually reviews my code all at once, drops like 25 comments (for large insertions/refactors) and then just points out any formatting issues he doesnt like in the 2nd round.  After that, he merges.
+
+I think it's streamlined enough from my experience of coding chat-plugins for PS.  Whenever I'm done each stage, I tend yo tag Zarel (because I'm always hungry for attention) and he usually gets back to me on it next time he is active on PS/Discord.
+
+Some PRs that tend to take forever isn't because of the reviewer - imo its because of the lack of consensus beforehand of how it should be tackled.  The discussion of how to "move forward" happens in the PR and ends up getting the PR neglected.  Discussion should be like done w Zarel before starting to code.
+
+When i have questions for PS code I usually ask Zarel (such as typescript [ouch] questions), and I've learned a lot about style/formatting/efficiency in code from PS code reviews over the past 4
+-5 years I've coded on PS
+If anything, in the past, panpawn used to shit on every single PR made, with an abundance of comments on spacing, uniformity in variable name formatting, what you actually name your variables, actual coding bugs, and even wording/grammar in help entries
+It... did speed things up I guess, and PRs back then had a lot less hidden bugs/exploits
+thecommondudeYesterday at 11:09 PM
+Well, it's streamlined for you because u ask zarel before you even begin to write code. And then zarel reviews what he already asked u to do is that right?
+
+In that case ofcourse there arnt gonna be 20 reviews on a pr such as that, considering you simply implemented zarels version of the feature instead of him doing it himself.
+Also regarding the minor formatting changes and stuff that panpawn used to apparently shit on, stuff like that isn't really necessary when u can just push a code cleanup after merging. GitHub PRs are not coding ethic courses.
+It's for people to contribute code to an open source project they like
+Not everyone who prs code to ps has a line of contact with zarel to ask him first how they want him to implement a feature that they want to write. That's kinda my point here
+In those 90% of cases, wouldn't it be far more efficient to do 1 review for any functional discrepancies if necessary and then do any minor fixes post merge? Instead of asking the PR creator to fix dumb stuff like a linter issue or something?
+Plus it's just easier for people in the Smogon organization to then refactor their own code based on their own code methodology instead of asking others to follow it to the dot in prs which would take far longer.
+sparkychildYesterday at 11:16 PM
+I mean when I tried to make a new feature,  I was told to run it through Zarel to make sure he was fine with adding it first.  It was never "exactly how he wanted it done".
+It's basically just a quick "is this acceptable to you" check before I complete stuff.
+
+With the system of codeowners, it would be nice to make them be "in-charge" of whatever part of the code they write.  PS code is complex nowadays and not every dev knows every corner of the PS repo.
+I think most of the PRs that run into issues are "overhaul" PRs where large amounts of stuff gets changed.  While minor additions are fine, stuff that affects all of PS could still be run by either Zarel or some "elite dev council" so there aren't misunderstandings or conflicts after youve spent many hours working
+(as a project manager of sorts)
+thecommondudeYesterday at 11:23 PM
+Most overhauls are major code refactors (such as the move to ts for example). Usually initiated internally. But look at the PR count pending right now, I can bet u that less than 2% of those prs are major overhauls.
+
+I definitely agree that there should be code ownership cuz as u said, not every person knows everything about the code since it's a big project. However the code owner should be the one to accept or reject or ask for one or two code reviews. It genuinely doesn't make sense for new contributors to contribute code and have to go through 20 reviews until they get bored or just give up!
+I totally understand reviewing if the code is just functionally wrong or something needs definite changing.. but usually functional changes are handled within one or two reviews. Stuff after that is just nitpicky. Doesn't really need to be done by the PR author when it can be just done by the code owner u mentioned based on their own formatting standards
+Plus distributing code ownership like u said designates ppl to handle prs which speeds up merging/rejection process much more too
+If u guys start nitpicking every line till it matches the absolute standard u want to maintain, stuff just won't get merged!
+sparkychildYesterday at 11:31 PM
+As for formatting standards - Zarel has been a lot more slack in that rn compared to the past where he told me in PMs that he doesn't care how I managed my scavs plugin formatting wise as long as its uniform within the plugin
+Designating people who are good at each part of the code would get rid of a lot more bugs that often go through (my favourite bug of 2020):
+thecommondudeYesterday at 11:38 PM
+If he is become slack then that's great news. Still my point is that a PR in ps will be a part of the backlog for only 3 reasons that I have observed:
+
+1) devs just go poof and simply stop responding
+2) devs give too many reviews on nitpicky stuff and the author goes poof cuz they get annoyed
+3) prs that get put on hold, and then code changes drastically which makes it unviable anymore cuz of merge conflicts so they don't bother anymore
+ZarelYesterday at 11:46 PM
+I don't think that's even changed much, I don't think I gave much less slack in the past
+harbar20Yesterday at 11:46 PM
+i second this so hard. as a newer developer, getting shot down when asking for help absolutely sucks. i and a few others have had to resort to creating a whole separate server just to help people starting out with showdown and showdown-related projects and stuff. i think we even approached a core dev or someone on staff or something about putting this server pinned somewhere so beginners can easily find it but we were shot down then too. i think bringing in new developers isn't necessary, nor is it on the core dev team to help new people, but there should be an easy-to-find system where people can learn. further, all the documentation that y'all have written is sprawled all over the place and isn't centralized; we've had to do this ourselves as well.
+thank you astrid for bringing that up. i wanted to bring it up myself but didn't want to cuz i haven't contributed lol
+ZarelYesterday at 11:48 PM
+heh, I think pre was the one who most commonly shot down people asking for help, too, ironic
+I think linking to your server somewhere is a great idea
+if you'd like, I'll add it to the #read-me channel
+what's the link?
+harbar20Yesterday at 11:48 PM
+yes that would be amazing, thank you so much
+https://discord.gg/Cbs4dKz
+also can we centralize all showdown-related documentation somewhere? like i said it's sprawled all over the place so just saying "i've written documentation for it so i KNOW it exists" doesn't help the person looking for it, it just makes them frustrated.
+AnnikaYesterday at 11:50 PM
+for the record I am generally happy to help anyone with the parts of the codebase that I understand (as long as youre respectful and know the basics of how code/computers work)
+harbar20Yesterday at 11:50 PM
+just as an example of one of these instances. it's maddening.
+ZarelYesterday at 11:51 PM
+how's my newest post in #read-me?
+harbar20Yesterday at 11:51 PM
+yeah that absolutely works. thank you, it solves a big part of the problem i think
+ZarelYesterday at 11:52 PM
+I want to emphasize that I never endorsed the way pre spoke to people and I'll try my best not to allow it to happen again in the future
+thecommondudeToday at 12:02 AM
+Wait a second, what's wrong with that though? From what I see he asked someone to read the documentation politely right?
+sparkychildToday at 12:04 AM
+^
+InstructToday at 12:05 AM
+from what i can recall
+He got exhausted from helping people asking extremely simple questions
+i think
+thecommondudeToday at 12:05 AM
+What's the point of documentation if users don't read it and ask the devs. I'd do the exact same thing!
+People want to contribute but also want to be spoon fed how to contribute?
+Even when information is in docs/wiki? Doesn't seem right atall
+InstructToday at 12:07 AM
+I guess depends on the person whos asking
+koreanpanda345Today at 12:07 AM
+The problem is how little docs there is. I hardly can find any source of Docs to figure stuff out. I had to do a lot of it blindly, and doing trial and error.
+AnnikaToday at 12:08 AM
+I feel like an example of what you want to do that you don't have docs for would help me to understand the problem
+thecommondudeToday at 12:08 AM
+I mean for the question that was asked, docs do exist. I get asking questions when the docs have nothing in them, but just not reading the docs and asking is kinda pointless
+InstructToday at 12:09 AM
+thats fair
+I guess it depends on the person whos asking and their reputation. A nice person asking for help vs an annoying person asking every 2 seconds gets you burnt at diff rates
+thecommondudeToday at 12:10 AM
+I mean u can imagine if a hoard of ppl start pinging zarel saying "how to setup showdown" even tho the readme specifies it, I'm sure he'd get annoyed too
+harbar20Today at 12:10 AM
+the fact that docs exist doesn't rebut the fact that they're hard to find and not all centralized.
+like i said before they're sprawled all over the 2 repos
+thecommondudeToday at 12:11 AM
+Then maybe the issue should be circled to documentation organization
+harbar20Today at 12:11 AM
+yeah that's what i said
+lol
+annika and i were talking about this in the other server
+ZarelToday at 12:11 AM
+I'd usually take a million simple questions to mean that I should improve the documentation and make it easier to find/navigate
+harbar20Today at 12:11 AM
+^
+thecommondudeToday at 12:12 AM
+But yeah the answer to bad repo organization of docs shouldnt be to spoonfeed users, its to organize the docs :smile:
+KrisToday at 12:12 AM
+Zarel, we discussed in staff and decided ps dev was not the appropriate place to handle the ps simple questions
+ZarelToday at 12:12 AM
+and if they went out of their way to follow my advice and make a server to help each other I would at least link to it
+KrisToday at 12:12 AM
+This was not pre being “rude”
+harbar20Today at 12:12 AM
+which is what the other server, and hopefully soon the centralized documentation, is for
+koreanpanda345Today at 12:12 AM
+I would actually like to see that. That would be beneficial for the people that have those questions, and for you and your staff team, so they can focus on other  matters instead of focusing on helping someone's question that can be answered through the docs
+harbar20Today at 12:12 AM
+^
+ZarelToday at 12:12 AM
+it would lead to fewer questions so I don't see why not
+koreanpanda345Today at 12:12 AM
+mhm
+harbar20Today at 12:13 AM
+kris, you're partly right: even if pre wasn't being rude, they also weren't being very helpful.
+thecommondudeToday at 12:13 AM
+they shouldnt have been helpful is the point tho
+jetouToday at 12:13 AM
+the server isnt for ps dev help
+harbar20Today at 12:13 AM
+they shouldn't have to be, i agree
+KrisToday at 12:14 AM
+We also agreed to not have a questions server because almost every dev didn’t want to spend more volunteer time helping people learn to code on top of actually coding
+thecommondudeToday at 12:14 AM
+no no, its not that they shouldnt have to be. They actively should not entertain such questions.
+harbar20Today at 12:14 AM
+maybe i've been derailing this conversation a little too much lol. i'll stop here, but i'll just leave off with: if y'all could centralize documentation that would absolutely solve all of the problems i've had with smogon dev stuff
+thecommondudeToday at 12:15 AM
+I understand u want to help people start out and linking the server is fine and all, but the solution to the issue of the docs being hard to find isnt the devs helping new users with spoonfeeding, but to organize the docs
+harbar20Today at 12:15 AM
+
+    I understand u want to help people start out and linking the server is fine and all, but the solution to the issue of the docs being hard to find isnt the devs helping new users with spoonfeeding, but to organize the docs
+
+i haven't said anything to the contrary. i agree with everything here.
+thecommondudeToday at 12:15 AM
+:slight_smile:
+koreanpanda345Today at 12:15 AM
+i think the question is what is this server's goal, and what is being asked by those outside of the staff team. Most of the people that join, are either asking to work on ps, or working on a side project that involves ps in some way. So its kind of blurry when it comes to do i ask this question or not, if we were told that this more directed towards ps, rather other side projects.
+jetouToday at 12:16 AM
+its not blurry?
+it says in #read-me that this is only for official projects
+harbar20Today at 12:17 AM
+i agree it's not blurry, this server is meant solely for main ps dev. all side stuff should go in the other server
+KrisToday at 12:18 AM
+It’s for smogon affiliated projects in general
+koreanpanda345Today at 12:20 AM
+:shrug:
+ZarelToday at 12:20 AM
+the main blurriness is that I do want Main to be structured to make it easy for side servers to add and maintain modifications
+so that part is relevant to this Discord
+harbar20Today at 12:21 AM
+oh yeah another thing. what's the point of #getting-started ? like why does it exist lmao. making everyone pick up the programmer role only adds a level of inconvenience that y'all at core don't need.
+sparkychildToday at 12:21 AM
+The only "improvement" to documentation that i could think of is just posting a list (maybe in the API protocol subscriber channel?) of all the variable name changes (Dex changed a lot recently like renaming Pokemon#species to Pokemon#name, renaming Dex.data.Movedex to Dex.data.Moves and such). It would make it much easier for side servers to fix their own code when doing updateserver
+harbar20Today at 12:22 AM
+documentation ITSELF doesn't need to change. i think just all the documentation should be in one easy-to-access place.
+koreanpanda345Today at 12:22 AM
+^^^^
+the hard part is finding the docs, when its all in different places
+ZarelToday at 12:24 AM
+circling back to earlier: I already don't hard-block PRs on simple stylistic fixes; I usually just suggest those as GitHub PR suggestions so it's just one-click for the author to accept
+I've rarely needed to merge-and-fix-later because PR suggestions (and directly pushing to the PR) are usually better, and I do do those things

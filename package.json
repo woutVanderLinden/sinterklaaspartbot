@@ -1,0 +1,29 @@
+{
+  "name": "partbot",
+  "version": "3.5.2",
+  "main": "bot.js",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "discord.js": "^12.5.1",
+    "express": "^4.17.1",
+    "googleapis": "^49.0.0",
+    "he": "^1.2.0",
+    "https": "^1.0.0",
+    "js-levenshtein": "^1.1.6",
+    "origindb": "^2.6.1",
+    "request": "^2.88.2",
+    "typedarray-to-buffer": "^3.1.5",
+    "url": "^0.11.0",
+    "websocket": "^1.0.29",
+    "yaeti": "^1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js"
+  },
+  "keywords": [],
+  "author": "PartMan",
+  "license": "ISC",
+  "description": ""
+}

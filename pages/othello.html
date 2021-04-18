@@ -1,0 +1,334 @@
+<head>
+	<title>Othello</title>
+	<link rel="icon" href="/public/icon.png">
+	<style>
+		#parent {
+			width: auto;
+			height: auto;
+			background-color: gray;
+			margin: auto;
+			padding: 3%;
+			display: inline-block;
+			margin-top: 4%;
+		}
+		table {
+			margin-top: 3%;
+			border-collapse: collapse;
+			border: 2px solid black;
+		}
+		tr {
+			height: 35px;
+		}
+		td {
+			width: 35px;
+			background-color: green;
+			vertical-align: middle;
+			text-align: center;
+			border: 1px solid black;
+		}
+		span {
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			border: 1px solid black;
+			display: inline-block;
+			margin: auto;
+			vertical-align: middle;
+		}
+		span.circle-W {
+			background-color: white;
+		}
+		span.circle-B {
+			background-color: black;
+		}
+		#errordisplay {
+			display: none;
+		}
+		button {
+			margin-top: 5%;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		img.menubutton {
+			height: 20px;
+			width: 20px;
+		}
+		#flipped {
+			-webkit-transform: scaleX(-1);
+			-moz-transform: scaleX(-1);
+			-o-transform: scaleX(-1);
+			transform: scaleX(-1);
+
+			filter: FlipH;
+			-ms-filter: "FlipH";
+		}
+		div#errordisplay {
+			margin-top: 5%;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!--jQuery-->
+	<script>
+		let gameInput = "##GAME_STR##";
+		let boards = [], showTurn = 0, game, res;
+		(() => {
+			let quickValid = /^[0-9a-zA-X-]*[YZ_]$/.test(gameInput);
+			if (!quickValid) return alert("Invalid game code!");
+			function stringToMove (chars) {
+				chars = chars.split('');
+				res = chars.pop();
+				return { moves: chars.map(char => {
+					let i = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWX".indexOf(char);
+					if (i < 0) return null;
+					if (i > 26) i += 2;
+					if (i > 34) i += 2;
+					return ('0' + i.toString(8)).substr(-2).split('').map(num => ~~num);
+				}), res: res }
+			}
+			let plays = stringToMove(gameInput);
+			class Othello {
+				constructor () {
+					this.board = Array.from({length: 8}).map(row => Array.from({length: 8}).map(cell => 0));
+					this.board[3][3] = this.board[4][4] = 'W';
+					this.board[3][4] = this.board[4][3] = 'B';
+					this.turn = 'B';
+					boards.push(this.board.map(row => row.slice()));
+				}
+				moveToString (i, j) {
+					let num = ~~i * 8 + ~~j;
+					if (num > 26) num -= 2;
+					if (num > 32) num -= 2;
+					return "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWX".charAt(num);
+				}
+				other () {
+					switch (this.turn) {
+						case 'W': return 'B';
+						case 'B': return 'W';
+						default: return null;
+					}
+				}
+				canPlay (i, j) {
+					if (!this.turn || typeof i !== 'number' || typeof j !== 'number') return null;
+					if (i >= 8 || j >= 8 || i < 0 || j < 0) return null;
+					if (this.board[i][j]) return null;
+					let board = this.board.map(row => row.slice());
+					this.play(i, j, board);
+					let [count, nCount] = [this.count(this.board), this.count(board)];
+					if (count[this.other()] > nCount[this.other()]) return true;
+					return false;
+				}
+				nextTurn (idled) {
+					this.turn = this.other();
+					let canPlay = false;
+					for (let i = 0; i < 8; i++) {
+						for (let j = 0; j < 8; j++) {
+							if (this.canPlay(i, j)) {
+								canPlay = true;
+								break;
+							}
+						}
+						if (canPlay) break;
+					}
+					if (!canPlay) {
+						if (idled) return this.end();
+						return this.nextTurn(true);
+					}
+					return this.turn;
+				}
+				count (board) {
+					if (!board) board = this.board;
+					let out = {W: 0, B: 0};
+					Object.values(board).forEach(row => row.forEach(cell => {
+						switch (cell) {
+							case 'W': out.W++; break;
+							case 'B': out.B++; break;
+							default: break;
+						}
+					}));
+					return out;
+				}
+				play (i, j, board) {
+					let actual = false;
+					if (!board) {
+						board = this.board;
+						actual = true;
+					}
+					if (board[i][j]) return null;
+					board[i][j] = this.turn;
+					for (let m = i, n = j; m < 8 && n < 8 && m >= 0 && n >= 0; m++, n) {
+						if (m === i && n === j) continue;
+						if (!board[m][n]) break;
+						if (board[m][n] !== this.turn) continue;
+						for (let x = i, y = j; x < 8 && y < 8 && x >= 0 && y >= 0; x++, y) {
+							if (x === i && y === j) continue;
+							if (board[x][y] === this.other()) board[x][y] = this.turn;
+							else break;
+						}
+						break;
+					}
+					for (let m = i, n = j; m < 8 && n < 8 && m >= 0 && n >= 0; m--, n) {
+						if (m === i && n === j) continue;
+						if (!board[m][n]) break;
+						if (board[m][n] !== this.turn) continue;
+						for (let x = i, y = j; x < 8 && y < 8 && x >= 0 && y >= 0; x--, y) {
+							if (x === i && y === j) continue;
+							if (board[x][y] === this.other()) board[x][y] = this.turn;
+							else break;
+						}
+						break;
+					}
+					for (let m = i, n = j; m < 8 && n < 8 && m >= 0 && n >= 0; m, n++) {
+						if (m === i && n === j) continue;
+						if (!board[m][n]) break;
+						if (board[m][n] !== this.turn) continue;
+						for (let x = i, y = j; x < 8 && y < 8 && x >= 0 && y >= 0; x, y++) {
+							if (x === i && y === j) continue;
+							if (board[x][y] === this.other()) board[x][y] = this.turn;
+							else break;
+						}
+						break;
+					}
+					for (let m = i, n = j; m < 8 && n < 8 && m >= 0 && n >= 0; m, n--) {
+						if (m === i && n === j) continue;
+						if (!board[m][n]) break;
+						if (board[m][n] !== this.turn) continue;
+						for (let x = i, y = j; x < 8 && y < 8 && x >= 0 && y >= 0; x, y--) {
+							if (x === i && y === j) continue;
+							if (board[x][y] === this.other()) board[x][y] = this.turn;
+							else break;
+						}
+						break;
+					}
+					for (let m = i, n = j; m < 8 && n < 8 && m >= 0 && n >= 0; m++, n++) {
+						if (m === i && n === j) continue;
+						if (!board[m][n]) break;
+						if (board[m][n] !== this.turn) continue;
+						for (let x = i, y = j; x < 8 && y < 8 && x >= 0 && y >= 0; x++, y++) {
+							if (x === i && y === j) continue;
+							if (board[x][y] === this.other()) board[x][y] = this.turn;
+							else break;
+						}
+						break;
+					}
+					for (let m = i, n = j; m < 8 && n < 8 && m >= 0 && n >= 0; m--, n++) {
+						if (m === i && n === j) continue;
+						if (!board[m][n]) break;
+						if (board[m][n] !== this.turn) continue;
+						for (let x = i, y = j; x < 8 && y < 8 && x >= 0 && y >= 0; x--, y++) {
+							if (x === i && y === j) continue;
+							if (board[x][y] === this.other()) board[x][y] = this.turn;
+							else break;
+						}
+						break;
+					}
+					for (let m = i, n = j; m < 8 && n < 8 && m >= 0 && n >= 0; m++, n--) {
+						if (m === i && n === j) continue;
+						if (!board[m][n]) break;
+						if (board[m][n] !== this.turn) continue;
+						for (let x = i, y = j; x < 8 && y < 8 && x >= 0 && y >= 0; x++, y--) {
+							if (x === i && y === j) continue;
+							if (board[x][y] === this.other()) board[x][y] = this.turn;
+							else break;
+						}
+						break;
+					}
+					for (let m = i, n = j; m < 8 && n < 8 && m >= 0 && n >= 0; m--, n--) {
+						if (m === i && n === j) continue;
+						if (!board[m][n]) break;
+						if (board[m][n] !== this.turn) continue;
+						for (let x = i, y = j; x < 8 && y < 8 && x >= 0 && y >= 0; x--, y--) {
+							if (x === i && y === j) continue;
+							if (board[x][y] === this.other()) board[x][y] = this.turn;
+							else break;
+						}
+						break;
+					}
+					return board;
+				}
+				end () {
+					this.started = null;
+					let W = 0, B = 0;
+					this.board.forEach(row => row.forEach(cell => {
+						switch (cell) {
+							case 'W': return W++;
+							case 'B': return B++;
+							default: return;
+						}
+					}));
+					this.winner = W > B ? 'W' : 'B';
+					if (W === B) this.winner = 'O';
+					return JSON.stringify(this);
+				}
+			}
+			game = new Othello();
+			plays.moves.forEach(move => {
+				if (move) game.play(...move, game.board);
+				boards.push(game.board.map(row => row.slice()));
+				game.nextTurn();
+			});
+			switch (res) {
+				case 'Y': return res = 'White';
+				case 'Z': return res = 'Black';
+				default: return res = false;
+			}
+		})();
+		let html = [];
+		for (let i = 0; i < 8; i++) {
+			let terms = [];
+			for (let j = 0; j < 8; j++) terms.push(`				<td id="cell${i}${j}"></td>`);
+			html.push(`			<tr>\n${terms.join('\n')}\n			</tr>`);
+		}
+		function displayBoard (board) {
+			for (let i = 0; i < 8; i++) {
+				for (let j = 0; j < 8; j++) {
+					if (board[i][j]) document.getElementById('cell' + i + j).innerHTML = `<span class="circle-${board[i][j]}"></span>`;
+					else document.getElementById('cell' + i + j).innerHTML = ``;
+				}
+			}
+			document.getElementById('turn').innerHTML = '#' + showTurn;
+		}
+		function lastMove () {
+			if (boards[showTurn - 1]) {
+				showTurn--;
+				displayBoard(boards[showTurn]);
+			}
+			else {
+				let errDiv = document.getElementById('errordisplay');
+				errDiv.innerHTML = "That was the initial state. 'o.o";
+				$('div#errordisplay').fadeIn(300).delay(1500).fadeOut(400);
+			}
+		}
+		function nextMove () {
+			if (boards[showTurn + 1]) {
+				showTurn++;
+				displayBoard(boards[showTurn]);
+			}
+			else {
+				let errDiv = document.getElementById('errordisplay');
+				errDiv.innerHTML = `The match ended here - ${res ? `${res} won.` : 'it was a draw'}`;
+				$('div#errordisplay').fadeIn(300).delay(2000).fadeOut(400);
+			}
+		}
+		document.onkeydown = key => {
+			if (key.keyCode === 37) /* left */ return lastMove();
+			if (key.keyCode === 39) /* right */ return nextMove();
+		}
+		window.onload = function () {
+			document.getElementById('matchboard').innerHTML = html.join('\n');
+			displayBoard(boards[0]);
+		}
+	</script>
+</head>	
+<body>
+	<center>
+		<div id="parent">
+			<table id="matchboard">
+			</table>
+			<div class="menu">
+				<button onclick="lastMove()"><img class="menubutton" src="https://cdn3.iconfinder.com/data/icons/multimedia-ver-3-glyph/32/backward_back_arrow_previous_left-512.png" /></button>
+				<div style="display: inline-block; width: 100px; font-weight: bold; vertical-align: middle;" id="turn">#0</div>
+				<button onclick="nextMove()"><img class="menubutton" id="flipped" src="https://cdn3.iconfinder.com/data/icons/multimedia-ver-3-glyph/32/backward_back_arrow_previous_left-512.png" /></button>
+			</div>
+			<div id="errordisplay">STOP PEEKING AT THE CODE</div>
+		</div>
+	</center>
+</body>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<meta charset="utf8">
+<html>
+	<head>
+		<title>Mech Sessional</title>
+		<script>
+			const {sin, cos, tan, asin, acos, atan, sqrt, PI} = Math;
+			const vals = {
+				AP: 30,
+				AB: 200,
+				PQx: 150,
+				PQy: 50,
+				BQ: 80,
+				delta: 10 * PI / 180,
+				CQ: 300,
+				CD: 50,
+				DR: 300
+			}
+			const base = [500, 100];
+
+			let ctx, cbx, animation, iteration = 0;
+
+			window.onload = function () {
+				ctx = document.getElementById('screen').getContext('2d');
+				ctx.lineWidth = 3;
+
+				cbx = document.getElementById('backgr').getContext('2d');
+				cbx.lineWidth = 3;
+				cbx.strokeStyle = '#778899';
+
+				animation = window.setInterval(() => draw(genState(iteration++ * PI / 180)), 5);
+			}
+
+			function genState (theta) {
+				theta %= 2 * PI;
+				const coords = {
+					A: [null, null],
+					B: [null, null],
+					C: [null, null],
+					D: [null, null],
+					P: [null, null],
+					Q: [null, null],
+					R: [null, null]
+				}
+				coords.P = base.slice();
+				coords.Q = [base[0] - vals.PQx, base[1] + vals.PQy];
+				coords.R = [coords.Q[0] - vals.CD, coords.Q[1]];
+				coords.A = [base[0] + cos(theta) * vals.AP, base[1] + sin(theta) * vals.AP];
+
+				let AQ = sqrt((coords.A[0] - coords.Q[0]) ** 2 + (coords.A[1] - coords.Q[1]) ** 2), angleA = acos((AQ ** 2 + vals.AB ** 2 - vals.BQ ** 2) / (2 * AQ * vals.AB));
+
+				let uAQx = (coords.Q[0] - coords.A[0]) / AQ, uAQy = (coords.Q[1] - coords.A[1]) / AQ;
+				let uABx = uAQx * cos(angleA) - uAQy * sin(angleA), uABy = uAQx * sin(angleA) + uAQy * cos(angleA);
+
+				coords.B[0] = coords.A[0] + vals.AB * uABx;
+				coords.B[1] = coords.A[1] + vals.AB * uABy;
+
+				let anglexQC = atan((coords.Q[1] - coords.B[1]) / (coords.Q[0] - coords.B[0]));
+				if (anglexQC < 0) anglexQC += PI;
+				anglexQC += vals.delta;
+				coords.C[0] = coords.Q[0] + cos(anglexQC) * vals.CQ;
+				coords.C[1] = coords.Q[1] + sin(anglexQC) * vals.CQ;
+				coords.D[0] = coords.C[0] - vals.CD;
+				coords.D[1] = coords.C[1];
+
+				return coords;
+			}
+			function draw (iCoords) {
+				const coords = {};
+				ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+				Object.keys(iCoords).forEach(key => coords[key] = [iCoords[key][0], 600 - iCoords[key][1]]);
+				['PA', 'AB', 'BQ', 'QC', 'CD', 'DR'].forEach(points => {
+					ctx.beginPath();
+					ctx.moveTo(...coords[points[0]]);
+					ctx.lineTo(...coords[points[1]]);
+					ctx.stroke();
+				});
+
+				ctx.beginPath();
+				ctx.moveTo(coords.C[0], coords.C[1] + 100);
+				ctx.lineTo(coords.C[0], coords.C[1] - 100);
+				ctx.stroke();
+				cbx.beginPath();
+				cbx.moveTo(coords.C[0], coords.C[1] + 100);
+				cbx.lineTo(coords.C[0], coords.C[1] - 100);
+				cbx.stroke();
+
+				Object.values(coords).forEach(coord => {
+					ctx.beginPath();
+					ctx.arc(coord[0], coord[1], 5, 0, 2 * Math.PI, false);
+					ctx.fill();
+				});
+			}
+			function runEval () {
+				try {
+					eval(`vals.${document.getElementById('eval').value}`);
+					ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+					cbx.clearRect(0, 0, cbx.canvas.width, cbx.canvas.height);
+				} catch (e) {
+					console.log(e);
+					alert(e.message);
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<canvas id="backgr" height="600px" width="1200px" style="position: absolute; left: 0; top: 0; z-index: 1;">Error</canvas>
+		<canvas id="screen" height="600px" width="1200px" style="position: absolute; left: 0; top: 0; z-index: 2;">Error</canvas>
+		<input type="text" id="eval" style="z-index: 5; position: absolute; top: 610px; width: 100px;"/><button onclick="runEval()" style="z-index: 5; position: absolute; top: 610px; left: 140px;">Set</button>
+	</body>
+</html>

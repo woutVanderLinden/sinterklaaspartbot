@@ -1,0 +1,795 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta charset="utf8">
+		<link rel="icon" href="/icon.png">
+		<title>[Gen 7] The Monomon Challenge</title>
+		<style>
+			body {
+				background-image: url("https://i.imgur.com/p0yPtwc.png");
+			}
+			div.navbar	{
+				overflow: hidden;
+				background-color: #333;
+				font-family: Arial;
+			}
+			div.navbar .text {
+				float: left;
+				font-size: 16px;
+				color: white;
+				text-align: right;
+				padding: 14px 16px;
+				text-decoration: none;
+			}
+			div.dropdown {
+				float: left;
+				overflow: hidden;
+			}
+			div.navbar a {
+				float: left;
+				font-size: 16px;
+				color: white;
+				text-align: center;
+				padding: 14px 16px;
+				text-decoration: none;
+			}
+			div.dropdown .dropbtn {
+				font-size: 16px;
+				border: none;
+				outline: none;
+				color: white;
+				padding: 14px 16px;
+				background-color: inherit;
+				font-family: inherit;
+				margin: 0;
+			}
+			div.navbar .active a {
+				background-color: #888;
+			}
+			div.navbar a:hover, .dropdown:hover, .playdrop:hover, .dropbtn, .playbtn {
+				background-color: green;
+			}
+			div.dropdown-content {
+				display: none;
+				position: absolute;
+				background-color: #f9f9f9;
+				min-width: 160px;
+				box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+				z-index: 1;
+			}
+			div.dropdown-content .usermenu {
+				position: absolute;
+			}
+			div.dropdown-content a {
+				float: none;
+				color: black;
+				padding: 12px 16px;
+				text-decoration: none;
+				display: block;
+				text-align: left;
+			}
+			div.dropdown-content a:hover {
+				background-color: #ddd;
+			}
+			div.dropdown:hover .dropdown-content {
+				display: block;
+			}
+			a.blanklink {
+				text-decoration: none;
+			}
+			a.blanklink:visited {
+				text-decoration: none;
+			}
+			div.header {
+				text-align: center;
+				color: white;
+				background-color: rgba(15, 15, 15, 0.95);
+				border-radius: 20px;
+				margin-top: 20px;
+				margin-bottom: 20px;
+			}
+			div.title {
+				font-weight: bold;
+				font-size: 2em;
+				padding: 20px;
+			}
+			div.desc {
+				padding-top: 10px;
+				padding-bottom: 30px;
+			}
+			hr.main {
+				width: 95%;
+			}
+			span.picon {
+				width: 40px;
+				height: 30px;
+				display: inline-block;
+				vertical-align: middle;
+			}
+			div.trainer {
+				background: rgba(25, 25, 25, 0.9);
+				border-radius: 15px;
+				width: 300px;
+				display: inline-block;
+				margin: 10px;
+				color: white;
+				border: 1px solid white;
+				border-style: outset;
+				vertical-align: top;
+			}
+			div.top {
+				overflow: auto;
+			}
+			img.avatar {
+				float: left;
+				height: auto;
+				width: auto;
+				vertical-align: middle;
+				padding-top: 5px;
+			}
+			div.info {
+				float: left;
+				padding-top: 15px;
+				padding-bottom: 10px;
+			}
+			strong.name {
+				padding-bottom: 10px;
+			}
+			div.score-sum {
+				font-size: 0.8em;
+				font-weight: normal;
+				padding-top: 10px;
+			}
+			div.score-per {
+				font-size: 0.8em;
+				font-weight: normal;
+			}
+			hr.break {
+				width: 220px;
+				color: rgba(250, 250, 250, 0.9);
+				margin-top: 20px;
+				margin-left: 40px;
+			}
+			div.rounds {
+				padding-top: 10px;
+				padding-left: 40px;
+			}
+			a.paste, a.paste:link, a.paste:visited {
+				text-decoration: none;
+				color: white;
+			}
+			details.list {
+				width: 200px;
+				padding-bottom: 20px;
+			}
+			summary.rname {
+				width: 200px;
+				padding-bottom: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="navbar">
+			<div class="homeref"><a href="/1v1uc" class="blanklink"><b>1v1UC</b></a></div>
+			<div class="dropdown">
+				<button class="dropbtn">Challenges</button>
+				<div class="dropdown-content">
+					<a href="/1v1uc/challenges/gen7_the_monomon_challenge">Monomon</a>
+					<a href="/1v1uc/challenges/the_monomove_challenge">Monomove</a>
+				</div>
+			</div>
+			<a href="/1v1uc/leaderboard">Leaderboard</a>
+			<div class="dropdown">
+				<button class="dropbtn">Halls of Fame</button>
+				<div class="dropdown-content">
+					<a href="/1v1uc/hall_of_heroes">Hall of Heroes</a>
+					<a href="/1v1uc/hall_of_fame">General</a>
+				</div>
+			</div>
+		</div>
+
+		<div class="header">
+			<div class="title">[Gen 7] The Monomon Challenge</div>
+			<div class="desc">
+				Use only one Pokemon! The classic Challenge.
+			</div>
+		</div>
+		<hr class="main" />
+		<div class="trainers">
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/hilbert.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(289, 73%, 49%);">Ac4er</strong>
+						<div class="score-sum">Rounds Completed - <b>1</b></div>
+						<div class="score-per">Perfect Rounds - <b>1</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/1b01b72a9c440c84"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -360px -900px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/janitor.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(101, 71%, 38.27537264616493%);">Ape711</strong>
+						<div class="score-sum">Rounds Completed - <b>4</b></div>
+						<div class="score-per">Perfect Rounds - <b>0</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/d5644a87d326a258"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -120px -690px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/014320c26f4702cb"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -80px -300px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/27d320f45ba90e99"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -320px -630px;"></span>&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/fbfbd6d4a184c05e"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -320px -1140px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/fisherman-gen4.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(331, 74%, 41%);">brock2.0</strong>
+						<div class="score-sum">Rounds Completed - <b>1</b></div>
+						<div class="score-per">Perfect Rounds - <b>0</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/f825e339f0536e0b"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -360px -2790px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/plasmagrunt-gen5bw.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(32, 66%, 48%);">Cabbbages</strong>
+						<div class="score-sum">Rounds Completed - <b>6</b></div>
+						<div class="score-per">Perfect Rounds - <b>3</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/6c2e4b420b5069d1"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll 0px -90px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/c7acc8e7013f65ed"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -120px -1980px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/d7c31e21da208db5"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -160px -1980px;"></span>&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/d7c31e21da208db5"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -2520px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/26bb919f0c045c64"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -360px -540px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/e2454a7f269deb0c"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -360px -1500px;"></span>&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/ghetsis.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(10, 47%, 48%);">Dragonmirror27262</strong>
+						<div class="score-sum">Rounds Completed - <b>6</b></div>
+						<div class="score-per">Perfect Rounds - <b>2</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/1ce535e9526b3267"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -240px -810px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/1bb3e2fd0cdc4052"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -40px -720px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/e2c3eecc541c3645"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -40px -150px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/2b2abda991e80ecb"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -200px -1410px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/53269c0a72fd2d6f"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -240px -690px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/e749c951bbd97c6c"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -160px -720px;"></span>*&nbsp;&nbsp;<strong>[5-3]</strong></a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/policeman-gen4.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(99, 65%, 39.53579003922068%);">Elements 101</strong>
+						<div class="score-sum">Rounds Completed - <b>3</b></div>
+						<div class="score-per">Perfect Rounds - <b>0</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/3e32bb2d3e1a2972"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -360px -1500px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/561e93a32a70dc7c"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -40px -360px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/7305b3bf426004f0"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -200px -1140px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/preschoolerf.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(269, 74%, 55.40388355531743%);">Eriey</strong>
+						<div class="score-sum">Rounds Completed - <b>7</b></div>
+						<div class="score-per">Perfect Rounds - <b>2</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/cee49eb709d23406"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -240px -1350px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/b007a0d33b1f1dfa"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -240px -2820px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/1207301edfad8282"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -360px -1680px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/f8687f1a5d454526"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -240px -2760px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/3a04aec3e33696c1"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -160px -720px;"></span>*&nbsp;&nbsp;<strong>[5-4]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/f025c0a6883061af"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -280px -780px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/76f9ee2fcb30b3ce"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -40px -2820px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/ltsurge.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(336, 69%, 45%);">GeneralGunderson</strong>
+						<div class="score-sum">Rounds Completed - <b>3</b></div>
+						<div class="score-per">Perfect Rounds - <b>0</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/f1e1eeb5962d2a65"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -440px -1590px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/865f185d44607682"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -320px -870px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/f01263b3ccef3629"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll 0px -1170px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/janine.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(13, 65%, 41.578192744268506%);">HeavyStorming</strong>
+						<div class="score-sum">Rounds Completed - <b>1</b></div>
+						<div class="score-per">Perfect Rounds - <b>1</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/2123f236066b226d"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -440px -540px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/burglar.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(291, 62%, 46.645054250790416%);">Krytocon</strong>
+						<div class="score-sum">Rounds Completed - <b>1</b></div>
+						<div class="score-per">Perfect Rounds - <b>0</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/affc5e6fc13dcd8b"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -240px -1170px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/crasherwake.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(326, 68%, 48%);">Literal RNG</strong>
+						<div class="score-sum">Rounds Completed - <b>1</b></div>
+						<div class="score-per">Perfect Rounds - <b>0</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/f5323053ad2e921b"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll 0px -2820px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/steven.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(155, 72%, 37.72422809156096%);">Murman64</strong>
+						<div class="score-sum">Rounds Completed - <b>15</b></div>
+						<div class="score-per">Perfect Rounds - <b>1</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/4dfd2bd1f7dc5b5c"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -280px -360px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/fa35a00d8d4ed996"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -2790px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/546c20b17f607485"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -280px -2850px;"></span>&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/dbea0f1a6fdce135"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll 0px -1620px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/804e6ab27f3aea74"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -40px -960px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/68ce26f07babb82f"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -1200px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/26797a235b5c647c"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -440px -600px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/44dae237a9c004f9"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -80px -1230px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/861813b6c828b425"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll 0px -1230px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/96db439c483b5f2d"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -40px -1110px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/d0e7f1128628ee3f"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -320px -2850px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/a57c4e0a4fe6a393"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -200px -360px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/add4275f1fe39384"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -160px -1950px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/fb3cecf210c9c142"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -280px -1350px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/2379e6104cbfacf2"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -1740px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/unknown.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(272, 86%, 53.44027073163818%);">orcawhale5123</strong>
+						<div class="score-sum">Rounds Completed - <b>1</b></div>
+						<div class="score-per">Perfect Rounds - <b>0</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/075564a9a61885dc"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -2760px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/benga.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(162, 84%, 33%);">PartMan</strong>
+						<div class="score-sum">Rounds Completed - <b>10</b></div>
+						<div class="score-per">Perfect Rounds - <b>2</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/6c11daefa733030b"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -240px -1140px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/5e71699755a816d1"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -1620px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/b6da7233e12706a5"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -280px -2850px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/365f682b02bc1602"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -320px -2760px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/82144a650bf4db8d"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -120px -1110px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/ae0ed75913bc9bcf"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -440px -2760px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/59d7492a5d27fab9"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -80px -570px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/805245fd7f0b44e1"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll 0px -1650px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/89bb5d3bac8e945b"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -1890px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/01a40c82b53539c0"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -360px -1980px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/youngster.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(151, 76%, 36%);">Riky88</strong>
+						<div class="score-sum">Rounds Completed - <b>12</b></div>
+						<div class="score-per">Perfect Rounds - <b>2</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/cb27165f02525ff6"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -320px -1980px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/d7c31e21da208db5"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll 0px -1530px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/59c5e00d5e2c2902"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -200px -1200px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/f44cb8e811045afa"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -2790px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/3936e2d791c3604f"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -120px -690px;"></span>&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/4f445960460996c5"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -1290px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/44a1c0d4a78acaf0"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -40px -2370px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/38a7574653330bbb"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -1140px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/88c7baac8843aa3b"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -240px -570px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/274d4ac827f65f86"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -360px -2820px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/7b56c0fbd686fab3"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -160px -720px;"></span>*&nbsp;&nbsp;<strong>[5-1]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/aaf5bfb6e97b56e9"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -40px -2850px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/thorton.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(0, 81%, 41.948206973483614%);">StandaloneStantler</strong>
+						<div class="score-sum">Rounds Completed - <b>6</b></div>
+						<div class="score-per">Perfect Rounds - <b>1</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/a880f2a3c0e5f191"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -360px -840px;"></span>*&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/b2a1d16ca57007e6"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -280px -510px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/5843c3619097ede1"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -200px -1410px;"></span>&nbsp;&nbsp;[5-2]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/1db5454ea53a77d9"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -400px -480px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/775d5cc58dffbe2e"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -440px -990px;"></span>*&nbsp;&nbsp;</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/cfadee1992988e26"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -200px -450px;"></span>*&nbsp;&nbsp;[5-4]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/will.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(357, 77%, 44%);">SUSTENANCE_1</strong>
+						<div class="score-sum">Rounds Completed - <b>1</b></div>
+						<div class="score-per">Perfect Rounds - <b>0</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="pastebin.com/8tY2EqMz"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -320px -630px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/gentleman-gen4.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(252, 59%, 62.439672728621204%);">Synonimous</strong>
+						<div class="score-sum">Rounds Completed - <b>2</b></div>
+						<div class="score-per">Perfect Rounds - <b>1</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/ef0898d63ec51679"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -240px -1980px;"></span>*&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/cb5809d4e80addaf"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll 0px -90px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/nita.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(95, 48%, 33.13539101965121%);">VG Jungle</strong>
+						<div class="score-sum">Rounds Completed - <b>2</b></div>
+						<div class="score-per">Perfect Rounds - <b>0</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/c81c70eb70dec92f"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -280px -360px;"></span>&nbsp;&nbsp;[5-1]</a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/d2250e9011d12e0c"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -200px -1740px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/juan.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(340, 41%, 50.59995727951749%);">WailJesus</strong>
+						<div class="score-sum">Rounds Completed - <b>1</b></div>
+						<div class="score-per">Perfect Rounds - <b>0</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/354f8c3c33592986"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -360px -450px;"></span>*&nbsp;&nbsp;[5-3]</a>
+						</div>
+					</details>
+				</div>
+			</div>
+			<div class="trainer">
+				<div class="top">
+					<img class="avatar" src="https://play.pokemonshowdown.com/sprites/trainers/fisherman-gen4.png" />
+					<div class="info">
+						<strong class="name" style="color: hsl(224, 62%, 55.340038749615616%);">WillRBX</strong>
+						<div class="score-sum">Rounds Completed - <b>2</b></div>
+						<div class="score-per">Perfect Rounds - <b>2</b></div>
+					</div>
+				</div>
+				<hr class="break" />
+				<div class="rounds">
+					<details class="list">
+						<summary class="rname">Rounds</summary>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/981c997c0a770ff0"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -240px -1950px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+						<div class="round">
+							<a class="paste" href="https://pokepast.es/f6f6933700971652"><span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll -120px -2010px;"></span>*&nbsp;&nbsp;<strong>[5-0]</strong></a>
+						</div>
+					</details>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
