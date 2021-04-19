@@ -74,7 +74,7 @@ PartBot's code has a variety of global variables, all of which can be found from
 
 ### Discord Setup
 Once you've set up the configuration file, there are still a couple steps left to set up Discord. If you have ``token`` set to false, ignore these steps.
-1. Open `./discord.js` and replace the string ``'ADMIN_ID'`` with your Discord ID.
+1. Open `./config.js` and replace the string ``'ADMIN_ID'`` with your Discord ID.
 
 (Yeah, that was it)
 

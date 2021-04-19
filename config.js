@@ -13,6 +13,7 @@ exports.websiteLink = ``; // Local address; IP addresses and hosted domains both
 exports.logRooms = []; // Please do not use this without permission from a room owner
 
 exports.owner = 'YOUR_USERNAME_HERE';
+exports.discordAdmins = ['ADMIN_ID']; // Array of Discord IDs of administrators
 
 exports.auth = {
 	admin: ['ADMIN_USERID_HERE'],
