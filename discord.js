@@ -9,7 +9,7 @@ exports.handler = async message => {
 	commandName = require('./data/ALIASES/discord.json')[commandName] || commandName;
 	try {
 		if (['eval', 'output'].includes(commandName)) {
-			if (!admins.includes(message.author.id)) return message.channel.send('ACCESS DENIED.').then(msg => msg.delete({timeout: 3000}));
+			if (!config.discordAdmins.includes(message.author.id)) return message.channel.send('ACCESS DENIED.').then(msg => msg.delete({timeout: 3000}));
 			let output = eval(args.join(' '));
 			switch (typeof output) {
 				case 'object': output = require('util').inspect(output);
@@ -25,9 +25,14 @@ exports.handler = async message => {
 		let commandFile = require(`./discord/${commandName}.js`);
 		if (commandFile.guildOnly &&
 			!(Array.isArray(commandFile.guildOnly) && commandFile.guildOnly.includes(message.guild.id)) &&
+<<<<<<< HEAD
 			!(typeof commandFile.guildOnly === "string" && commandFile.guildOnly == message.guild.id) &&
 			message.guild.id !== '719076445699440700') return message.channel.send('Not meant to be used here.').then(msg => msg.delete({timeout: 3000}));
 		else if (commandFile.admin && !admins.includes(message.author.id)) return message.channel.send('Access denied.').then(msg => msg.delete({timeout: 3000}));
+=======
+			!(typeof commandFile.guildOnly === "string" && commandFile.guildOnly == message.guild.id)) return message.channel.send('Not meant to be used here.').then(msg => msg.delete({timeout: 3000}));
+		else if (commandFile.admin && !config.discordAdmins.includes(message.author.id)) return message.channel.send('Access denied.').then(msg => msg.delete({timeout: 3000}));
+>>>>>>> e1f4a799b36f0a214e0949fec3f1a61a33936aee
 		else if (message.type === 'dm') {
 			if (!commandFile.pm) return message.channel.send("This command isn't available in DMs, sorry...").then(msg => msg.delete({timeout: 3000}));
 			else if (typeof commandFile.pm === 'function') return commandFile.pm(args, message, Bot);
