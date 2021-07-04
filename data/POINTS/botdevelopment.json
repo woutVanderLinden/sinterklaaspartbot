@@ -1,0 +1,53 @@
+{
+  "users": {
+    "partoru": {
+      "name": "Partoru",
+      "points": [
+        2
+      ]
+    },
+    "partbot": {
+      "name": "PartBot",
+      "points": [
+        5
+      ]
+    },
+    "decemberright": {
+      "name": "December Right",
+      "points": [
+        4
+      ]
+    },
+    "kunjhu": {
+      "name": "kunjhu",
+      "points": [
+        1
+      ]
+    },
+    "fakepart": {
+      "name": " FakePart",
+      "points": [
+        5
+      ]
+    },
+    "sirkirauzumaki": {
+      "name": "sIrKiRa!UzUmAkI",
+      "points": [
+        5
+      ]
+    },
+    "zestoflife": {
+      "name": "ZestOfLife!",
+      "points": [
+        5
+      ]
+    }
+  },
+  "points": [
+    [
+      "Point",
+      "Points",
+      "P"
+    ]
+  ]
+}
