@@ -12,6 +12,7 @@ exports.board = function (inputHeaders, input, sort, styling, widths, rank, limi
 	if (!Array.isArray(headers) || !headers[0] || typeof headers[0] !== 'string') return 1;
 	if (!Array.isArray(input) || !input[0] || !Array.isArray(input[0])) return 2;
 	if (typeof sort !== 'function') return 3;
+	if (styling.length === 2) styling.push(styling[1]);
 	if (!Array.isArray(styling) || styling.length !== 3 || typeof styling[0] !== 'string') return 4;
 	let data = Array.from(input).filter(row => row.length == headers.length);
 	if (rank) headers.unshift(rank);

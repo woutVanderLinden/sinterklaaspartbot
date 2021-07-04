@@ -31,7 +31,7 @@ module.exports = {
 		});
 	},
 	get (game) {
-		game = toId(game);
+		game = toID(game);
 		if (!this.list().includes(game)) return null;
 		return this._games[game];
 	},

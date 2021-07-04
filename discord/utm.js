@@ -43,7 +43,7 @@ module.exports = {
 				line[0] = line[0].slice(0, -4);
 			}
 			out.species = line[0].match(/\(.*\)/);
-			if (out.species) out.species = toId(out.species[0].slice(1, -1));
+			if (out.species) out.species = toID(out.species[0].slice(1, -1));
 			line[0] = line[0].replace(/\(.*\)/, '');
 			out.name = line[0].trim();
 			line = lines.shift().split('Ability: ');
@@ -96,7 +96,7 @@ module.exports = {
 			return out;
 		}
 		function utm (text) {
-			return text.split(/\n\s*\n/).map(mon => parseMon(mon)).filter(mon => typeof mon === 'object').map(mon => `${mon.name}|${mon.species || ''}|${toId(mon.item)}|${toId(mon.ability)}|${mon.moves.map(move => toId(move)).join(',')}|${mon.nature}|${Object.values(mon.evs).filter(ev => ev === 0).length === 6 ? '' : Object.values(mon.evs).map(ev => ev || '').join(',')}|${mon.gender || ''}|${Object.values(mon.ivs).filter(iv => iv === 31).length === 6 ? '' : Object.values(mon.ivs).map(iv => iv === 31 ? '' : iv).join(',')}|${mon.shiny ? 'S' : ''}|${mon.level === 100 ? '' : mon.level}|${(mon.happiness !== 255 || mon.hiddenpower) ? [(mon.happiness || ''), (mon.hiddenpower || ''), ''].join(',') : ''}`).join(']');
+			return text.split(/\n\s*\n/).map(mon => parseMon(mon)).filter(mon => typeof mon === 'object').map(mon => `${mon.name}|${mon.species || ''}|${toID(mon.item)}|${toID(mon.ability)}|${mon.moves.map(move => toID(move)).join(',')}|${mon.nature}|${Object.values(mon.evs).filter(ev => ev === 0).length === 6 ? '' : Object.values(mon.evs).map(ev => ev || '').join(',')}|${mon.gender || ''}|${Object.values(mon.ivs).filter(iv => iv === 31).length === 6 ? '' : Object.values(mon.ivs).map(iv => iv === 31 ? '' : iv).join(',')}|${mon.shiny ? 'S' : ''}|${mon.level === 100 ? '' : mon.level}|${(mon.happiness !== 255 || mon.hiddenpower) ? [(mon.happiness || ''), (mon.hiddenpower || ''), ''].join(',') : ''}`).join(']');
 		}
 		let link = args.join(' ');
 		if (!link.endsWith('/raw')) link += '/raw';

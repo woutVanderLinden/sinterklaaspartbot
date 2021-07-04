@@ -1,10 +1,11 @@
 module.exports = {
 	cooldown: 1,
-	help: `HPL ke links darshata hai.`,
-	permissions: 'none',
+	help: `HPL ka score dikhaata hai`,
+	permissions: 'gamma',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		let text = `**HPL Finals!**: ${websiteLink}/hpl/week7`;
-		if (tools.hasPermission(by, 'gamma', room)) return Bot.say(room, text);
-		else Bot.pm(by, text);
+		let html = fs.readFile('./data/DATA/hplboard.html', 'utf8', (err, html) => {
+			if (err) Bot.pm(by, err);
+			Bot.say(room, `/adduhtml HPLBOARD, ${html}`);
+		});
 	}
 }

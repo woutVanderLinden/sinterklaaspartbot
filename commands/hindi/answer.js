@@ -4,7 +4,7 @@ module.exports = {
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		function score (name, index) {
-			let points, username = Bot.rooms[room].users.find(u => toId(u) === name).substr(1);
+			let points, username = Bot.rooms[room].users.find(u => toID(u) === name).substr(1);
 			// console.log(name, Bot.rooms[room].users);
 			tools.addPoints(0, username, points = (index > 3 ? 2 : (5 - index)), 'groupchat-hindi-event').then(() => {
 				Bot.pm(name, `Aapko ${points} points mile!`);
@@ -19,9 +19,9 @@ module.exports = {
 		if (!info) return Bot.pm(by, "Event filhaal nahi chal raha...");
 		if (!info.sol) return Bot.pm(by, "Sabar karo zaraa...");
 		if (!info.active) return Bot.pm(by, "Late ;-;");
-		let id = toId(by);
-		let ans = toId(args.join(''));
-		let sol = toId(info.sol);
+		let id = toID(by);
+		let ans = toID(args.join(''));
+		let sol = toID(info.sol);
 		let offset = require('js-levenshtein')(ans, sol);
 		if (offset > 1) return Bot.pm(by, `Aapka answer galat tha. ;-;`);
 		if (!info.solved.length) {

@@ -18,7 +18,7 @@ exports.handler = function (room, message, isIntro, args) {
 						obj = JSON.parse(game.temp);
 						delete game.temp;
 					}
-					if (toId(obj.side.name) !== toId(Bot.status.nickName)) return Bot.say(room, "THIS ISN'T ME AAAA");
+					if (toID(obj.side.name) !== toID(Bot.status.nickName)) return Bot.say(room, "THIS ISN'T ME AAAA");
 					Bot.say(room, `/timer on`);
 					if (!game) game = BattleAI.newGame(room, obj.side);
 					if (temp) game.temp = temp;
@@ -168,11 +168,12 @@ exports.handler = function (room, message, isIntro, args) {
 			break;
 		}
 		case 'win': {
-			if (game && toId(args[1]) !== toId(Bot.status.nickName)) Bot.say(room, 'Welp, GG!');
+			if (game && toID(args[1]) !== toID(Bot.status.nickName)) Bot.say(room, 'Welp, GG!');
 			else if (game) Bot.say(room, 'Well played! GG!');
 			else Bot.say(room, 'GG, both!');
 			Bot.say(room, '/part')
 			if (game) {
+				// if (game.tier === '[Gen 8] Super Staff Bros 4 (Wii U)' && !Bot.stopBattles) Bot.say('', '/search gen8superstaffbros4wiiu');
 				return delete BattleAI.games[room];
 			}
 			else return;

@@ -1,6 +1,9 @@
 module.exports = function (command, by, args, room, isPM) {
-	if (Bot.rooms[room]?.ignore && !tools.hasPermission(by, 'admin')) return;
-	if (tools.blockedCommand(command, room) && !tools.hasPermission(by, 'admin')) return Bot.pm(by, `This command is disabled in ${room}.`);
+	room = room.toLowerCase().replace(/[^a-z0-9-]/g, '');
+	const blocked = Boolean(Bot.rooms[room]?.ignore || Bot.rooms[room]?.disabled?.includes(command));
+	if (blocked && !tools.hasPermission(by, 'admin') && !Bot.rooms[room]?.whitelist?.includes(command)) {
+		return Bot.pm(by, `${Bot.rooms[room].ignore ? 'Commands are' : 'This command is'} disabled in ${room}.`);
+	}
 	let commandReq;
 	try {
 		commandReq = require(`./commands/${room}/${command}.js`);

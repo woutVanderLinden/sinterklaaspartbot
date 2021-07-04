@@ -4,9 +4,8 @@ module.exports = {
 	permissions: "none",
 	commandFunction: function(Bot, room, time, by, args, client, pm) {
 		let qfol = "./data/QUOTES/" + room;
-		let exec = toId(args[0]) || "random";
+		let exec = toID(args[0]) || "random";
 		if (!Bot.rooms[room].rank) return Bot.pm(by, "Lemme get stuff set up, first.");
-		// Yeesh, this cold is terrible, I should probably rewrite this someday
 		switch (exec) {
 			case "add": {
 				if (pm || !tools.hasPermission(by, "beta", room)) return Bot.pm(by, "Access denied.");
@@ -93,7 +92,8 @@ module.exports = {
 				if (isNaN(ano) || ano < 1 || ano > qArr.length) {
 					// run search and post a random out of results
 					let quote = qArr.filter(quote => toID(quote).includes(toID(args.join('')))).random();
-					if (!quote) return Bot.say(room, `No quote found.`);
+					if (!quote) return Bot.pm(by, `No quote found.`);
+					if (pm || !tools.hasPermission(by, 'gamma', room)) return Bot.sendHTML(by, quote);
 					return Bot.say(room, `/adduhtml QUOTE, <hr /> ` + tools.quoteParse(quote) + '<hr />');
 				}
 				let qtext = tools.quoteParse(qArr[ano - 1]);

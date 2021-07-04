@@ -3,11 +3,10 @@ module.exports = {
 	help: `Adds a command. Syntax: ${prefix}addcommand (name);(permissions);(room);(cooldown);(help);(output)`,
 	permissions: 'admin',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		// I think this is a bit broken at the moment; plan to rewrite
 		let sarg = args.join(' ').split(';');
 		if (sarg.length < 4) return Bot.say(room, unxa);
-		let newName = tools.commandAlias(toId(sarg.shift()));
-		let newPerm = toId(sarg.shift());
+		let newName = tools.commandAlias(toID(sarg.shift()));
+		let newPerm = toID(sarg.shift());
 		let newRoom = sarg.shift().toLowerCase().replace(/[^a-z0-9-]/g, '');
 		if (!newRoom) newRoom = room;
 		let newCool = parseInt(sarg.shift().replace(/[^0-9]/g, ''));

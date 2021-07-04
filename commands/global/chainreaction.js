@@ -1,36 +1,35 @@
 module.exports = {
-	cooldown: 1,
 	help: `https://brilliant.org/wiki/chain-reaction-game/`,
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client, isPM) {
 		if (!args.length) args.push('help');
-		switch (toId(args.shift())) {
+		switch (toID(args.shift())) {
 			case 'help': case 'h': {
-				if (isPM) return Bot.pm(by, this.help);
+				if (isPM) return Bot.roomReply(room, by, this.help);
 				return Bot.say(room, this.help);
 				break;
 			}
 			case 'join': case 'j': {
-				if (!Bot.rooms[room].chainreaction) return Bot.pm(by, 'Nope, no Chain Reaction here.');
-				if (Bot.rooms[room].chainreaction.started) return Bot.pm(by, 'F in being too late.');
+				if (!Bot.rooms[room].chainreaction) return Bot.roomReply(room, by, 'Nope, no Chain Reaction here.');
+				if (Bot.rooms[room].chainreaction.started) return Bot.roomReply(room, by, 'F in being too late.');
 				let pls = Object.keys(Bot.rooms[room].chainreaction.players), game = Bot.rooms[room].chainreaction;
-				if (pls > 8 || pls >= game.height * game.width) return Bot.pm(by, "Sorry, hit the player cap. ;-;");
+				if (pls > 8 || pls >= game.height * game.width) return Bot.roomReply(room, by, "Sorry, hit the player cap. ;-;");
 				if (Bot.rooms[room].chainreaction.addPlayer(by.substr(1))) return Bot.say(room, `${by.substr(1)} joined the game!`);
-				return Bot.pm(by, "You're already in it. o.o");
+				return Bot.roomReply(room, by, "You're already in it. o.o");
 				break;
 			}
 			case 'leave': case 'l': {
-				if (!Bot.rooms[room].chainreaction) return Bot.pm(by, 'Nope, no Chain Reaction here.');
-				if (Bot.rooms[room].chainreaction.started) return Bot.pm(by, 'F in being too late.');
+				if (!Bot.rooms[room].chainreaction) return Bot.roomReply(room, by, 'Nope, no Chain Reaction here.');
+				if (Bot.rooms[room].chainreaction.started) return Bot.roomReply(room, by, 'F in being too late.');
 				if (Bot.rooms[room].chainreaction.removePlayer(by.substr(1))) return Bot.say(room, `${by.substr(1)} left the game!`);
-				return Bot.pm(by, "Join first, nerd.");
+				return Bot.roomReply(room, by, "Join first, nerd.");
 				break;
 			}
 			case 'new': case 'n': {
-				if (isPM) return Bot.pm(by, "Games can only be created in chat.");
-				if (!tools.hasPermission(by, 'gamma', room)) return Bot.pm(by, "Access denied.");
-				if (Bot.rooms[room].chainreaction) return Bot.pm(by, 'One\'s going on.');
-				if (!(['boardgames'].includes(room) && tools.hasPermission(by, 'gamma', room)) && !tools.hasPermission(by, 'beta', room)) return Bot.pm(by, 'Access denied.');
+				if (isPM) return Bot.roomReply(room, by, "Games can only be created in chat.");
+				if (!tools.hasPermission(by, 'gamma', room)) return Bot.roomReply(room, by, "Access denied.");
+				if (Bot.rooms[room].chainreaction) return Bot.roomReply(room, by, 'One\'s going on.');
+				if (!(['boardgames'].includes(room) && tools.hasPermission(by, 'gamma', room)) && !tools.hasPermission(by, 'beta', room)) return Bot.roomReply(room, by, 'Access denied.');
 				let dimensions = [9, 6];
 				args = args.join(' ').split(/[ ,x]/);
 				if (args.length) { 
@@ -46,21 +45,21 @@ module.exports = {
 				break;
 			}
 			case 'start': case 's': {
-				if (!Bot.rooms[room].chainreaction) return Bot.pm(by, 'Nope, no Chain Reaction here.');
-				if (!(['boardgames'].includes(room) && tools.hasPermission(by, 'gamma', room)) && !tools.hasPermission(by, 'beta', room)) return Bot.pm(by, 'Access denied.');
-				if (Bot.rooms[room].chainreaction.started) return Bot.pm(by, 'F in being too late.');
+				if (!Bot.rooms[room].chainreaction) return Bot.roomReply(room, by, 'Nope, no Chain Reaction here.');
+				if (!(['boardgames'].includes(room) && tools.hasPermission(by, 'gamma', room)) && !tools.hasPermission(by, 'beta', room)) return Bot.roomReply(room, by, 'Access denied.');
+				if (Bot.rooms[room].chainreaction.started) return Bot.roomReply(room, by, 'F in being too late.');
 				if (Object.keys(Bot.rooms[room].chainreaction.players).length < 2) return Bot.say(room, "Not enough players. ;-;");
 				Bot.rooms[room].chainreaction.start();
 				break;
 			}
 			case 'click': {
 				let CR = Bot.rooms[room].chainreaction;
-				if (!CR) return Bot.pm(by, 'Nope, no Chain Reaction here.');
-				if (!CR.started) return Bot.pm(by, 'Not started. -_-');
-				if (!args.length == 2) return Bot.pm(by, unxa);
-				if (CR.turn !== toId(by) || CR.displaying) return;
-				let boards = CR.tap(parseInt(args.shift()), parseInt(args.shift()), CR.players[toId(by)].col);
-				if (!boards || !boards.length) return Bot.pm(by, 'Just click an empty spot or your own colour, nerd.');
+				if (!CR) return Bot.roomReply(room, by, 'Nope, no Chain Reaction here.');
+				if (!CR.started) return Bot.roomReply(room, by, 'Not started. -_-');
+				if (!args.length == 2) return Bot.roomReply(room, by, unxa);
+				if (CR.turn !== toID(by) || CR.displaying) return;
+				let boards = CR.tap(parseInt(args.shift()), parseInt(args.shift()), CR.players[toID(by)].col);
+				if (!boards || !boards.length) return Bot.roomReply(room, by, 'Just click an empty spot or your own colour, nerd.');
 				new Promise ((resolve, reject) => {
 					function displayQueue () {
 						if (!boards.length) return resolve();
@@ -76,7 +75,7 @@ module.exports = {
 				break;
 			}
 			case 'end': case 'e': {
-				if (!(['boardgames'].includes(room) && tools.hasPermission(by, 'gamma', room)) && !tools.hasPermission(by, 'beta', room)) return Bot.pm(by, 'Access denied.');
+				if (!(['boardgames'].includes(room) && tools.hasPermission(by, 'gamma', room)) && !tools.hasPermission(by, 'beta', room)) return Bot.roomReply(room, by, 'Access denied.');
 				let CR = Bot.rooms[room].chainreaction;
 				if (!CR) return Bot.say(room, "Didn't have one active anyways.");
 				delete Bot.rooms[room].chainreaction;
@@ -84,11 +83,11 @@ module.exports = {
 				break;
 			}
 			case 'disqualify': case 'dq': case 'modkill': case 'mk': {
-				if (!(['boardgames'].includes(room) && tools.hasPermission(by, 'gamma', room)) && !tools.hasPermission(by, 'beta', room)) return Bot.pm(by, 'Access denied.');
-				if (isPM) return Bot.pm(by, "Do it in chat, onegai");
+				if (!(['boardgames'].includes(room) && tools.hasPermission(by, 'gamma', room)) && !tools.hasPermission(by, 'beta', room)) return Bot.roomReply(room, by, 'Access denied.');
+				if (isPM) return Bot.roomReply(room, by, "Do it in chat, onegai");
 				let CR = Bot.rooms[room].chainreaction;
 				if (!CR) return Bot.say(room, "Didn't have one active anyways.");
-				let user = toId(args.join(''));
+				let user = toID(args.join(''));
 				if (!CR.PL.includes(user)) return Bot.say(room, "That user is not in the game.");
 				if (!CR.order.includes(user)) return Bot.say(room, "That user is already eliminated. 'o.o");
 				if (CR.turn === user) CR.nextTurn();
@@ -99,39 +98,39 @@ module.exports = {
 				break;
 			}
 			case 'board': case 'b': {
-				if (!Bot.rooms[room].chainreaction) return Bot.pm(by, "C-can't find one. ;-;");
+				if (!Bot.rooms[room].chainreaction) return Bot.roomReply(room, by, "C-can't find one. ;-;");
 				if (!tools.hasPermission(by, 'gamma', room)) return Bot.sendHTML(by, Bot.rooms[room].chainreaction.display());
 				Bot.say(room, "/adduhtml CR, " + Bot.rooms[room].chainreaction.display());
 				break;
 			}
 			case 'pl': case 'playerlist': case 'players': case 'order': case 'o': case 'turnorder': case 'to': {
 				let CR = Bot.rooms[room].chainreaction;
-				if (!CR) return Bot.pm(by, "Players of a non-existent game, surprisingly, do not exist.");
+				if (!CR) return Bot.roomReply(room, by, "Players of a non-existent game, surprisingly, do not exist.");
 				let html = "<hr/>" + CR.order.map(u => CR.players[u]).map(u => `<b style="color:${u.col};">${u.name.replace(/</g, '&lt;')}</b>`).join(', ') + "<hr/>";
 				if (tools.hasPermission(by, 'gamma', room)) Bot.say(room, `/adduhtml CRPLAYERS,${html}`);
 				else Bot.sendHTML(by, html);
 				break;
 			}
 			case 'sub': {
-				if (!(['boardgames'].includes(room) && tools.hasPermission(by, 'gamma', room)) && !tools.hasPermission(by, 'beta', room)) return Bot.pm(by, 'Access denied.');
-				if (isPM) return Bot.pm(by, "Say it in chat you coward");
+				if (!(['boardgames'].includes(room) && tools.hasPermission(by, 'gamma', room)) && !tools.hasPermission(by, 'beta', room)) return Bot.roomReply(room, by, 'Access denied.');
+				if (isPM) return Bot.roomReply(room, by, "Say it in chat you coward");
 				if (!Bot.rooms[room].chainreaction) return Bot.say(room, "Don't have a game active.");
 				args = args.join(' ').split(/\s*,\s*/);
 				if (args.length !== 2) return Bot.say(room, unxa);
 				let CR = Bot.rooms[room].chainreaction;
-				let ids = args.map(toId);
+				let ids = args.map(toID);
 				if (Object.keys(CR.players).includes(ids[0]) && Object.keys(CR.players).includes(ids[1])) return Bot.say(room, 'The one you\'re subbing in is already a player!');
 				if (!Object.keys(CR.players).includes(ids[0]) && !Object.keys(CR.players).includes(ids[1])) return Bot.say(room, "Neither of those are in the game.");
 				let going = Object.keys(CR.players).includes(ids[1]) ? args[1] : args[0], coming = Object.keys(CR.players).includes(ids[1]) ? args[0] : args[1];
-				if (coming === toId(Bot.status.nickName)) return Bot.say(room, 'NO U');
-				CR.players[toId(coming)] = Object.assign({}, CR.players[toId(going)]);
-				CR.players[toId(coming)].name = coming;
-				delete CR.players[toId(going)];
-				CR.order = CR.order.map(id => id === toId(going) ? toId(coming) : id);
-				CR.PL = CR.PL.map(id => id === toId(going) ? toId(coming) : id);
-				if (CR.turn === toId(going)) CR.turn = toId(coming);
+				if (coming === toID(Bot.status.nickName)) return Bot.say(room, 'NO U');
+				CR.players[toID(coming)] = Object.assign({}, CR.players[toID(going)]);
+				CR.players[toID(coming)].name = coming;
+				delete CR.players[toID(going)];
+				CR.order = CR.order.map(id => id === toID(going) ? toID(coming) : id);
+				CR.PL = CR.PL.map(id => id === toID(going) ? toID(coming) : id);
+				if (CR.turn === toID(going)) CR.turn = toID(coming);
 				Object.keys(CR.colours).forEach(col => {
-					if (CR.colours[col] === toId(going)) CR.colours[col] = toId(coming);
+					if (CR.colours[col] === toID(going)) CR.colours[col] = toID(coming);
 				});
 				Bot.say(room, `/adduhtml CR, ${CR.display()}`);
 				Bot.say(room, `[[ ]]${going} has been subbed with ${coming}!`);

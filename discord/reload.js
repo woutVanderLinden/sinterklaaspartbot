@@ -3,7 +3,7 @@ module.exports = {
 	admin: true,
 	commandFunction: function (args, message, Bot) {
 		if (!args.length) return message.channel.send(unxa).then(msg => msg.delete({timeout: 3000}));
-		let command = toId(args.join(''));
+		let command = toID(args.join(''));
 		command = require('../data/ALIASES/discord.json')[command] || command;
 		if (!fs.readdirSync(`./discord`).includes(command + '.js')) return message.channel.send("Not found.");
 		delete require.cache[require.resolve(`./${command}.js`)];

@@ -2,7 +2,7 @@ exports.handler = {
 	initialize: () => {
 		Bot.DB = require('origindb')('data/DATA');
 		Bot.userAppeared = function (user) {
-			user = toId(user);
+			user = toID(user);
 			let mails = require('origindb')('data/DATA')('mails').get(user);
 			if (!Bot.lmp) Bot.lmp = {};
 			if (!mails || !mails.length) return;
@@ -15,13 +15,17 @@ exports.handler = {
 			gen8metronomebattle: [`Dusclops||eviolite|unaware|metronome|Relaxed|252,252,252,252,252,||,,,,,0|||]Dusclops||eviolite|unaware|metronome|Relaxed|252,252,252,252,252,||,,,,,0|||`]
 		}
 		Bot.hotpatch = require('./data/hotpatch.js');
+		Bot.watcher = require('./watcher.js')();
 		if (!Bot.seenBattles) Bot.seenBattles = new Set();
 		Bot.commandHandler = require('./commands.js');
 		GAMES.init();
 	},
-	foo: () => Bot.say('botdevelopment', 'baz'),
 	chaterror: (room, message, isIntro) => {
+		if (message.match(/^The user .*? is offline\.$/) || message.match(/^You do not have permission to use PM HTML to users who are not in this room\.$/)) return;
 		if (!isIntro) console.log('ERROR: ' + room + '> ' + message);
+		try {
+			client.channels.cache.get('719087165241425981').send('ERROR: ' + room + '> ' + message);
+		} catch {};
 	},
 	popup: (message) => console.log('POPUP: ' + message),
 	tour: (room, data) => {
@@ -37,9 +41,9 @@ exports.handler = {
 		return;
 	},
 	nick: (by, old, room, time) => {
+		if (by === old) return;
 		Bot.DB('joins').set(old, time);
 		Bot.userAppeared(by);
-		if (by === old) return;
 		let nDB = Bot.DB('alts').object();
 		if (!nDB[by]) nDB[by] = [];
 		if (!nDB[by].includes(old)) {
@@ -62,23 +66,22 @@ exports.handler = {
 			if (roomData.assign) Object.keys(roomData.assign).forEach(key => {
 				if (Bot.rooms[room]) Bot.rooms[room][key] = roomData.assign[key];
 			});
-			if (roomData.auth) Bot.rooms[room].auth = roomData.auth;
-			if (roomData.ignore) Bot.rooms[room].ignore = true;
+			['auth', 'ignore', 'blacklist', 'whitelist', 'template'].forEach(key => {
+				if (roomData.hasOwnProperty(key)) Bot.rooms[room][key] = roomData[key];
+			});
 		} catch {};
 		return;
 	},
 	chatsuccess: (room, time, by, message) => {
-		Bot.rooms[room].rank = by.charAt(0);
+		if (!message.charAt(0) === '/') Bot.rooms[room].rank = by.charAt(0);
 	},
-	pmsuccess: (to, message) => {
-		return;
-	},
+	pmsuccess: (to, message) => {},
 	updatechallenges: data => {
 		try {
 			data = JSON.parse(data).challengesFrom;
 			for (let key in data) {
 				if (data[key] === 'gen8ou') {
-					if (!Bot.teams.OU.length) {
+					if (!Bot.teams.gen8ou.length) {
 						Bot.pm(key, "Sorry, I don't have a team for OU.");
 						continue;
 					}
@@ -108,7 +111,7 @@ exports.handler = {
 					if (!battle.minElo || battle.minElo === 'tour') return; // don't report direct challenges / tour battles
 					let prefix = Bot.rooms['2v2']._ladderPrefix, floor = Bot.rooms['2v2']._ladderFloor;
 					if (floor && battle.minElo < floor) return; // Rating floor
-					if (prefix && !toId(battle.p1).startsWith(prefix) && !toId(battle.p2).startsWith(prefix)) return; // Ladder prefix
+					if (prefix && !toID(battle.p1).startsWith(prefix) && !toID(battle.p2).startsWith(prefix)) return; // Ladder prefix
 					Bot.seenBattles.add(batt);
 					Bot.say('2v2', `/addhtmlbox <span class="username">${tools.colourize(battle.p1)}</span> vs <span class="username">${tools.colourize(battle.p2)}</span>: «<a href="/${batt}" style="margin-top:25px;">${batt}</a>» (${battle.minElo})`);
 				});
@@ -120,10 +123,12 @@ exports.handler = {
 			try {
 				let room = JSON.parse(info.join('|'));
 				if (!Bot.rooms[room.id]) return;
+				if (room.id.startsWith('view-bot-')) return; // don't parse stuff from HTML rooms
 				Bot.rooms[room.id].type = room.visibility;
 				Bot.rooms[room.id].rank = room.users.find(u => toID(u) === toID(Bot.status.nickName))?.[0];
 			} catch (e) {
 				Bot.log(e);
+				Bot.log(info);
 			}
 		}
 	},

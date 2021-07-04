@@ -1,12 +1,7 @@
-global.toId = function (text) {
-	if (typeof text === 'string') return text.toLowerCase().replace(/[^a-z0-9]/g, '');
-}
-
 global.toID = function (text) {
 	if (typeof text === 'string') return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
-// Am in the process of switching to toID
 
 /**************************
 *        Modules          *
@@ -17,7 +12,7 @@ global.util = require('util');
 global.https= require('https');
 global.axios = require('axios');
 global.levenshtein = require('js-levenshtein');
-global.fs = require('fs');
+global.fs = require('fs-extra');
 global.config = require('./config.js');
 global.tools = require('./data/tools.js');
 global.BattleAI = require('./data/BATTLE/ai.js').AI;
@@ -30,7 +25,6 @@ global.GAMES = require('./data/GAMES/index.js');
 
 global.queryRoom = '';
 global.cooldownObject = {};
-global.ignoreRooms = config.ignoreRooms.map(room => room.replace(/[^0-9a-z-]/g, ''));
 global.prefix = config.prefix;
 global.websiteLink = config.websiteLink;
 
@@ -40,6 +34,8 @@ global.websiteLink = config.websiteLink;
 **************************/
 
 global.unxa = 'Unexpected number of arguments.';
+global.tcroom = 'groupchat-partbot-1v1tc';
+global.tctest = 'groupchat-partbot-1v1tc';
 global.typelist = ['bug', 'dark', 'dragon', 'electric', 'fairy', 'fighting', 'fire', 'flying', 'ghost', 'grass', 'ground', 'ice', 'normal', 'poison', 'psychic', 'rock', 'steel', 'water'];
 
 

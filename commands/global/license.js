@@ -7,17 +7,17 @@ module.exports = {
 		if (!Bot.rooms[room].shop) Bot.rooms[room].shop = {};
 		if (!Bot.rooms[room].shop.jpl) Bot.rooms[room].shop.jpl = [];
 		let name = args.join(' ');
-		if (Bot.rooms[room].shop.jpl.includes(toId(name))) {
-			Bot.rooms[room].shop.jpl.remove(toId(name));
+		if (Bot.rooms[room].shop.jpl.includes(toID(name))) {
+			Bot.rooms[room].shop.jpl.remove(toID(name));
 			Bot.log(by.substr(1) + ' delicensed ' + name + ' in ' + Bot.rooms[room].title);
 			tools.updateShops(room);
 			if (Bot.rooms[room].shop.channel) client.channels.cache.get(Bot.rooms[room].shop.channel).send(` ${name} has been delicensed for a joinphrase.`);
 			return Bot.say(room, `${name} has been delicensed for a joinphrase.`);
 		}
-		Bot.rooms[room].shop.jpl.push(toId(name));
+		Bot.rooms[room].shop.jpl.push(toID(name));
 		Bot.log(by.substr(1) + ' licensed ' + name + ' in ' + Bot.rooms[room].title);
 		tools.updateShops();
 		if (Bot.rooms[room].shop.channel) client.channels.cache.get(Bot.rooms[room].shop.channel).send(` ${name} has been licensed for a joinphrase.`);
-		return Bot.say(room, `${name} has been licensed for a joinphrase.`);
+		return Bot.say(room, ` ${name} has been licensed for a joinphrase.`);
 	}
 }

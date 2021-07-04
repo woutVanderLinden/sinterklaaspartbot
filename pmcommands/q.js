@@ -12,6 +12,7 @@ module.exports = {
 			if (rooms.length === 1) room = rooms[0];
 			else return Bot.sendHTML(by, `Multiple rooms found! Which did you mean?<br>` + rooms.map(r => `<button name="send" value="/msg ${Bot.status.nickName},${prefix}q ${r}, random">${Bot.rooms[r].title}</button>`));
 		}
+		room = aliases[room] || room;
 		if (!room || !Bot.rooms[room]) return Bot.pm(by, 'Invalid room.');
 		return Bot.commandHandler('q', by, args[1] ? args[1].split(' ') : [], room, true);
 	}

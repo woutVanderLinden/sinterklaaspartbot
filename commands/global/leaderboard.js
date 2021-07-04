@@ -8,10 +8,11 @@ module.exports = {
 		switch (room) {
 			default: {
 				let sort = row => row.reduce((a, b, i) => a + (i ? b / (100000 ** i) : 0), 0);
-				let data = Object.keys(lb.users).map(user => [lb.users[user].name, ...lb.users[user].points]);
-				if (!data.length) return Bot.say(room, "Empty board. o.o");
-				html = tools.board(data, ['Name', ...lb.points.map(p => p[2])], sort, ['40px', '160px', ...Array.from({length: lb.points.length}).map(t => Math.floor(150 / lb.points.length) + 'px')], 'orange', null, parseInt(toId(args.join(''))) || 10, 'Rank');
-				if (typeof html !== 'string') return Bot.pm(by, 'Something went wrong.');
+				let info = Object.keys(lb.users).map(user => [lb.users[user].name, ...lb.users[user].points]);
+				if (!info.length) return Bot.say(room, "Empty board. o.o");
+				const boardArgs = [info, ['Name', ...lb.points.map(p => p[2])], sort, ['40px', '160px', ...Array.from({length: lb.points.length}).map(t => Math.floor(150 / lb.points.length) + 'px')], Bot.rooms[room].template || 'orange', null, parseInt(toID(args.join(''))) || 10, 'Rank', true];
+				html = tools.board(...boardArgs);
+				if (typeof html !== 'string') return Bot.pm(by, 'Something went wrong.', Bot.log(html));
 				if (tools.hasPermission(by, 'gamma', room) && tools.canHTML(room)) return Bot.say(room, '/adduhtml LB, <div style="max-height: 320px; overflow-y: scroll;"><center>' + html + '</center></div>');
 				else return Bot.sendHTML(by, '<div style="max-height: 320px; overflow-y: scroll;"><center>' + html + '</center></div>');
 				break;

@@ -5,8 +5,8 @@ module.exports = {
 		for (let r in Bot.rooms) {
 			r = Bot.rooms[r];
 			if (['Hindi', 'Board Games', '2v2'].includes(r.title)) {
-				if (tools.hasPermission(by, 'beta', toId(r.title)) || /^[%@*&]/.test(by)) {
-					const user = toId(args.join(''));
+				if (tools.hasPermission(by, 'beta', toID(r.title)) || /^[%@*&]/.test(by)) {
+					const user = toID(args.join(''));
 					if (!user) return Bot.pm(by, `Whose?`);
 					const alts = require('origindb')('data/DATA')('alts').get(user);
 					if (!alts || !alts.length) return Bot.pm(by, `${user} has no known alts.`);

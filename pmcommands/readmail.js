@@ -2,7 +2,7 @@ module.exports = {
 	help: `Reads the latest message in your inbox!`,
 	permissions: 'none',
 	commandFunction: function (Bot, by, args, client) {
-		const user = toId(by);
+		const user = toID(by);
 		const DB = require('origindb')('data/DATA');
 		const mails = DB('mails').get(user);
 		if (!mails || !mails.length) return Bot.pm(by, "Nope, no unread mails!");

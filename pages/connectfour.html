@@ -1,0 +1,202 @@
+<head>
+	<title>Connect Four</title>
+	<link rel="icon" href="/public/icon.png">
+	<style>
+		#parent {
+			width: auto;
+			height: auto;
+			margin: auto;
+			padding: 3%;
+			display: inline-block;
+			margin-top: 4%;
+		}
+		table {
+			margin-top: 3%;
+			border-collapse: collapse;
+			background-color: #0080ff;
+			border: none;
+			border-radius: 5%;
+		}
+		tr {
+			height: 35px;
+		}
+		td {
+			width: 35px;
+			vertical-align: middle;
+			text-align: center;
+		}
+		span {
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			border: 1px solid black;
+			display: inline-block;
+			margin: auto;
+			vertical-align: middle;
+		}
+		#errordisplay {
+			display: none;
+		}
+		button {
+			margin-top: 5%;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		img.menubutton {
+			height: 20px;
+			width: 20px;
+		}
+		#flipped {
+			-webkit-transform: scaleX(-1);
+			-moz-transform: scaleX(-1);
+			-o-transform: scaleX(-1);
+			transform: scaleX(-1);
+
+			filter: FlipH;
+			-ms-filter: "FlipH";
+		}
+		div#errordisplay {
+			margin-top: 5%;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> <!--jQuery-->
+	<script>
+		let gameInput = "##GAME_STR##";
+		let boards = [], showTurn = 0, game, res, generating = true;
+		(() => {
+			let quickValid = /^(?:[a-z]{2})?\d*$/i.test(gameInput), dims;
+			if (!quickValid) return alert("Invalid game code!");
+			dims = {
+				rows: 6,
+				cols: 7
+			}
+			if (/^[a-z]{2}/i.test(gameInput)) {
+				let d = gameInput.substr(0, 2).toLowerCase();
+				gameInput = gameInput.substr(2);
+				dims.rows = d.charCodeAt(0) - 'a'.charCodeAt(0);
+				dims.cols = d.charCodeAt(1) - 'a'.charCodeAt(0);
+			}
+			let moves = gameInput.split('');
+			class ConnectFour {
+				constructor (info) {
+					info.rows = parseInt(info.rows);
+					if (info.rows > 10 || info.rows < 5 || !info.rows) info.rows = 6;
+					info.cols = parseInt(info.cols);
+					if (info.cols > 10 || info.cols < 5 || !info.cols) info.cols = 7;
+					this.rows = info.rows;
+					this.cols = info.cols;
+					this.turn = 'Y';
+					this.board = Array.from({length: this.cols}).map(() => []);
+					this.moves = [];
+				}
+				cmp (a, b, min) {
+					return min ? (a > b ? b : a) : (a > b ? a : b);
+				}
+				nextTurn (last) {
+					let win = this.isWon(this.board, last);
+					if (win) return win;
+					this.turn = this.turn === 'Y' ? 'R' : 'Y';
+					return false;
+				}
+				drop (col) {
+					return new Promise ((resolve, reject) => {
+						col = parseInt(col);
+						if (!(col >= 0 && col < this.cols)) return reject('Column does not exist');
+						if (this.board[col].length === this.rows) return reject('Column is full');
+						this.board[col].push(this.turn);
+						this.moves.push(col);
+						return resolve(this.nextTurn(col));
+					});
+				}
+				isWon (board, col) {
+					if (!board) board = this.board;
+					let row = this.board[col].length - 1, j;
+					// Vertical
+					for (let j = this.cmp(row - 3, 0); j <= this.cmp(this.rows - 4, row, true); j++) if (this.board[col][j] === this.turn && this.board[col][j + 1] === this.turn && this.board[col][j + 2] === this.turn && this.board[col][j + 3] === this.turn) return this.turn;
+					// Horizontal
+					for (let j = this.cmp(col - 3, 0); j <= this.cmp(this.cols - 4, col, true); j++) if (this.board[j][row] === this.turn && this.board[j + 1][row] === this.turn && this.board[j + 2][row] === this.turn && this.board[j + 3][row] === this.turn) return this.turn;
+					// Ascending
+					j = [col - 3, row - 3];
+					while (j[0] < 0 || j[1] < 0) [j[0]++, j[1]++];
+					for (; j[0] <= this.cmp(this.cols - 4, col, true) && j[1] <= this.cmp(this.rows - 4, row, true); j[0]++, j[1]++) if (this.board[j[0]][j[1]] === this.turn && this.board[j[0] + 1][j[1] + 1] === this.turn && this.board[j[0] + 2][j[1] + 2] === this.turn && this.board[j[0] + 3][j[1] + 3] === this.turn) return this.turn;
+					// Descending
+					j = [col - 3, row + 3];
+					while (j[0] < 0 || j[1] >= this.rows) [j[0]++, j[1]--];
+					for (; j[0] <= this.cmp(this.cols - 4, col, true) && j[1] >= this.cmp(row - 3, 3); j[0]++, j[1]--) if (this.board[j[0]][j[1]] === this.turn && this.board[j[0] + 1][j[1] - 1] === this.turn && this.board[j[0] + 2][j[1] - 2] === this.turn && this.board[j[0] + 3][j[1] - 3] === this.turn) return this.turn;
+					return false;
+				}
+				boardHTML () {
+					let colours = {'Y': "#ffff00", 'R': "#e60000", 'E': "#111111", 'bg': "#0080ff"};
+					let board = Array.from({length: this.cols}).map((col, x) => Array.from({length: this.rows}).map((_, y) => this.board[x][y] || 'E'));
+					board.forEach(col => col.reverse());
+					let html = `<center style="max-height: 400px; overflow-y: scroll;"><table style="border:none;background:${colours.bg};border-radius:5%;">${board[0].map((col, i) => board.map(row => row[i])).map((row) => `<tr>${row.map((bulb, y) => `<td><div style="height:35px;width:35px;background-image:radial-gradient(${colours[bulb]} 50%,#333333);border-radius:50%;margin:3px"></div></td>`).join('')}</tr>`).join('')}</table></center>`;
+					return html;
+				}
+			}
+			game = new ConnectFour(dims);
+			boards.push(game.boardHTML());
+			function genBoards () {
+				return new Promise(resolve => {
+					game.drop(moves.shift()).then(() => {
+						boards.push(game.boardHTML());
+						if (moves.length) genBoards().then(() => resolve());
+						else resolve();
+					}).catch(alert);
+				});
+			}
+			genBoards().then(() => {
+				generating = false;
+			})
+		})();
+		function displayBoard (board) {
+			document.getElementById('matchboard').innerHTML = board;
+			document.getElementById('turn').innerHTML = '#' + showTurn;
+		}
+		function lastMove () {
+			if (generating) return;
+			if (boards[showTurn - 1]) {
+				showTurn--;
+				displayBoard(boards[showTurn]);
+			}
+			else {
+				let errDiv = document.getElementById('errordisplay');
+				errDiv.innerHTML = "That was the initial state. 'o.o";
+				$('div#errordisplay').fadeIn(300).delay(1500).fadeOut(400);
+			}
+		}
+		function nextMove () {
+			if (generating) return;
+			if (boards[showTurn + 1]) {
+				showTurn++;
+				displayBoard(boards[showTurn]);
+			}
+			else {
+				let errDiv = document.getElementById('errordisplay');
+				errDiv.innerHTML = `The match ended here`;
+				$('div#errordisplay').fadeIn(300).delay(2000).fadeOut(400);
+			}
+		}
+		document.onkeydown = key => {
+			if (key.keyCode === 37) /* left */ return lastMove();
+			if (key.keyCode === 39) /* right */ return nextMove();
+		}
+		window.onload = function () {
+			document.getElementById('matchboard').innerHTML = boards[0];
+			displayBoard(boards[0]);
+		}
+	</script>
+</head>	
+<body>
+	<center>
+		<div id="parent">
+			<table id="matchboard">
+			</table>
+			<div class="menu">
+				<button onclick="lastMove()"><img class="menubutton" src="https://cdn3.iconfinder.com/data/icons/multimedia-ver-3-glyph/32/backward_back_arrow_previous_left-512.png" /></button>
+				<div style="display: inline-block; width: 100px; font-weight: bold; vertical-align: middle;" id="turn">#0</div>
+				<button onclick="nextMove()"><img class="menubutton" id="flipped" src="https://cdn3.iconfinder.com/data/icons/multimedia-ver-3-glyph/32/backward_back_arrow_previous_left-512.png" /></button>
+			</div>
+			<div id="errordisplay">STOP PEEKING AT THE CODE</div>
+		</div>
+	</center>
+</body>

@@ -6,13 +6,13 @@ module.exports = {
 		if (!args.length) args.push('help');
 		switch (args.shift().toLowerCase()) {
 			case 'help': case 'h': {
-				let help	= `The aim of the game is to get more than the dealer and win. However, if your score exceeds 21, you 'bust' and lose. Cards 2-10 have their face values; J, Q, and K are 10 apiece, and A can be 1 or 11. Use \`\`${prefix}hit\`\` to draw another card, \`\`${prefix}stay\`\` to end, or \`\`${prefix}hand\`\` to see your cards.`;
+				let help	= `The aim of the game is to get more than the dealer and win. However, if your score exceeds 21, you 'bust' and lose. Cards 2-10 have their face values; J, Q, and K are 10 apiece, and A can be 1 or 11. Use ${prefix}hit to draw another card, ${prefix}stay to end, or ${prefix}hand to see your cards.`;
 				if (tools.hasPermission(by, 'gamma', room)) return Bot.say(room, help);
-				else return Bot.pm(by, '!code ' + help);
+				else return Bot.roomReply(room, by, help);
 				break;
 			}
 			case 'new': case 'n': case 'create': case 'c': {
-				if (!tools.hasPermission(by, 'beta', room)) return Bot.pm(by, 'Access denied.');
+				if (!tools.hasPermission(by, 'beta', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (Bot.rooms[room].blackjack) return Bot.say(room, `A game of Blackjack is in signups! Use \`\`${prefix}blackjack join\`\` to join!`);
 				Bot.rooms[room].blackjack = {
 					players: {},
@@ -54,7 +54,7 @@ module.exports = {
 							else Bot.say(room, `The dealer has ${score}! (${Bot.rooms[room].blackjack.dealer.map(card => tools.cardFrom(card).join('')).join(', ')})`);
 							let winners = Object.keys(Bot.rooms[room].blackjack.players).filter(player => tools.sumBJ(Bot.rooms[room].blackjack.players[player].cards) > score && !Bot.rooms[room].blackjack.players[player].busted).map(player => Bot.rooms[room].blackjack.players[player].name);
 							Bot.say(room, `Winners: ${winners.length ? tools.listify(winners) : 'None'}!`);
-							let nbj = winners.filter(player => Bot.rooms[room].blackjack.players[toId(player)].nbj);
+							let nbj = winners.filter(player => Bot.rooms[room].blackjack.players[toID(player)].nbj);
 							if (nbj.length) Bot.say(room, `${tools.listify(nbj)} ${nbj.length == 1 ? 'has' : 'have'} a natural Blackjack!`);
 							nbj.forEach(player => tools.addPoints(0, player, 5, room));
 							winners.forEach(player => tools.addPoints(0, player, 5, room));
@@ -68,7 +68,7 @@ module.exports = {
 							Bot.commandHandler('stay', ' ' + Bot.rooms[room].blackjack.turn, [], room);
 						}, 60000, room);
 						Bot.say(room, ` ${Bot.rooms[room].blackjack.players[Bot.rooms[room].blackjack.turn].name}'${Bot.rooms[room].blackjack.turn.endsWith('s') ? '' : 's'} turn! Use \`\`${prefix}hit\`\` or \`\`${prefix}stay\`\`!`);
-						return Bot.pm(Bot.rooms[room].blackjack.turn, `Your cards: ${Bot.rooms[room].blackjack.players[Bot.rooms[room].blackjack.turn].cards.map(card => tools.cardFrom(card).join('')).join(', ')}. Your current sum: ${tools.sumBJ(Bot.rooms[room].blackjack.players[Bot.rooms[room].blackjack.turn].cards)}`);
+						return Bot.roomReply(room, Bot.rooms[room].blackjack.turn, `Your cards: ${Bot.rooms[room].blackjack.players[Bot.rooms[room].blackjack.turn].cards.map(card => tools.cardFrom(card).join('')).join(', ')}. Your current sum: ${tools.sumBJ(Bot.rooms[room].blackjack.players[Bot.rooms[room].blackjack.turn].cards)}`);
 					}
 				}
 				if (args.length) {
@@ -83,24 +83,24 @@ module.exports = {
 			}
 			case 'join': case 'j': {
 				if (!Bot.rooms[room].blackjack) return Bot.say(room, `There isn't a game of Blackjack active...`);
-				if (Bot.rooms[room].blackjack[toId(by)]) return Bot.pm(by, `You've already joined!`);
-				if (Bot.rooms[room].blackjack.started) return Bot.pm(by, 'It already started, F.');
-				Bot.rooms[room].blackjack.players[toId(by)] = {
+				if (Bot.rooms[room].blackjack[toID(by)]) return Bot.roomReply(room, by, `You've already joined!`);
+				if (Bot.rooms[room].blackjack.started) return Bot.roomReply(room, by, 'It already started, F.');
+				Bot.rooms[room].blackjack.players[toID(by)] = {
 					name: by.substr(1),
 					cards: []
 				}
-				return Bot.pm(by, `You have joined the game of Blackjack in ${Bot.rooms[room].title}.`);
+				return Bot.roomReply(room, by, `You have joined the game of Blackjack in ${Bot.rooms[room].title}.`);
 				break;
 			}
 			case 'start': case 's': {
-				if (!tools.hasPermission(by, 'beta', room)) return Bot.pm(by, 'Access denied.');
+				if (!tools.hasPermission(by, 'beta', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (!Bot.rooms[room].blackjack) return Bot.say(room, `There isn't a game of Blackjack active...`);
 				Bot.rooms[room].blackjack.start(room);
 				return;
 				break;
 			}
 			case 'skip': {
-				if (!tools.hasPermission(by, 'beta', room)) return Bot.pm(by, 'Access denied.');
+				if (!tools.hasPermission(by, 'beta', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (!Bot.rooms[room].blackjack) return Bot.say(room, `There isn't a game of Blackjack active...`);
 				if (!Bot.rooms[room].blackjack.started) return Bot.say(room, 'Nope, hasn\'t started, yet.');
 				Bot.rooms[room].blackjack.nextTurn();
@@ -108,14 +108,14 @@ module.exports = {
 				break;
 			}
 			case 'end': case 'e': {
-				if (!tools.hasPermission(by, 'beta', room)) return Bot.pm(by, 'Access denied.');
+				if (!tools.hasPermission(by, 'beta', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (!Bot.rooms[room].blackjack) return Bot.say(room, 'Blackjack wasn\'t even ongoing, :eyes:.');
 				delete Bot.rooms[room].blackjack;
 				return Bot.say(room, 'The game of Blackjack has ended! No points will be awarded.');
 				break;
 			}
 			default: {
-				return Bot.pm(by, `That isn't an option...`);
+				return Bot.roomReply(room, by, `That isn't an option...`);
 				break;
 			}
 		}

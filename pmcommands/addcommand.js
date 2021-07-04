@@ -4,8 +4,8 @@ module.exports = {
 	commandFunction: function (Bot, by, args, client) {
 		let sarg = args.join(' ').split(';');
 		if (sarg.length < 2) return Bot.pm(by, unxa);
-		let newName = tools.commandAlias(toId(sarg.shift()));
-		let newPerm = toId(sarg.shift());
+		let newName = tools.commandAlias(toID(sarg.shift()));
+		let newPerm = toID(sarg.shift());
 		let newHelp = sarg.shift();
 		let newOutp = sarg.join(';');
 		function addCommandFile (address, content) {

@@ -3,10 +3,10 @@ module.exports = {
 	help: `Displays the time when a user was last seen.`,
 	permissions: 'gamma',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		let user = toId(args.join(''));
+		let user = toID(args.join(''));
 		if (!user) return Bot.pm(by, 'Which user?');
-		if (user === toId(Bot.status.nickName)) return Bot.say(room, room === 'hindi' ? `Mai online hu. -_-` : 'I\'m online. -_-');
-		if (user === toId(by)) return Bot.say(room, room === 'hindi' ? `Wo nerd online hi lag rahe hai.` : 'That nerd\'s online.');
+		if (user === toID(Bot.status.nickName)) return Bot.say(room, room === 'hindi' ? `Mai online hu. -_-` : 'I\'m online. -_-');
+		if (user === toID(by)) return Bot.say(room, room === 'hindi' ? `Wo nerd online hi lag rahe hai.` : 'That nerd\'s online.');
 		if (Bot.getRooms(user).length) return Bot.say(room, room === 'hindi' ? `${args.join(' ').trim()} online hai.` : `${args.join(' ').trim()} is online.`);
 		let seen = require('origindb')('data/DATA')('joins').get(user);
 		if (!seen) return Bot.say(room, room === 'hindi' ? 'Maaf karna; maine us user ko online nahi dekha hai.' : "Sorry, I haven't seen that user online.");

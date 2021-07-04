@@ -62,7 +62,7 @@ class game {
 		return -1;
 	}
 	moveWt (name, mon, moves) {
-		let move = data.moves[toId(name)];
+		let move = data.moves[toID(name)];
 		if (!moves) moves = [];
 		if (!move || !mon) return 0.001;
 		let bp = 0;
@@ -70,18 +70,18 @@ class game {
 		if (move.boosts && move.target == 'self') {
 			if (move.boosts.atk > 0 || move.boosts.spa > 0) {
 				let stat = move.boosts.atk > move.boosts.spa ? 'atk' : 'spa';
-				if (!(stat == 'atk' && !moves.map(move => toId(move)).filter(move => data.moves[move] && data.moves[move].category == "Physical").length) && !(stat == 'spa' && !moves.map(move => toId(move)).filter(move => data.moves[move] && data.moves[move].category == "Special").length)) bp += ((6 - this.selfBoosts[stat]) * move.boosts[stat] * 200) ** 0.5;
+				if (!(stat == 'atk' && !moves.map(move => toID(move)).filter(move => data.moves[move] && data.moves[move].category == "Physical").length) && !(stat == 'spa' && !moves.map(move => toID(move)).filter(move => data.moves[move] && data.moves[move].category == "Special").length)) bp += ((6 - this.selfBoosts[stat]) * move.boosts[stat] * 200) ** 0.5;
 			}
 			if (move.boosts.spe) bp += ((6 - this.selfBoosts.spe) * move.boosts.spe * 200) ** 0.5;
 		}
 		if (move.target == 'normal' && move.self && move.self.boosts) bp += ((6 - this.selfBoosts.spe) * (move.self.boosts.spe || 0) * 200) ** 0.5;
 		if (move.secondary && move.secondary.self && move.secondary.self.boosts) ['atk', 'spa', 'spe'].forEach(boost => bp += ((6 - this.selfBoosts[boost]) * (move.secondary.self.boosts[boost] || 0)) ** 20);
 		if (this.enemy && (this.enemyData.item == 'Air Balloon' || this.enemyData.ability == 'Levitate') && move.type == 'Ground' && move.Category !== "Status") return 0.5;
-		if (this.enemy && Object.values(data.pokedex[toId(this.enemy)].abilities).includes('Levitate') && move.type == 'Ground' && move.category !== 'Status') bp /= 4;
-		if (this.enemy && toId(this.enemy) == 'shedinja' && move.category !== "Status" && tools.getEffectiveness(move.type, 'shedinja')) return 0;
-		if (toId(move.name) == 'stealthrock' && !this.setHazards.sr) bp += this.enemyTeam.length * 20;
-		if (toId(move.name) == 'spikes' && this.setHazards.spikes < 3) bp += (this.enemyTeam.length * (3 - (this.setHazards.spikes || 0))) * 10;
-		bp *= ((data.pokedex[toId(mon.details.split(',')[0])].types.includes(move.type) && move.category !== "Status") ? (mon.ability == 'adaptability' ? 2 : 1.5) : 1);
+		if (this.enemy && Object.values(data.pokedex[toID(this.enemy)].abilities).includes('Levitate') && move.type == 'Ground' && move.category !== 'Status') bp /= 4;
+		if (this.enemy && toID(this.enemy) == 'shedinja' && move.category !== "Status" && tools.getEffectiveness(move.type, 'shedinja')) return 0;
+		if (toID(move.name) == 'stealthrock' && !this.setHazards.sr) bp += this.enemyTeam.length * 20;
+		if (toID(move.name) == 'spikes' && this.setHazards.spikes < 3) bp += (this.enemyTeam.length * (3 - (this.setHazards.spikes || 0))) * 10;
+		bp *= ((data.pokedex[toID(mon.details.split(',')[0])].types.includes(move.type) && move.category !== "Status") ? (mon.ability == 'adaptability' ? 2 : 1.5) : 1);
 		if (this.enemy && move.category !== 'Status') bp *= tools.getEffectiveness(move.type, this.enemy);
 		return bp;
 	}
@@ -138,7 +138,7 @@ class game {
 			case 1: {
 				if (this.active[0] && !forced && this.active[0].moves.filter(move => (move.hasOwnProperty('pp') ? move.pp : true) && data.moves[move.id].category !== 'Status' && tools.getEffectiveness(data.moves[move.id].type, this.enemy) > 1).length) return false;
 				let out = {};
-				this.side.pokemon.filter(mon => mon.condition.includes('/') && (!forced || !mon.active)).forEach(mon => out[mon.ident] = mon.moves.filter(move => data.moves[toId(move)] && data.moves[toId(move)].category !== "Status").map(move => data.moves[toId(move)].type).map(type => tools.getEffectiveness(type, this.enemy)).reduce((a, b) => a > b ? a : b, 0) * (mon.active ? (forced ? 0 : 10) : 1));
+				this.side.pokemon.filter(mon => mon.condition.includes('/') && (!forced || !mon.active)).forEach(mon => out[mon.ident] = mon.moves.filter(move => data.moves[toID(move)] && data.moves[toID(move)].category !== "Status").map(move => data.moves[toID(move)].type).map(type => tools.getEffectiveness(type, this.enemy)).reduce((a, b) => a > b ? a : b, 0) * (mon.active ? (forced ? 0 : 10) : 1));
 				let pick = this.random(out);
 				if (!pick) return false;
 				if (this.getMon(pick).active && !forced) return false;
@@ -168,7 +168,7 @@ class game {
 			case 1: {
 				let out = {};
 				if (!this.active[0].moves.filter(move => (move.hasOwnProperty('pp') ? move.pp : true) && !move.disabled).length) return 'Struggle';
-				this.active[0].moves.filter(move => (move.hasOwnProperty('pp') ? move.pp : true) && !move.disabled && data.moves[move.id].category !== "Status").forEach(move => out[move.move] = (tools.getEffectiveness(data.moves[move.id].type, this.enemy) * (data.moves[move.id].basePower || 60) * (data.pokedex[toId(this.getActive().details.split(', ')[0])].types.includes(data.moves[move.id].type) ? (this.getActive().ability == 'adaptability' ? 2 : 1.5) : 1)) ** 4);
+				this.active[0].moves.filter(move => (move.hasOwnProperty('pp') ? move.pp : true) && !move.disabled && data.moves[move.id].category !== "Status").forEach(move => out[move.move] = (tools.getEffectiveness(data.moves[move.id].type, this.enemy) * (data.moves[move.id].basePower || 60) * (data.pokedex[toID(this.getActive().details.split(', ')[0])].types.includes(data.moves[move.id].type) ? (this.getActive().ability == 'adaptability' ? 2 : 1.5) : 1)) ** 4);
 				if (!Object.keys(out).length) return this.active[0].moves.filter(move => (move.hasOwnProperty('pp') ? move.pp : true) && !move.disabled).random().move;
 				return this.random(out);
 				break;

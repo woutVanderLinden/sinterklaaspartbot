@@ -3,7 +3,7 @@ module.exports = {
 	help: `Displays a user's points in the room.`,
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		let out, user = args[0] ? toId(args.join('')) : toId(by);
+		let out, user = args[0] ? toID(args.join('')) : toID(by);
 		if (!Bot.rooms[room].lb) out = 'This room doesn\'t have a Leaderboard.';
 		else if (Bot.rooms[room].lb.users[user]) {
 			if (Bot.rooms[room].lb.users[user].points.reduce((a, b) => a || b, false)) {

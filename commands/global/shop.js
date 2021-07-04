@@ -6,7 +6,7 @@ module.exports = {
 		if (!Bot.rooms[room].shop) return Bot.pm(by, "This room doesn't have a Shop!");
 		if (!Bot.rooms[room].lb) return Bot.pm(by, "No points here.");
 		let user = {}, shop = Bot.rooms[room].shop, lb = Bot.rooms[room].lb;
-		user = lb.users[toId(by)] || {points: Array.from({length: lb.points.length}).map(t => 0)};
+		user = lb.users[toID(by)] || {points: Array.from({length: lb.points.length}).map(t => 0)};
 		let out = `<DIV style="background: white; color: black;">
 	${shop.img && shop.img.src ? `<IMG src="${shop.img.src}" height="137" width="126" style="float: left; align: top">` : ''}
 	<CENTER>
@@ -31,6 +31,7 @@ module.exports = {
 		<BR>
 	</CENTER>
 </DIV>`;
+		// Jesus this needs an overhaul
 		return Bot.sendHTML(by, out);
 	}
 }

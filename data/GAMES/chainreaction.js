@@ -23,7 +23,7 @@ class CR {
 		this.displaying = false;
 	}
 	addPlayer (name) {
-		let user = toId(name), colour = this.availableColours.pop();
+		let user = toID(name), colour = this.availableColours.pop();
 		if (this.players[user]) return;
 		this.players[user] = {
 			name: name,
@@ -36,7 +36,7 @@ class CR {
 		return true;
 	}
 	removePlayer (name) {
-		let user = toId(name);
+		let user = toID(name);
 		if (!this.players[user]) return;
 		this.availableColours.push(this.players[user].col);
 		this.order.remove(user);
@@ -68,7 +68,7 @@ class CR {
 		return Bot.say(this.room, `/notifyrank all, Chain Reaction, Your turn!, ${this.turn}`);
 	}
 	isAlive (player) {
-		let user = toId(player);
+		let user = toID(player);
 		if (!this.players[user]) return false;
 		if (!this.players[user].played) return true;
 		let col = this.players[user].col;
@@ -109,7 +109,7 @@ class CR {
 		return [...out, this.display()];
 	}
 	end () {
-		Bot.say(this.room, `/adduhtml CRGRATZ, Game ended! GG! Congratulations to <font color="${this.players[this.order[0]].col}">@</font>${this.players[this.order[0]].name}!`);
+		Bot.say(this.room, `/adduhtml CRGRATZ, Game ended! GG! Congratulations to <font color="${this.players[this.order[0]].col}">@</font>${tools.escapeHTML(this.players[this.order[0]].name)}!`);
 		delete Bot.rooms[this.room].chainreaction;
 		return;
 	}
@@ -118,10 +118,10 @@ class CR {
 		let a = "25";
 		for (let i = 0; i < this.height; i++) {
 			html += `<tr>`;
-			for (let j = 0; j < this.width; j++) html += `<td width="${a}" height="${a}" style="text-align:center;">${filler ? '' : `<b><button name="send" value="/msg ${Bot.status.nickName}, ${prefix}chainreaction ${this.room} click ${i} ${j}" style="background:none;border:none;width:100%;height:100%;"${this.board[i][j].col ? ` title="${this.players[this.colours[this.board[i][j].col]].name}"` : ''}>`}<span style="color:${this.board[i][j].col};font-family:Verdana;">${this.board[i][j].value || ' '}</span>${filler ? '' : '</button></b>'}</td>`;
+			for (let j = 0; j < this.width; j++) html += `<td width="${a}" height="${a}" style="text-align:center;">${filler ? '' : `<b><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chainreaction ${this.room} click ${i} ${j}" style="background:none;border:none;width:100%;height:100%;"${this.board[i][j].col ? ` title="${tools.escapeHTML(this.players[this.colours[this.board[i][j].col]].name)}"` : ''}>`}<span style="color:${this.board[i][j].col};font-family:Verdana;">${this.board[i][j].value || ' '}</span>${filler ? '' : '</button></b>'}</td>`;
 			html += '</tr>';
 		}
-		html += `</table></center></div><br>Current turn: <font color="${this.players[this.turn].col}">@</font>${this.players[this.turn].name.replace(/</g, '&lt;')}`;
+		html += `</table></center></div><br>Current turn: <font color="${this.players[this.turn].col}">@</font>${tools.escapeHTML(this.players[this.turn].name)}`;
 		return html;
 	}
 }

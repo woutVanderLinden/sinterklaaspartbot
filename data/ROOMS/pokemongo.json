@@ -1,0 +1,18 @@
+{
+	"whitelist": [
+		"addraids",
+		"addtoraid",
+		"endraid",
+		"hostraid",
+		"myraids",
+		"pingraid",
+		"raidhelp",
+		"raids",
+		"register",
+		"removefromraid",
+		"removeraids",
+		"setraids",
+		"setuser"
+	],
+	"ignore": true
+}

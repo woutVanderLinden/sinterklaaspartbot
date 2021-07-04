@@ -3,7 +3,6 @@ module.exports = {
 	help: `Displays a list of ongoing games.`,
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		// In need of repairs. ;-;
 		let amt = 0, games = [], Room = Bot.rooms[room];
 		['chess', 'CR', 'othello', 'lightsout', 'mastermind'].forEach(bg => {
 			let count = 0, temp = [];

@@ -3,11 +3,11 @@
 ************************/
 
 exports.quoteParse = function (quote, smogon) {
-	const ranks = ['★', '☆', '^', '+', '%', '@', '*', '#', '&', '~', '$', '-'];
+	const ranks = ['★', '☆', '^', '⛵', '+', '%', '@', '*', '#', '&', '~', '$', '-'];
 	const chatRegex = new RegExp (`^(\\[(?:\\d{2}:){1,2}\\d{2}\\] |)([${ranks.join('')}]?)([a-zA-Z0-9][^:]{0,17}?): (.*)$`), meRegex = new RegExp(`^(\\[(?:\\d{2}:){1,2}\\d{2}\\] |)• ([${ranks.join('')}]?)(\\[[a-zA-Z0-9][^\\]]{0,17}\\]) (.*)$`), jnlRegex = /^(?:.*? (?:joined|left)(?:; )?){1,2}$/, rawRegex = /^(\[(?:\d{2}:){1,2}\d{2}\] |)(.*)$/;
 	return quote.split('\n').map((line, test) => {
-		if (test = line.match(chatRegex)) return smogon ? `[SIZE=1][COLOR=rgb(102, 102, 102)]${test[1]}[/COLOR][/SIZE][SIZE=2][COLOR=rgb(102, 102, 102)] ${test[2]}[/COLOR][COLOR=rgb(${tools.HSLtoRGB(...tools.HSL(test[3]).hsl).join(', ')})][B]${test[3]}[/B]:[/COLOR] ${test[4]}[/SIZE]` : `<div class="chat chatmessage-${toId(test[3])}"><small>${test[1] + test[2]}</small>${tools.colourize(`${test[3]}:`)}<em> ${test[4]}</em></div>`;
-		else if (test = line.match(meRegex)) return `<div class="chat chatmessage-${toId(test[3])}"><small>${test[1]}</small>${tools.colourize('• ', test[3])}<em><small>${test[2]}</small>${test[3].slice(1, -1)}<i> ${test[4]}</i></em></div>`;
+		if (test = line.match(chatRegex)) return smogon ? `[SIZE=1][COLOR=rgb(102, 102, 102)]${test[1]}[/COLOR][/SIZE][SIZE=2][COLOR=rgb(102, 102, 102)] ${test[2]}[/COLOR][COLOR=rgb(${tools.HSLtoRGB(...tools.HSL(test[3]).hsl).join(', ')})][B]${test[3]}[/B]:[/COLOR] ${test[4]}[/SIZE]` : `<div class="chat chatmessage-${toID(test[3])}"><small>${test[1] + test[2]}</small>${tools.colourize(`${test[3]}:`)}<em> ${test[4]}</em></div>`;
+		else if (test = line.match(meRegex)) return `<div class="chat chatmessage-${toID(test[3])}"><small>${test[1]}</small>${tools.colourize('• ', test[3])}<em><small>${test[2]}</small>${test[3].slice(1, -1)}<i> ${test[4]}</i></em></div>`;
 		else if (test = line.match(jnlRegex)) return `<div class="message"><small style="color: #555555"> ${test[0]}<br /></small></div>`;
 		else if (test = line.match(rawRegex)) return `<div class="chat chatmessage-partbot"><small>${test[1]}</small>${test[2]}</div>`;
 	}).join(smogon ? '\n' : '');
@@ -15,7 +15,7 @@ exports.quoteParse = function (quote, smogon) {
 
 exports.grantPseudo = function (user, room) {
 	let rank = user.charAt(0);
-	let name = toId(user);
+	let name = toID(user);
 	let preAuth = tools.rankLevel(user, room) - 2;
 	switch (rank) {
 		case '~': case '&': case '#': case '@': case '*': case '☆': case '★':
@@ -37,18 +37,18 @@ exports.aliasDB = require('./ALIASES/commands.json');
 exports.pmAliasDB = require('./ALIASES/pmcommands.json');
 
 exports.commandAlias = function (alias) {
-	if (exports.aliasDB[toId(alias)]) alias = exports.aliasDB[toId(alias)];
-	return toId(alias);
+	if (exports.aliasDB[toID(alias)]) alias = exports.aliasDB[toID(alias)];
+	return toID(alias);
 }
 
 exports.pmCommandAlias = function (alias) {
-	if (exports.pmAliasDB[toId(alias)]) alias = exports.pmAliasDB[toId(alias)];
-	return toId(alias);
+	if (exports.pmAliasDB[toID(alias)]) alias = exports.pmAliasDB[toID(alias)];
+	return toID(alias);
 }
 
 exports.spliceRank = function (user) {
 	let rank = user.charAt(0);
-	let name = toId(user);
+	let name = toID(user);
 	switch (rank) {
 		case '~': case '&': case '#': case '@': case '*': case '☆':
 			if (Bot.auth.pseudoalpha.includes(name)) Bot.auth.pseudoalpha.remove(name);
@@ -65,16 +65,26 @@ exports.spliceRank = function (user) {
 }
 
 exports.rankLevel = function (user, room) {
-	let name = toId(user);
-	if (Bot.auth.admin.includes(name) || Bot.auth.adminalts.includes(name)) return 10;
-	else if (Bot.auth.coder.includes(name) || Bot.auth.coderalts.includes(name)) return 9;
-	else if (Bot.auth.locked.includes(name) || Bot.auth.lockedalts.includes(name)) return 1;
-	else if (room && room !== 'global' && Bot.rooms[room] && Bot.rooms[room].auth && typeof Bot.rooms[room].auth[name] == 'number') return Bot.rooms[room].auth[name];
-	else if (Bot.auth.alpha.includes(name) || Bot.auth.alphaalts.includes(name) || (room !== 'global' && Bot.rooms[room] && /^[~&#@\*]/.test(Bot.rooms[room].users.find(u => toId(u) === name)))) return 5;
-	else if (Bot.auth.beta.includes(name) || Bot.auth.betaalts.includes(name) || (room !== 'global' && Bot.rooms[room] && /^[%]/.test(Bot.rooms[room].users.find(u => toId(u) === name)))) return 4;
-	else if (Bot.auth.gamma.includes(name) || Bot.auth.gammaalts.includes(name) || (room !== 'global' && Bot.rooms[room] && /^[+]/.test(Bot.rooms[room].users.find(u => toId(u) === name)))) return 3;
-	else return 2;
-	return 0;
+	let name = toID(user);
+	switch ((() => {
+		let override;
+		if (Bot.auth.admin.includes(name) || Bot.auth.adminalts.includes(name)) return 'admin';
+		else if (Bot.auth.coder.includes(name) || Bot.auth.coderalts.includes(name)) return 'coder';
+		else if (Bot.auth.locked.includes(name) || Bot.auth.lockedalts.includes(name)) return 'locked';
+		else if (room && Bot.rooms[room]?.auth && (override = Object.keys(Bot.rooms[room].auth).find(rank => Bot.rooms[room].auth[rank]?.includes(name)))) return override;
+		else if (Bot.auth.alpha.includes(name) || Bot.auth.alphaalts.includes(name) || (room !== 'global' && Bot.rooms[room] && /^[~&#@\*]/.test(Bot.rooms[room].users.find(u => toID(u) === name)))) return 'alpha';
+		else if (Bot.auth.beta.includes(name) || Bot.auth.betaalts.includes(name) || (room !== 'global' && Bot.rooms[room] && /^[%]/.test(Bot.rooms[room].users.find(u => toID(u) === name)))) return 'beta';
+		else if (Bot.auth.gamma.includes(name) || Bot.auth.gammaalts.includes(name) || (room !== 'global' && Bot.rooms[room] && /^[+]/.test(Bot.rooms[room].users.find(u => toID(u) === name)))) return 'gamma';
+		else return 'reg';
+	})()) {
+		case 'admin': return 10;
+		case 'coder': return 9;
+		case 'alpha': return 5;
+		case 'beta': return 4;
+		case 'gamma': return 3;
+		case 'reg': return 2;
+		case 'locked': return 1;
+	}
 }
 
 exports.hasPermission = function (user, rank, room) {
@@ -115,7 +125,7 @@ exports.blockedCommand = function (command, room) {
 	try {
 		room = room.toLowerCase().replace(/[^a-z0-9-]/g, '');
 		command = tools.commandAlias(command);
-		return require(`./ROOMS/${room}.json`).disabled.includes(command);
+		return Boolean(require(`./ROOMS/${room}.json`).disabled.includes(command));
 	} catch {
 		return false;
 	}
@@ -132,7 +142,7 @@ exports.listify = function (array) {
 	if (!Array.isArray(array)) return array;
 	let tarr = Array.from(array);
 	if (!tarr.length) return '';
-	if (tarr.length === 2) return tarr.join(' and ');
+	if (tarr.length == 2) return tarr.join(' and ');
 	let tarre = false;
 	if (tarr.length > 1) tarre = tarr.pop();
 	return tarr.join(', ') + ((array.length > 1) ? ', and ' + tarre : ((tarre) ? ' and ' + tarre : ''));
@@ -145,7 +155,7 @@ exports.uploadToPastie = function (text, callback) {
 		hostname: action.hostname,
 		path: action.pathname,
 		method: 'POST',
-	};
+	}
 	let request = https.request(options, response => {
 		response.setEncoding('utf8');
 		let data = '';
@@ -210,7 +220,7 @@ exports.FEN = function (line) {
 		let args = line.trim().split(' ');
 		if (!args[0]) return reject(new Error ("Missing board state"));
 		if (!args[1]) return reject(new Error ("Missing white/black's turn"));
-		let turn = toId(args[1])[0];
+		let turn = toID(args[1])[0];
 		if (!'wb'.includes(turn)) return reject(new Error ("Turn only works with W/B"))
 		let expanded = args[0].replace(/\d/g, n => Array.from({length: parseInt(n)}).map(() => '-').join(''));
 		if (!/^(?:[rnbqkpRNBQKP-]{8}\/){7}[rnbqkpRNBQKP-]{8}/.test(expanded)) return reject(new Error ("Invalid FEN"));
@@ -238,7 +248,7 @@ exports.warmup = function (room, commandName) {
 
 exports.setCooldown = function (commandName, room, commandRequire) {
 	if (!commandRequire || !commandName || !(typeof commandName === 'string') || !(typeof commandRequire === 'object') || Array.isArray(commandRequire)) return;
-	if (!commandRequire.cooldown) commandRequire.cooldown = 0;
+	if (!commandRequire.cooldown) return;
 	if (!cooldownObject[room]) cooldownObject[room] = {};
 	cooldownObject[room][commandName] = true;
 	setTimeout(tools.warmup, commandRequire.cooldown, room, commandName);
@@ -246,7 +256,7 @@ exports.setCooldown = function (commandName, room, commandRequire) {
 }
 
 exports.HSL = function (name, original) {
-	name = toId(name);
+	name = toID(name);
 	let out = {source: name, hsl: null};
 	if (require('./DATA/config.js').Config.customcolors[name] && name !== 'constructor' && !original) {
 		out.base = exports.HSL(name, true);
@@ -317,9 +327,9 @@ exports.HSL = function (name, original) {
 
 exports.colourize = function (text, name, useOriginal) {
 	let ccjs = require('./DATA/config.js').Config.customcolors;
-	if (!name) name = toId(text);
-	if (ccjs[toId(name)] && !useOriginal) name = ccjs[toId(name)];
-	let hash = require('crypto').createHash('md5').update(toId(name), 'utf8').digest('hex');
+	if (!name) name = toID(text);
+	if (ccjs[toID(name)] && !useOriginal) name = ccjs[toID(name)];
+	let hash = require('crypto').createHash('md5').update(toID(name), 'utf8').digest('hex');
 	let H = parseInt(hash.substr(4, 4), 16) % 360;
 	let S = parseInt(hash.substr(0, 4), 16) % 50 + 40;
 	let L = Math.floor(parseInt(hash.substr(8, 4), 16) % 20 + 30);
@@ -427,16 +437,16 @@ exports.toHumanTime = function (millis) {
 	if (typeof millis === 'string') millis = parseInt(millis);
 	if (!(typeof millis === 'number')) return;
 	let time = {};
-	time.year = Math.floor(millis / (365*24*60*60*1000));
-	millis %= (365*24*60*60*1000);
-	time.week = Math.floor(millis / (7*24*60*60*1000));
-	millis %= (7*24*60*60*1000);
-	time.day = Math.floor(millis / (24*60*60*1000));
-	millis %= (24*60*60*1000);
-	time.hour = Math.floor(millis / (60*60*1000));
-	millis %= (60*60*1000);
-	time.minute = Math.floor(millis / (60*1000));
-	millis %= (60*1000);
+	time.year = Math.floor(millis / (365 * 24 * 60 * 60 * 1000));
+	millis %= (365 * 24 * 60 * 60 * 1000);
+	time.week = Math.floor(millis / (7 * 24 * 60 * 60 * 1000));
+	millis %= (7 * 24 * 60 * 60 * 1000);
+	time.day = Math.floor(millis / (24 * 60 * 60 * 1000));
+	millis %= (24 * 60 * 60 * 1000);
+	time.hour = Math.floor(millis / (60 * 60 * 1000));
+	millis %= (60 * 60 * 1000);
+	time.minute = Math.floor(millis / (60 * 1000));
+	millis %= (60 * 1000);
 	time.second = Math.floor(millis / (1000));
 	millis %= (1000);
 	time.millisecond = millis;
@@ -460,7 +470,7 @@ exports.toHumanTime = function (millis) {
 }
 
 exports.fromHumanTime = function (text) {
-	text = toId(text);
+	text = toID(text);
 	let time = 0;
 	let units = {
 		mis: {
@@ -522,7 +532,7 @@ exports.getPorts = function (name, source) {
 	if (!Array.isArray(source)) return null;
 	let front = source.filter(elem => {
 		if (!elem) return false;
-		elem = toId(elem);
+		elem = toID(elem);
 		if (name.startsWith(elem)) return true;
 		for (let i = 2; i < elem.length; i++) {
 			if (name.startsWith(elem.slice(elem.length - i, elem.length))) return true;
@@ -531,7 +541,7 @@ exports.getPorts = function (name, source) {
 	});
 	let end = source.filter(elem => {
 		if (!elem) return false;
-		elem = toId(elem);
+		elem = toID(elem);
 		if (elem.startsWith(name)) return true;
 		for (let i = 2; i < name.length; i++) {
 			if (elem.startsWith(name.slice(name.length - i, name.length))) return true;
@@ -543,15 +553,20 @@ exports.getPorts = function (name, source) {
 
 exports.board = require('./TABLE/boards.js').render;
 
+exports.toName = function (text) {
+	text = text.trim();
+	return text[0].toUpperCase() + text.substr(1);
+}
+
 exports.getEffectiveness = function (mon1, mon2) {
-	if (Array.isArray(mon1)) mon1 = mon1.map(t => tools.toName(toId(t)));
-	if (Array.isArray(mon2)) mon2 = mon2.map(t => tools.toName(toId(t)));
+	if (Array.isArray(mon1)) mon1 = mon1.map(t => tools.toName(toID(t)));
+	if (Array.isArray(mon2)) mon2 = mon2.map(t => tools.toName(toID(t)));
 	if (typeof(mon1) == 'string') {
-		if (data.pokedex[toId(mon1)]) mon1 = data.pokedex[toId(mon1)].types;
+		if (data.pokedex[toID(mon1)]) mon1 = data.pokedex[toID(mon1)].types;
 		else if (typelist.includes(mon1.toLowerCase())) mon1 = [tools.toName(mon1)];
 	}
 	if (typeof(mon2) == 'string') {
-		if (data.pokedex[toId(mon2)]) mon2 = data.pokedex[toId(mon2)].types;
+		if (data.pokedex[toID(mon2)]) mon2 = data.pokedex[toID(mon2)].types;
 		else if (typelist.includes(mon2.toLowerCase())) mon2 = [tools.toName(mon2)];
 	}
 	if (!Array.isArray(mon1) || !Array.isArray(mon2)) return null;
@@ -573,13 +588,13 @@ exports.getEffectiveness = function (mon1, mon2) {
 
 exports.toSprite = function (mon, full) {
 	const cds = require('./DATA/iconcoords.json');
-	if (typelist.includes(toId(mon))) {
-		mon = toId(mon);
+	if (typelist.includes(toID(mon))) {
+		mon = toID(mon);
 		mon = mon[0].toUpperCase() + mon.substr(1);
 		return `<img src="https://play.pokemonshowdown.com/sprites/types/${mon}.png" alt="${mon}" class="pixelated" width="32" height="14">`;
 	}
-	if (!cds[toId(mon)]) return mon;
-	mon = toId(mon);
+	if (!cds[toID(mon)]) return mon;
+	mon = toID(mon);
 	if (!full) return `<span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll ${cds[mon][0]}px ${cds[mon][1]}px;"></span>`;
 	return `<span class="picon" style="background: transparent url('https://play.pokemonshowdown.com/sprites/pokemonicons-sheet.png?v2') no-repeat scroll ${cds[mon][0]}px ${cds[mon][1]}px; display: inline-block; width: 40px; height: 30px;"></span>`;
 }
@@ -609,6 +624,36 @@ exports.random = function (input) {
 		}
 		default: return null;
 	}
+}
+
+exports.deepClone = function (aObject) {
+ 	if (!aObject) return aObject;
+
+	let v, bObject = Array.isArray(aObject) ? [] : {};
+	for (const k in aObject) {
+		v = aObject[k];
+		bObject[k] = (typeof v === "object") ? exports.deepClone(v) : v;
+	}
+
+	return bObject;
+}
+
+exports.readFile = function (file) {
+	return new Promise((resolve, reject) => {
+		fs.readFile(file, 'utf8', (err, read) => {
+			if (err) return reject(err);
+			else return resolve(read);
+		});
+	});
+}
+
+exports.writeFile = function (file, text) {
+	return new Promise((resolve, reject) => {
+		fs.writeFile(file, text, err => {
+			if (err) return reject(err);
+			else return resolve();
+		});
+	});
 }
 
 
@@ -669,7 +714,7 @@ exports.updateLB = function (...rooms) {
 exports.addPoints = function (type, username, points, room) {
 	return new Promise ((resolve, reject) => {
 		if (typeof type !== 'number') return reject(new Error ('Type must be a number.'));
-		let user = toId(username);
+		let user = toID(username);
 		if (!room || !Bot.rooms[room].lb) return reject(new Error ('Invalid room / no leaderboard'));
 		if (type >= Bot.rooms[room].lb.points.length) return reject(new Error ('Type is too high!'));
 		if (!Bot.rooms[room].lb.users[user]) Bot.rooms[room].lb.users[user] = {name: username, points: Array.from({length: Bot.rooms[room].lb.points.length}).map(t => 0)};
@@ -684,16 +729,9 @@ exports.addPoints = function (type, username, points, room) {
 *        Games          *
 ************************/
 
-/*exports.Chess = require('./GAMES/chess.js').Chess;
-exports.CR = require('./GAMES/chainreaction.js').CR;
-exports.Othello = require('./GAMES/othello.js').Othello;
-exports.Scrabble = require('./GAMES/scrabble.js').Scrabble;
-exports.LO = require('./GAMES/lightsout.js').LO;
-exports.Mastermind = require('./GAMES/mastermind.js').Mastermind;*/
-
 exports.newDeck = function (type, amt) {
 	if (!type) type = 'regular';
-	type = toId(type);
+	type = toID(type);
 	switch (type) {
 		case 'regular': case 'reg': {
 			if (!amt) amt = 1;
@@ -752,8 +790,8 @@ exports.deal = function (players) {
 	[deck, post] = cards;
 	deck.shuffle();
 	players.forEach(player => {
-		out.players[toId(player)] = [post.pop()];
-		for (let i = 0; i < 7; i++) out.players[toId(player)].push(deck.pop());
+		out.players[toID(player)] = [post.pop()];
+		for (let i = 0; i < 7; i++) out.players[toID(player)].push(deck.pop());
 	});
 	out.deck = deck.concat(post).shuffle();
 	return out;
@@ -834,7 +872,7 @@ exports.toPGN = function (game) {
 		out.push(move);
 	});
 	out.push(game.result);
-	return `[White "${game.W.name.replace(/"/g, '')}"]\n[Black "${game.B.name.replace(/"/g, '')}"]\n\n` + out.join(' ');
+	return `[White "${game.W.name.replace(/"/g, '')}"]\n[Black "${game.B.name.replace(/"/g, '')}"]\n\n` + out.join(' ').replace(/\$/g, '');
 }
 
 exports.scrabblify = function (text) {

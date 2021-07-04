@@ -5,7 +5,7 @@ module.exports = {
 	commandFunction: function (Bot, room, time, by, args, client) {
 		let cargs = args.join(' ').split(/,/);
 		if (!cargs[1]) return Bot.say(room, unxa);
-		let name = toId(cargs.shift());
+		let name = toID(cargs.shift());
 		if (!Bot.jps[room] || !Bot.jps[room][name]) return Bot.say(room, `It doesn\'t look like that user has a joinphrase... Try using ${prefix}addjoinphrase instead?`);
 		if (Bot.rooms[room].shop && Bot.rooms[room].shop.jpl && Bot.rooms[room].shop.jpl.length && !Bot.rooms[room].shop.jpl.includes(name)) return Bot.say(room, `They don't have a license, though. That's illegal. :(`);
 		let jp = cargs.join(',').trim();

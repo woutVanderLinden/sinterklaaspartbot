@@ -17,9 +17,9 @@ module.exports = {
 			return;
 		}
 		if (['status', 'view', 'current'].includes(param)) {
-			if (!tools.hasPermission(by, 'beta', room)) return Bot.pm(by, 'Access denied.');
 			if (!Bot.rooms[room].tourpoll) return Bot.say(room, `Koi tour poll chalu nahi hai!`);
-			Bot.say(room, `Tour poll mei ${tools.toHumanTime(Bot.rooms[room].tourpoll.timer._endTime - Date.now())} bache hai.`);
+			Bot.say(room, `/adduhtml TOURPOLL, ${Bot.rooms[room].tourpoll.html}`);
+			Bot.say(room, `Tour poll mei ${tools.toHumanTime(Bot.rooms[room].tourpoll.timer._endTime - Date.now()).replace(' and ', ' aur ')} bache hai.`);
 			return;
 		}
 		if (Bot.rooms[room].poll) return Bot.pm(by, `A poll is already in progress!`);
@@ -34,7 +34,6 @@ module.exports = {
 		const DB = require('origindb')('data/TOURS');
 		let obj = DB('hindi').object();
 		let opts = new Set();
-		Bot.log(obj);
 		while (opts.size < 4) opts.add(tools.random(obj));
 		Bot.rooms[room].tourpoll = {
 			votes: {},
@@ -60,6 +59,7 @@ module.exports = {
 			delete Bot.rooms[room].tourpoll;
 		}, time);
 		Bot.rooms[room].tourpoll.timer._endTime = Date.now() + time;
-		Bot.say(room, `/adduhtml TOURPOLL,<div class="infobox"><p style="margin: 2px 0 5px 0"><span style="border: 1px solid #6a6; color: #848; border-radius: 4px; padding: 0 3px"><i class="fa fa-bar-chart"></i> Tour Poll</span><strong style="font-size: 11pt"> Aap kaunsa format khelna chahoge?</strong></p>${[...opts].map(tier => `<div style="margin-top: 5px"><button class="button" value="/msg ${Bot.status.nickName}, ${prefix}tourpoll vote ${room}, ${tier}" name="send"> <strong>${tier}</strong></button></div>`).join('')}</div>`);
+		Bot.rooms[room].tourpoll.html = `<div class="infobox"><p style="margin: 2px 0 5px 0"><span style="border: 1px solid #6a6; color: #848; border-radius: 4px; padding: 0 3px"><i class="fa fa-bar-chart"></i> Tour Poll</span><strong style="font-size: 11pt"> Aap kaunsa format khelna chahoge?</strong></p>${[...opts].map(tier => `<div style="margin-top: 5px"><button class="button" value="/botmsg ${Bot.status.nickName}, ${prefix}tourpoll vote ${room}, ${tier}" name="send"> <strong>${tier}</strong></button></div>`).join('')}</div>`;
+		Bot.say(room, `/adduhtml TOURPOLL,${Bot.rooms[room].tourpoll.html}`);
 	}
 }

@@ -4,7 +4,7 @@ module.exports = {
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		if (!args[0]) return Bot.pm(by, 'I\'m a Bot by PartMan. If you have any issues regarding me, please contact them. To see my usable commands, use the ``' + prefix + 'commands`` command.');
-		let commandName = tools.commandAlias(toId(args.join('')));
+		let commandName = tools.commandAlias(toID(args.join('')));
 		fs.readdir('./commands/global', (e, gcommands) => {
 			if (e) return console.log(e);
 			if (gcommands.includes(commandName + '.js')) {

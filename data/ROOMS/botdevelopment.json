@@ -1,6 +1,5 @@
 {
-	"ignore": false,
-    "assign": {
-        "_test": "o/"
-    }
+	"assign": {
+		"_test": "o/"
+	}
 }

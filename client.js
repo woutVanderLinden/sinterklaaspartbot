@@ -5,7 +5,7 @@ var https = require('https');
 var url = require('url');
 var WebSocketClient = require('websocket').client;
 
-function toId (text) {
+function toID (text) {
 	if (typeof text !== 'string') return text;
 	return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
@@ -51,7 +51,7 @@ class Client extends EventEmitter {
 
 		this.streams = {};
 
-		opts.logRooms.forEach(room => {
+		[].forEach(room => {
 			this.streams[room] = fs.createWriteStream(`./data/LOGS/${room}.txt`, {flags: 'a'});
 		});
 
@@ -86,10 +86,10 @@ class Client extends EventEmitter {
 			if (this.opts.showErrors) console.log("ERROR: " + str);
 		}
 		this.getRooms = function (user) {
-			user = toId(user);
+			user = toID(user);
 			let out;
 			try {
-				return out = Object.keys(this.rooms).filter(room => this.rooms[room].users.find(u => toId(u) === user));
+				return out = Object.keys(this.rooms).filter(room => this.rooms[room].users.find(u => toID(u) === user));
 			} catch (e) {
 				if (e) return out = [];
 			}
@@ -108,7 +108,7 @@ Client.prototype.init = function () {
 }
 
 Client.prototype.serve = function (user, html) {
-	let id = toId(user);
+	let id = toID(user);
 	if (!this.keys[id]) this.keys[id] = 7000 + Math.floor(Math.random() * 93000);
 	this.pageData[id] = html;
 	return this.pm(user, `${websiteLink}/user/${id}/${this.keys[id]}`);
@@ -120,7 +120,7 @@ Client.prototype.sendHTML = function (user, html) {
 		if (this.rooms[room] && ['*', '#', '&', '~', '★'].includes(this.rooms[room].rank)) return this.say(room, `/pminfobox ${user}, ${html.replace(/\n/g, '')}`);
 	}
 	if (!this.keys) return undefined;
-	let id = toId(user);
+	let id = toID(user);
 	if (!this.keys[id]) this.keys[id] = 7000 + Math.floor(Math.random() * 93000);
 	return this.serve(user, html);
 }
@@ -226,11 +226,11 @@ Client.prototype.rename = function (nick, pass) {
 	}
 	if (!pass) {
 		requestOptions.method = 'GET';
-		requestOptions.path += '?act=getassertion&userid=' + toId(nick) + '&challengekeyid=' + this.challstr.id + '&challenge=' + this.challstr.str;
+		requestOptions.path += '?act=getassertion&userid=' + toID(nick) + '&challengekeyid=' + this.challstr.id + '&challenge=' + this.challstr.str;
 		this.debug("Sending login request to: " + requestOptions.path);
 	} else {
 		requestOptions.method = 'POST';
-		var data = 'act=login&name=' + toId(nick) + '&pass=' + pass + '&challengekeyid=' + this.challstr.id + '&challenge=' + this.challstr.str;
+		var data = 'act=login&name=' + toID(nick) + '&pass=' + pass + '&challengekeyid=' + this.challstr.id + '&challenge=' + this.challstr.str;
 		requestOptions.headers = {
 			'Content-Type': 'application/x-www-form-urlencoded',
 			'Content-Length': data.length
@@ -349,6 +349,16 @@ Client.prototype.send = function (data, delay) {
 	}
 }
 
+/*Client.prototype.sendRoom = function (room, data, delay) {
+	if (!(data instanceof Array)) {
+		data = [data.toString()];
+	}
+	for (var i = 0; i < data.length; i++) {
+		data[i] = room + '|' + data[i];
+	}
+	this.send(data, delay);
+}*/
+
 Client.prototype.say = function (room, msg) {
 	if (room.charAt(0) === ',') {
 		return this.pm(room.substr(1), msg);
@@ -358,6 +368,10 @@ Client.prototype.say = function (room, msg) {
 
 Client.prototype.pm = function (user, msg) {
 	this._queued.push('|/pm ' + user + ',' + msg);
+}
+
+Client.prototype.roomReply = function (room, user, msg) {
+	this.say(room, `/sendprivatehtmlbox ${user}, ${tools.escapeHTML(msg)}`);
 }
 
 Client.prototype.joinRooms = function (rooms) {
@@ -382,7 +396,7 @@ Client.prototype.leaveRooms = function (rooms) {
 	var cmds = [];
 	var room;
 	for (var i = 0; i < rooms.length; i++) {
-		room = toId(rooms[i]);
+		room = toID(rooms[i]);
 		cmds.push('|/leave ' + room);
 	}
 	if (cmds.length) this._queued.push(cmds);
@@ -393,6 +407,12 @@ Client.prototype.log = function (thing) {
 		fs.appendFile('./logs.txt', `\n${require('util').format(thing)}`, function (e) {
 			if (e) return console.log (e);
 			console.log(thing);
+			try {
+				client.channels.cache.get('719087165241425981').send("```\n" + require('util').format(thing).substr(0, 1990) + "```").then(() => resolve());
+			} catch (e) {
+				console.log(e);
+				resolve();
+			}
 		});
 	});
 }
@@ -458,8 +478,8 @@ Client.prototype.receiveLine = function (room, message, isIntro) {
 			if (this.opts.nickName) this.rename(this.opts.nickName, this.opts.pass);
 			break;
 		case 'updateuser':
+			if (larg[1].startsWith(' Guest ')) break;
 			this.status.nickName = larg[1].substr(1);
-			if (this.status.nickName.startsWith('Guest ')) break;
 			this.log('Connected to Pokémon Showdown.');
 			if (!this.opts.status) this.setStatus('say ' + this.status.nickName + '? for help.');
 			else this.setStatus(this.opts.status);
@@ -549,59 +569,59 @@ Client.prototype.receiveLine = function (room, message, isIntro) {
 		}
 		case 'j': case 'J': 
 			if (!this.rooms[room].users.includes(larg[1])) this.rooms[room].users.push(larg[1]);
-			this.emit('join', toId(larg[1]), room, Date.now());
+			this.emit('join', toID(larg[1]), room, Date.now());
 			break;
 		case 'n': case 'N': 
-			var by = toId(larg[1]);
-			var old = toId(larg[2]);
+			var by = toID(larg[1]);
+			var old = toID(larg[2]);
 			this.emit('nick', by, old, room, Date.now());
-			this.rooms[room].users.remove(this.rooms[room].users.find(u => toId(u) === toId(old)));
+			this.rooms[room].users.remove(this.rooms[room].users.find(u => toID(u) === toID(old)));
 			this.rooms[room].users.push(larg[1]);
 			let rank = tools.rankLevel(old);
-			if (old === toId(this.status.nickName)) {
+			if (old === toID(this.status.nickName)) {
 				this.rooms[room].rank = larg[1].charAt(0);
 			}
 			switch (rank) {
 				case 10:
-					if (this.auth.admin.includes(old) && !(by == old) && !this.auth.adminalts.includes(by) && !this.auth.admin.includes(by)) this.auth.adminalts.push(by);
+					if (this.auth.admin.includes(old) && !(by === old) && !this.auth.adminalts.includes(by) && !this.auth.admin.includes(by)) this.auth.adminalts.push(by);
 					else if (this.auth.adminalts.includes(old)) {
-						this.auth.adminalts.splice(this.auth.adminalts.indexOf(old), 1);
+						this.auth.adminalts.remove(old);
 						if (!this.auth.admin.includes(by)) this.auth.adminalts.push(by);
 					}
 					break;
 				case 9:
-					if (this.auth.coder.includes(old) && !(by == old) && !this.auth.coderalts.includes(by) && !this.auth.coder.includes(by)) this.auth.coderalts.push(by);
+					if (this.auth.coder.includes(old) && !(by === old) && !this.auth.coderalts.includes(by) && !this.auth.coder.includes(by)) this.auth.coderalts.push(by);
 					else if (this.auth.coderalts.includes(old)) {
-						this.auth.coderalts.splice(this.auth.coderalts.indexOf(old), 1);
+						this.auth.coderalts.remove(old);
 						if (!this.auth.coder.includes(by)) this.auth.coderalts.push(by);
 					}
 					break;
 				case 5:
-					if (this.auth.alpha.includes(old) && !(by == old) && !this.auth.alphaalts.includes(by) && !this.auth.alpha.includes(by)) this.auth.alphaalts.push(by);
+					if (this.auth.alpha.includes(old) && !(by === old) && !this.auth.alphaalts.includes(by) && !this.auth.alpha.includes(by)) this.auth.alphaalts.push(by);
 					else if (this.auth.alphaalts.includes(old)) {
-						this.auth.alphaalts.splice(this.auth.alphaalts.indexOf(old), 1);
+						this.auth.alphaalts.remove(old);
 						if (!this.auth.alpha.includes(by)) this.auth.alphaalts.push(by);
 					}
 					break;
 				case 4:
-					if (this.auth.beta.includes(old) && !(by == old) && !this.auth.betaalts.includes(by) && !this.auth.beta.includes(by)) this.auth.betaalts.push(by);
+					if (this.auth.beta.includes(old) && !(by === old) && !this.auth.betaalts.includes(by) && !this.auth.beta.includes(by)) this.auth.betaalts.push(by);
 					else if (this.auth.betaalts.includes(old)) {
-						this.auth.betaalts.splice(this.auth.betaalts.indexOf(old), 1);
+						this.auth.betaalts.remove(old);
 						if (!this.auth.beta.includes(by)) this.auth.betaalts.push(by);
 					}
 					break;
 				case 3:
 					if (room.startsWith('groupchat-')) return;
-					if (this.auth.gamma.includes(old) && !(by == old) && !this.auth.gammaalts.includes(by) && !this.auth.gamma.includes(by)) this.auth.gammaalts.push(by);
+					if (this.auth.gamma.includes(old) && !(by === old) && !this.auth.gammaalts.includes(by) && !this.auth.gamma.includes(by)) this.auth.gammaalts.push(by);
 					else if (this.auth.gammaalts.includes(old)) {
-						this.auth.gammaalts.splice(this.auth.gammaalts.indexOf(old), 1);
+						this.auth.gammaalts.remove(old);
 						if (!this.auth.gamma.includes(by)) this.auth.gammaalts.push(by);
 					}
 					break;
 				case 1:
-					if (this.auth.locked.includes(old) && !(by == old) && !this.auth.lockedalts.includes(by) && !this.auth.locked.includes(by)) this.auth.lockedalts.push(by);
+					if (this.auth.locked.includes(old) && !(by === old) && !this.auth.lockedalts.includes(by) && !this.auth.locked.includes(by)) this.auth.lockedalts.push(by);
 					else if (this.auth.lockedalts.includes(old)) {
-						this.auth.lockedalts.splice(this.auth.lockedalts.indexOf(old), 1);
+						this.auth.lockedalts.remove(old);
 						if (!this.auth.locked.includes(by)) this.auth.lockedalts.push(by);
 					}
 					break;
@@ -610,8 +630,9 @@ Client.prototype.receiveLine = function (room, message, isIntro) {
 			}
 			break;
 		case 'l': case 'L':
-			let user = toId(larg[1]);
-			this.rooms[room].users.remove(this.rooms[room].users.find(u => toId(u) === user));
+			let user = toID(larg[1]);
+			this.rooms[room].users.remove(this.rooms[room].users.find(u => toID(u) === user));
+			['admin', 'coder', 'alpha', 'beta', 'gamma', 'locked'].forEach(type => this.auth[type + 'alts']?.remove(user));
 			this.emit('leave', user, room, Date.now());
 			break;
 		case 'raw': {

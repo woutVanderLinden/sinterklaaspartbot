@@ -3,7 +3,6 @@ module.exports = {
 	help: `PartBot's quotes module.`,
 	permissions: "none",
 	commandFunction: function(Bot, room, time, by, args, client) {
-		// Will probably repurpose this to use q.js's module
 		let qfol = "./data/QUOTES/" + room;
 		let exec = args[0] || "random";
 		if (!Bot.rooms[room].rank)

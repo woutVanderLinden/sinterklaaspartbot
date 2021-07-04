@@ -2,11 +2,10 @@ module.exports = {
 	help: `Sets a timer! Syntax: ${prefix}timer (x) min, (y) sec`,
 	pm: true,
 	commandFunction: function (args, message, Bot) {
-		// To-do: Refactor to match PS
 		if (!client.timers) client.timers = {};
 		if (!args.length) return message.channel.send(unxa);
 		let inp = args.join(' ').split('//');
-		let msg = toId(inp.shift()), reason = inp.join('//');
+		let msg = toID(inp.shift()), reason = inp.join('//');
 		let hrs = msg.match(/\d+(?:h(?:(?:ou?)?r)?)s?/), min = msg.match(/\d+(?:m(?:in(?:utes?)?)?)/), sec = msg.match(/\d+(?:s(?:ec(?:onds?)?)?)/), ttime = 0;
 		if (!hrs && !min && !sec) return message.channel.send('Could not detect a valid time.').then(msg => msg.delete({timeout: 3000}));
 		if (hrs) ttime += (parseInt(hrs[0]) * 60 * 60 * 1000);

@@ -4,7 +4,7 @@ module.exports = {
 	permissions: 'beta',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		if (!args.length) return Bot.say(room, Bot.rooms[room]._ladderPrefix ? `The current ladder prefix is \`\`${Bot.rooms[room]._ladderPrefix}\`\`.` : 'There is no required ladder prefix at the moment.');
-		let lpre = toId(args.join(''));
+		let lpre = toID(args.join(''));
 		if (lpre === 'disable') {
 			delete Bot.rooms[room]._ladderPrefix;
 			return Bot.say(room, "The required ladder prefix has been cleared.");

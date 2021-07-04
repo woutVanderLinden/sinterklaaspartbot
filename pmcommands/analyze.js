@@ -44,7 +44,7 @@ module.exports = {
 					sp[0] = sp[0].split(' ').pop();
 					sp[sp.length - 1] = sp[sp.length - 1].split(' ').shift();
 					sp.forEach(m => {
-						if (!data.pokedex[toId(m)]) flag = false;
+						if (!data.pokedex[toID(m)]) flag = false;
 					});
 					if (flag) q.tags.push('Params');
 				}

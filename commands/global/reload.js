@@ -4,9 +4,9 @@ module.exports = {
 	permissions: 'coder',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		if (!args[0]) return Bot.say(room, unxa);
-		let commandName = tools.commandAlias(toId(args.shift()));
+		let commandName = tools.commandAlias(toID(args.shift()));
 		let comRoom = room;
-		if (args[0]) comRoom = toId(args.join(''));
+		if (args[0]) comRoom = toID(args.join(''));
 		fs.readdir('./commands/global', (e, gcommands) => {
 			if (e) return console.log(e);
 			if (gcommands.includes(commandName + '.js')) {

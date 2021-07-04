@@ -2,14 +2,14 @@ module.exports = {
 	help: `Buys an item from a room. Syntax: ${prefix}buyitem (room), (item ID | confirm)`,
 	permissions: 'none',
 	commandFunction: function (Bot, by, args, client) {
-		let user = toId(by);
+		let user = toID(by);
 		let cargs = args.join(' ').split(/\s*,\s*/);
 		if (!cargs[1]) return Bot.pm(by, unxa);
 		let room = cargs.shift().toLowerCase().replace(/[^a-z0-9-]/g, '');
 		if (!room || !Bot.rooms[room]) return Bot.pm(by, 'Invalid room.');
 		if (!Bot.rooms[room].shop) return Bot.pm(by, 'Sorry, that room doesn\'t have a Shop.');
 		let shop = Bot.rooms[room].shop, lb = Bot.rooms[room].lb;
-		let id = toId(cargs.join(''));
+		let id = toID(cargs.join(''));
 		if (id == 'confirm') {
 			if (!Bot.rooms[room].shop.temp[user]) return Bot.pm(by, 'You don\'t have anything to confirm!');
 			let item = Bot.rooms[room].shop.inventory[Bot.rooms[room].shop.temp[user]];
@@ -30,7 +30,7 @@ module.exports = {
 			user.points[0] -= item.cost[0];
 			user.points[1] -= item.cost[1];
 			tools.updateLB(room);
-			delete Bot.rooms[room].shop.temp[toId(by)];
+			delete Bot.rooms[room].shop.temp[toID(by)];
 			tools.updateShops(room);
 			return Bot.pm(by, `Your purchase of ${item.name} has been noted! Staff will get back to you soon. <3`);
 		}
@@ -42,13 +42,13 @@ module.exports = {
 		for (let i = 0; i < user.points.length; i++) {
 			if (!(user.points[i] >= shop.inventory[id].cost[i])) return Bot.pm(by, `Insufficient balance - you need ${shop.inventory[id].cost[i]} more ${lb.points[i][2]}.`);
 		}
-		Bot.rooms[room].shop.temp[toId(by)] = id;
+		Bot.rooms[room].shop.temp[toID(by)] = id;
 		let item = shop.inventory[id];
 		Bot.pm(by, `You have chosen to buy: ${item.name} for ${tools.listify(lb.points.map((a, i) => item.cost[i] + a[2]))}. Send \`\`${prefix}buyitem ${Bot.rooms[room].title.startsWith('groupchat-') ? room : Bot.rooms[room].title}, confirm\`\` to confirm within a minute.`);
 		return setTimeout(() => {
-			if (Bot.rooms[room].shop.temp[toId(by)]) {
+			if (Bot.rooms[room].shop.temp[toID(by)]) {
 				Bot.pm(by, 'Your purchase has timed out.');
-				delete Bot.rooms[room].shop.temp[toId(by)];
+				delete Bot.rooms[room].shop.temp[toID(by)];
 			}
 		}, 60000);
 	}

@@ -8,7 +8,7 @@ module.exports = {
 		let message = args.join(' ');
 		let threadLink = message.match(/https?:\/\/www.smogon.com\/forums\/threads\/[a-z0-9-]+\.\d+\b/), format = message.match(/\bgen[1-8][a-z0-9]+\b/i);
 		if (!threadLink) return Bot.pm(by, "Unable to detect a valid Smogon thread.");
-		Bot.replayRegex = format ? new RegExp (`(?:re)?play\\.pokemonshowdown\\.com\\/((?:smogtours-)?${toId(format[0])}-\\d+(?:-[a-z0-9]+pw)?)`, 'g') : /(?:re)?play\.pokemonshowdown\.com\/((?:smogtours-)?gen[1-8][a-z0-9]+-\d+(?:-[a-z0-9]+pw)?)/g;
+		Bot.replayRegex = format ? new RegExp (`(?:re)?play\\.pokemonshowdown\\.com\\/((?:smogtours-)?${toID(format[0])}-\\d+(?:-[a-z0-9]+pw)?)`, 'g') : /(?:re)?play\.pokemonshowdown\.com\/((?:smogtours-)?gen[1-8][a-z0-9]+-\d+(?:-[a-z0-9]+pw)?)/g;
 		let mapF = rep => "" + rep.match(/[^/]+$/);
 		Bot[key] = {replays: [], pages: 0, pageNum: 0, threadLink: threadLink[0]};
 		const axios = require('axios');

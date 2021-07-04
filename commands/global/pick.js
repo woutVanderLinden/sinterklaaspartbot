@@ -4,6 +4,6 @@ module.exports = {
 	permissions: 'gamma',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		let a = args.join(' ').split(/, ?/g);
-		Bot.say(room, `${a[0]?'[[]][[]]'+a[Math.floor(Math.random()*a.length)]:'/me chooses nothing'}`);
+		Bot.say(room, `${a[0] ? '[[]][[]]' + a[Math.floor(Math.random() * a.length)] : '/me chooses nothing'}`);
 	}
 }

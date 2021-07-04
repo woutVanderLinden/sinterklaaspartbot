@@ -6,5 +6,6 @@ module.exports = {
 		if (!Bot.jps[room] || !Object.keys(Bot.jps[room]).length) return Bot.say(room, `It doesn't look ike this room has any joinphrases...`);
 		let out = Object.keys(Bot.jps[room]).map((user, index) => `${index + 1})\t${user}${Array.from({length: 21 - user.length}).join('&nbsp;')}: ${Bot.jps[room][user]}`);
 		return Bot.sendHTML(by, out.map(t => t.replace(/</g,'&lt;')).join('<br>'));
+		// Use a table for this instead...
 	}
 }

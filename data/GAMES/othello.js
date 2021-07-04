@@ -37,7 +37,7 @@ class Othello {
 		for (let i = 0; i < 8; i++) {
 			str += `<tr style="height: 35px;">`;
 			for (let j = 0; j < 8; j++) {
-				str += `<td style="width: 35px; background-color: green; vertical-align: middle; horizontal-align: center; text-align: center;">${this.board[i][j] ? `<span style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid black; display: inline-block; margin: auto; vertical-align: middle; background-color: ${this.board[i][j] === 'W' ? 'white' : 'black'};"></span>` : (player ? `<button style="height: 35px; width: 35px; border: none; background: transparent;" name="send" value="/msg ${Bot.status.nickName}, ${prefix}othello ${this.room} click ${this.id} ${i},${j}"></button>` : '&nbsp;')}</td>`;
+				str += `<td style="width: 35px; background-color: green; vertical-align: middle; horizontal-align: center; text-align: center;">${this.board[i][j] ? `<span style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid black; display: inline-block; margin: auto; vertical-align: middle; background-color: ${this.board[i][j] === 'W' ? 'white' : 'black'};"></span>` : (player ? `<button style="height: 35px; width: 35px; border: none; background: transparent;" name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}othello ${this.room} click ${this.id} ${i},${j}"></button>` : '&nbsp;')}</td>`;
 				if (this.board[i][j] === 'W') wCount++;
 				if (this.board[i][j] === 'B') bCount++;
 			}
@@ -143,7 +143,7 @@ class Othello {
 			let sender = list => {
 				if (!list.length) return resolve();
 				Bot.say(this.room, `/sendhtmlpage ${list.shift()}, Othello + ${this.room} + ${this.id}, ${html}`);
-				setTimeout(sender, 200, list);
+				sender(list);
 			}
 			let list = JSON.parse(JSON.stringify(this.spectators));
 			sender(list);

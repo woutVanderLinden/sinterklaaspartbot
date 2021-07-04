@@ -1,10 +1,10 @@
 module.exports = function (room, tourData, Bot) {
 	if (tourData && tourData[0] === 'create') {
+		if (room === 'hindi') setTimeout(() => Bot.rooms.hindi.tourPinged = false, 10 * 60 * 1000);
 		try {
 			let roomData = require(`./data/ROOMS/${room}.json`);
 			if (roomData.tour && ['*', '#', '★'].includes(Bot.rooms[room].rank)) {
 				setTimeout(() => Bot.say(room, `/tour autostart ${roomData.tour[0]}\n/tour autodq ${roomData.tour[1]}`), roomData.tour[2] || 2000);
-				// The timeout is to post these changes _after_ another Bot (looking at you, Jenny) gets a bit overzealous and sets tour times.
 			}
 		} catch {};
 	}
@@ -12,11 +12,12 @@ module.exports = function (room, tourData, Bot) {
 		if (!tourData) return;
 		if (tourData[0] === 'battlestart') {
 			Bot.say('', '/j ' + tourData[3]);
-			return setTimeout((room, text) => Bot.say(room, text), 1000, tourData[3], `G'luck, nerds.\n/part`);
+			return setTimeout((room, text) => Bot.say(room, text), 1000, tourData[3], `G'luck!\n/part`);
 		}
 		else if (tourData[0] === 'update') {
 			try {
 				let json = JSON.parse(tourData[1]);
+				if (json.generator !== 'Single Elimination') return;
 				if (!json.bracketData) return;
 				if (json.bracketData.type !== 'tree') return;
 				if (!json.bracketData.rootNode) return;
@@ -26,13 +27,15 @@ module.exports = function (room, tourData, Bot) {
 			}
 		}
 		else if (tourData[0] === 'end') {
+			// return;
 			try {
 				let json = JSON.parse(tourData[1]);
 				if (json.generator !== 'Single Elimination') return;
+				if (/casual|ignore|no ?points/i.test(json.format || '')) return;
 				if (json.bracketData.type !== 'tree') return;
-				let winners = [];
-				let root = json.bracketData.rootNode;
-				// The rest of Hindi's tournament points algorithms is redacted. Feel free to write your own.
+				// The actual algorithm is secret
+				// Nice try, though
+				Bot.commandHandler('leaderboard', '#PartMan', [], room);
 			} catch (e) {
 				Bot.log(e);
 			}

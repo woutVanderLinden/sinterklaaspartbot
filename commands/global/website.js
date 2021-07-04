@@ -3,6 +3,6 @@ module.exports = {
 	help: `Displays the website link.`,
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		Bot.say(room, `/pm ${by},${websiteLink}`);
+		Bot.say(room, `/pm ${by}, ${websiteLink}`);
 	}
 }

@@ -8,7 +8,7 @@ module.exports = {
 		if (args.length) key = parseInt(args.join('').replace(/[^\d]/g, ''));
 		else key = Math.floor(Math.random() * 10000);
 		if (isNaN(key)) return Bot.pm(by, 'Invalid key.');
-		Bot.keys[toId(by)] = key;
+		Bot.keys[toID(by)] = key;
 		return Bot.serve(by, 'New key generated!');
 	}
 }

@@ -1,7 +1,29 @@
 module.exports = function (type, by) {
 	by = (by || ' Someone').replace(/^[^a-zA-Z0-9]*/, '');
 	return new Promise((resolve, reject) => {
-		switch (toId(type)) {
+		switch (toID(type)) {
+
+			case 'code': case 'repo': case 'codebase': case 'git': case 'github': {
+				(async () => {
+					try {
+						require('child_process').execSync('git pull', { stdio: 'inherit' });
+						Bot.log(`${by} hotpatched the code.`);
+						return resolve('code');
+					} catch (e) {
+						Bot.log(e);
+						return reject(e.message);
+					}
+				})();
+				return;
+			}
+
+			case 'hotpatch': case 'self': case 'hotpatches': {
+				delete require.cache[require.resolve('./hotpatch.js')];
+				delete Bot.hotpatch;
+				Bot.hotpatch = require('./hotpatch.js');
+				Bot.log(`${by} hotpatched hotpatches.`);
+				return resolve('hotpatches');
+			}
 
 			case 'global': {
 				delete require.cache[require.resolve('../global.js')];
@@ -96,7 +118,7 @@ module.exports = function (type, by) {
 					Bot.log(`${by} hotpatched games.`);
 					return resolve('games');
 				}).catch(err => {
-					reject('Uh-oh' || err.message);
+					reject(err.message || 'Uh-oh');
 					Bot.log(err);
 					Bot.tempErr = err;
 					Bot.say('botdevelopment', JSON.stringify(err));
@@ -120,13 +142,24 @@ module.exports = function (type, by) {
 
 			case 'chathandler': case 'chat': {
 				delete require.cache[require.resolve('../chat.js')];
+				delete Bot.chatHandler;
+				Bot.chatHandler = require('../chat.js');
 				Bot.log(`${by} hotpatched the chat handler.`);
 				return resolve('chat handler');
 				break;
 			}
 
+			case 'pmhandler': case 'pms': {
+				delete require.cache[require.resolve('../pmhandler.js')];
+				delete Bot.pmHandler;
+				Bot.pmHandler = require('../pmhandler.js');
+				Bot.log(`${by} hotpatched the PM handler.`);
+				return resolve('PM handler');
+				break;
+			}
+
 			case 'tour': case 'tours': case 'tournaments': case 'tournament': {
-				delete require.cache[require.resolve('../tour.js')];
+				delete require.cache[require.resolve('../tours.js')];
 				Bot.log(`${by} hotpatched tournaments.`);
 				return resolve('tournaments');
 				break;
@@ -146,6 +179,25 @@ module.exports = function (type, by) {
 				Object.keys(minor).forEach(key => Bot._events[key] = minor[key]);
 				Bot.log(`${by} hotpatched the minorhandler.`);
 				return resolve('minorhandler');
+				break;
+			}
+
+			case 'router': case 'route': case 'routes': case 'site': {
+				delete Bot.router;
+				delete require.cache[require.resolve('../router.js')];
+				Bot.router = require('../router.js');
+				Bot.log(`${by} hotpatched the router.`);
+				return resolve('router');
+				break;
+			}
+
+			case 'watcher': case 'watch': {
+				delete require.cache[require.resolve('../watcher.js')];
+				Bot.watcher.close();
+				delete Bot.watcher;
+				Bot.watcher = require('../watcher.js')();
+				Bot.log(`${by} hotpatched the watcher.`);
+				return resolve('watcher');
 				break;
 			}
 

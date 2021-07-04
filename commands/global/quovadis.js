@@ -7,7 +7,7 @@ module.exports = {
 		return Bot.say(room, `Being rewritten.`);
 		if (!args[0]) return Bot.say(room, unxa);
 		if (!Bot.rooms[room]) return Bot.pm(by, 'Invalid room.');
-		switch (toId(args.shift())) {
+		switch (toID(args.shift())) {
 			case 'new': case 'create': case 'n': {
 				if (!tools.hasPermission(by, 'admin', room)) return Bot.say(room, 'Access denied.');
 				if (Bot.rooms[room].quovadis) return Bot.say(room, 'A game of Quo Vadis is currently active.');
@@ -20,7 +20,7 @@ module.exports = {
 					turn: null,
 					played: null,
 					p1: {
-						id: toId(args[0]),
+						id: toID(args[0]),
 						name: args[0],
 						num: 1,
 						points: 99,
@@ -36,7 +36,7 @@ module.exports = {
 						}
 					},
 					p2: {
-						id: toId(args[1]),
+						id: toID(args[1]),
 						name: args[1],
 						num: 2,
 						points: 99,
@@ -53,7 +53,7 @@ module.exports = {
 					},
 					getPlayer: function (name) {
 						if (name === 1 || name === 2) return this[`p${name}`];
-						let id = toId(name);
+						let id = toID(name);
 						if (this.p1.id == id) return this.p1;
 						if (this.p2.id == id) return this.p2;
 						return null;
@@ -73,19 +73,19 @@ module.exports = {
 			case 'play': {
 				let qv = Bot.rooms[room].quovadis;
 				if (!qv) return Bot.pm(by, 'Quo Vadis is not currently active in this room.');
-				let player = qv.getPlayer(toId(by));
+				let player = qv.getPlayer(toID(by));
 				if (!player) return Bot.pm(by, `You're not a player, sadly.`);
-				if (!qv.turn == toId(by)) return Bot.pm(by, 'Not your turn.');
+				if (!qv.turn == toID(by)) return Bot.pm(by, 'Not your turn.');
 				let points = parseInt(args.join('').replace(/[^0-9]/g, ''));
 				if (isNaN(points)) return Bot.pm(by, 'Invalid points.');
 				if (points > player.points) return Bot.pm(by, `You don't have that many points left!`);
 				Bot.pm(by, `Playing **${points}** point(s). Type \`\`${prefix}confirm\`\` to confirm.`);
 				player.temPlay = points;
-				/*Bot.userCallbacks[toId(by)] = function (by, message, room) {
+				/*Bot.userCallbacks[toID(by)] = function (by, message, room) {
 					if (message.toLowerCase() == `${prefix}confirm`) {
-						let qv = Bot.rooms[room].quovadis, p = qv.getPlayer(toId(by));
+						let qv = Bot.rooms[room].quovadis, p = qv.getPlayer(toID(by));
 						if (!p) return;
-						if (qv.turn !== toId(by)) return Bot.pm(by, 'Not your turn.');
+						if (qv.turn !== toID(by)) return Bot.pm(by, 'Not your turn.');
 						if (p.temPlay === null) return Bot.pm(by, `You haven't played anything to confirm, yet!`);
 						p.points -= (p.play = p.temPlay);
 						p.temPlay = null;
@@ -122,10 +122,10 @@ module.exports = {
 							}
 						}
 						else return Bot.pm(by, 'This went wrong.');
-						return delete Bot.userCallbacks[toId(by)];
+						return delete Bot.userCallbacks[toID(by)];
 					}
 				}
-				Bot.userCallbackData[toId(by)] = [room];*/
+				Bot.userCallbackData[toID(by)] = [room];*/
 				break;
 			}
 			case 'status': {

@@ -9,7 +9,7 @@ module.exports = {
 		}
 		let cargs = args.join(' ').split(/,/);
 		if (!cargs[1]) return Bot.say(room, unxa);
-		let name = toId(cargs.shift());
+		let name = toID(cargs.shift());
 		if (Bot.rooms[room].shop && Bot.rooms[room].shop.jpl && Bot.rooms[room].shop.jpl.length && !Bot.rooms[room].shop.jpl.includes(name)) return Bot.say(room, `They don't have a license, though. That's illegal. :(`);
 		if (Bot.jps[room][name]) return Bot.say(room, `That user already has a JP! Use ${prefix}editjoinphrase instead.`);
 		let jp = cargs.join(',').trim();

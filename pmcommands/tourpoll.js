@@ -3,7 +3,7 @@ module.exports = {
 	noDisplay: true,
 	permissions: 'none',
 	commandFunction: function (Bot, by, args, client) {
-		switch (toId(args.shift())) {
+		switch (toID(args.shift())) {
 			case 'vote': {
 				let [room, tier] = args.join(' ').split(', ');
 				if (!tier) return Bot.pm(by, unxa);
@@ -16,7 +16,7 @@ module.exports = {
 				let vote = room.tourpoll.options.find(opt => toID(opt) === tier);
 				if (!vote) return Bot.pm(by, `Invalid vote.`);
 				room.tourpoll.votes[user] = vote;
-				return Bot.pm(by, `Your vote has been ${exist ? 'changed' : 'cast'} successfully.`);
+				return Bot.roomReply(toID(room.title), by, `Your vote has been ${exist ? 'changed' : 'cast'} successfully.`);
 				break;
 			}
 			default: return Bot.pm(by, this.help);

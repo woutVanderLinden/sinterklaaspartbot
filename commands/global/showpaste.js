@@ -24,10 +24,9 @@ module.exports = {
 				else if (l.length == 1 && /\([MF]\)/.test(m)) return m.split(/\([MF]\)/)[0].trim();
 				else if (l.length == 1) return m.match(/\(.*?\)/)[0].substr(1).slice(0, -1);
 				else return m.split('@')[0].trim();
-			}).map(m => m.toLowerCase().replace(/[^a-z0-9-]/g,'')).filter(m => data.pokedex[toId(m)] || data.pokedex[m.split('-')[0]]).map(m => data.pokedex[toId(m)] ? toId(m) : m);
+			}).map(m => m.toLowerCase().replace(/[^a-z0-9-]/g,'')).filter(m => data.pokedex[toID(m)] || data.pokedex[m.split('-')[0]]).map(m => data.pokedex[toID(m)] ? toID(m) : m);
 			pkmn = pkmn.map(m => `<psicon pokemon="${m}" style="veritcal-align: middle;">`).join('');
 			Bot.say(room, '/adduhtml POKEPASTE,<DETAILS><SUMMARY>' + obj.title + ' &nbsp;[' + pkmn + ']</SUMMARY><HR><BR>' + obj.paste.replace(/\n/g,'<BR>') + '</DETAILS>');
 		});
-		// Why am I using request over axios ;-;
 	}
 }

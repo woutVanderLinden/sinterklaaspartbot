@@ -39,7 +39,7 @@ let createScene = function () {
 	let theta = 0;
 	let radius = 6;
 
-	let maze = MAZE.create(10, 10);
+	let maze = MAZE.create(20, 20);
 	let boxes = [box];
 
 	maze.forEach((row, x) => {

@@ -4,16 +4,16 @@ module.exports = {
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		if (!args.length) return Bot.pm(by, unxa);
-		let user = toId(by), rank = tools.hasPermission(by, 'gamma', room);
+		let user = toID(by), rank = tools.hasPermission(by, 'gamma', room);
 		let inp = args.join(' ').split('//');
-		if (['left', 'count', 'togo', 'longer', 'howmuchlonger', 'ongoing', 'current', 'status'].includes(toId(inp[0]))) {
+		if (['left', 'count', 'togo', 'longer', 'howmuchlonger', 'ongoing', 'current', 'status'].includes(toID(inp[0]))) {
 			if (!Bot.rooms[room].timers || !Bot.rooms[room].timers[user]) return Bot.pm(by, "You do not have an ongoing timer!");
 			let timer = Bot.rooms[room].timers[user];
 			if (rank) Bot.say(room, `Your ongoing timer ${timer._reason ? `${timer._reason} ` : ''}will end in ${tools.toHumanTime(timer._endTime - Date.now())}.`);
 			else Bot.pm(by, `Your ongoing timer ${timer._reason ? `${timer._reason} ` : ''}will end in ${tools.toHumanTime(timer._endTime - Date.now())}.`);
 			return;
 		}
-		if (['stop', 'end', 'remove', 'delete', 'cancel', 'finish'].includes(toId(inp[0]))) {
+		if (['stop', 'end', 'remove', 'delete', 'cancel', 'finish'].includes(toID(inp[0]))) {
 			if (!Bot.rooms[room].timers || !Bot.rooms[room].timers[user]) return Bot.pm(by, "You do not have an ongoing timer!");
 			let timer = Bot.rooms[room].timers[user];
 			if (rank) Bot.say(room, `Your timer ${timer._reason ? `${timer._reason} ` : ''}was ended with ${tools.toHumanTime(timer._endTime - Date.now())} left.`);
@@ -21,7 +21,7 @@ module.exports = {
 			clearTimeout(Bot.rooms[room].timers[user]);
 			return;
 		}
-		let msg = toId(inp.shift()), reason = inp.join('//');
+		let msg = toID(inp.shift()), reason = inp.join('//');
 		let ttime = tools.fromHumanTime(msg);
 		if (!ttime) return Bot.pm(by, "YOU IS NERD");
 		if (ttime > 86400000) return Bot.pm(by, "Nothing longer than a day, please.");

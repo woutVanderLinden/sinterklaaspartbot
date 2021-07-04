@@ -4,7 +4,7 @@ module.exports = {
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		if (!args[0]) return Bot.say(room, unxa);
-		let commandName = tools.commandAlias(toId(args.join('')));
+		let commandName = tools.commandAlias(toID(args.join('')));
 		let commandObj = {};
 		fs.readdir('./commands', (e, rooms) => {
 			if (e) return console.log(e);

@@ -1,7 +1,7 @@
 class LO {
 	constructor (room, user, size) {
 		this.name = user;
-		this.user = toId(user);
+		this.user = toID(user);
 		this.room = room.toLowerCase().replace(/[^a-z0-9-]/g, '');
 		this.size = size || [5, 5];
 		this.board = Array.from({length: size[0]}).map(row => Array.from({length: size[1]}).map(t => 0));
@@ -30,7 +30,7 @@ class LO {
 	}
 	boardHTML (isPlayer, board, limit) {
 		let colours = ["#6e6d62", "#fff9ba", "#111111"];
-		let html = `<center${limit ? ` style="max-height: 200px; overflow-y: scroll;"` : ''}><table style="border:none;background:${colours[2]}">${(board || this.board).map((row, x) => `<tr>${row.map((bulb, y) => `<td>${isPlayer ? `<button name="send" value="/pm ${Bot.status.nickName},${prefix}lo ${this.room}, c ${x} ${y}" style="background:none;border:none;padding:0">` : ''}<div style="height:${board ? '15' : '35'}px;width:${board ? '15': '35'}px;background-image:radial-gradient(${colours[bulb]} 60%,#333333);border-radius:${board ? '3.75' : '10'}px;margin:${board ? '1.5' : '3'}px"></div>${isPlayer ? '</button>' : ''}</td>`).join('')}</tr>`).join('')}</table></center>`;
+		let html = `<center${limit ? ` style="max-height: 200px; overflow-y: scroll;"` : ''}><table style="border:none;background:${colours[2]}">${(board || this.board).map((row, x) => `<tr>${row.map((bulb, y) => `<td>${isPlayer ? `<button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName},${prefix}lo ${this.room}, c ${x} ${y}" style="background:none;border:none;padding:0">` : ''}<div style="height:${board ? '15' : '35'}px;width:${board ? '15': '35'}px;background-image:radial-gradient(${colours[bulb]} 60%,#333333);border-radius:${board ? '3.75' : '10'}px;margin:${board ? '1.5' : '3'}px"></div>${isPlayer ? '</button>' : ''}</td>`).join('')}</tr>`).join('')}</table></center>`;
 		return html;
 	}
 }

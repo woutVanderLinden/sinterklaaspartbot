@@ -9,12 +9,13 @@ module.exports = {
 			if (rooms.length === 1) room = rooms[0];
 			else return Bot.sendHTML(by, `Multiple room shops found! Which did you mean?<br>` + rooms.map(r => `<button name="send" value="/msg ${Bot.status.nickName},${prefix}shop ${r}">${Bot.rooms[r].title}</button>`));
 		}
+		if (room === 'hc') room = 'hydrocity';
 		if (!room || !Bot.rooms[room]) return Bot.pm(by, 'Invalid room.');
 		if (!Bot.rooms[room].shop) return Bot.pm(by, `${Bot.rooms[room].title} Doesn't have a Shop...`);
 		if (!Bot.rooms[room].shop) return Bot.pm(by, "This room doesn't have a Shop!");
 		if (!Bot.rooms[room].lb) return Bot.pm(by, "No points here.");
 		let user = {}, shop = Bot.rooms[room].shop, lb = Bot.rooms[room].lb;
-		user = lb.users[toId(by)] || {points: Array.from({length: lb.points.length}).map(t => 0)};
+		user = lb.users[toID(by)] || {points: Array.from({length: lb.points.length}).map(t => 0)};
 		let out = `<DIV style="background: white; color: black;">
 	${shop.img && shop.img.src ? `<IMG src="${shop.img.src}" height="137" width="126" style="float: left; align: top">` : ''}
 	<CENTER>

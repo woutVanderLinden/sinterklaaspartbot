@@ -5,6 +5,59 @@ module.exports = {
 		if (!args[0]) return res.redirect('/home');
 		if (Bot.AFD && Math.random() < 0.3) return res.redirect(`https://www.youtube.com/watch?v=dQw4w9WgXcQ&feature=youtu.be`);
 		switch (args[0].toLowerCase()) {
+			case 'chat-ai-policy': case 'cv': case 'home': case 'hypnosis': case 'hypnosis': case 'tic-tac-toe': {
+				fs.readFile(`./pages/${args[0]}.html`, 'utf8', (err, file) => {
+					if (err) {
+						Bot.log(err);
+						return res.send('Something went wrong! PartMan has been informed.');
+					}
+					return res.send(file);
+				});
+				break;
+			}
+			case 'aifa': {
+				if (!args[1]) return res.send(`Which mode? Try <a href="${websiteLink}/aifa/heuristic">this</a>.`);
+				switch (toID(args.slice(1).join(''))) {
+					case 'heuristic': return res.sendFile(`${__dirname}/pages/aifa_h.html`);
+					case 'simple': return res.sendFile(`${__dirname}/pages/aifa_s.html`);
+					default: return res.send(`?`);
+				}
+				break;
+			}
+			case 'connectfour': {
+				if (!args[1]) return res.send("Err, it looks like you forgot to specify the game code, sorry.");
+				if (/^(?:[a-z]{2})\d*$/.test(args[1])) return res.send("Invalid game code.");
+				fs.readFile('./pages/connectfour.html', 'utf8', (err, file) => {
+					if (err) {
+						Bot.log(err);
+						return res.send('Something went wrong! PartMan has been informed.');
+					}
+					return res.send(file.replace('##GAME_STR##', args[1]));
+				});
+				break;
+			}
+			case 'dexentries': case 'entries': {
+				fs.readFile(`./public/dexentries.txt`, 'utf8', (err, file) => {
+					if (err) {
+						Bot.log(err);
+						return res.send('Something went wrong! PartMan has been informed.');
+					}
+					Bot.log(file.length);
+					return res.send(file);
+				});
+				break;
+			}
+			case 'hpi': {
+				return res.redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ&feature=youtu.be");
+				break;
+			}
+			case 'hpl': {
+				fs.readFile(`./pages/${req.url}.html`, 'utf8', (err, file) => {
+					if (err) return res.send("Maaf karna, requested URL mila nahi.");
+					return res.send(file);
+				});
+				break;
+			}
 			case 'othello': {
 				if (!args[1]) return res.send("Err, it looks like you forgot to specify the game code, sorry.");
 				if (/[^A-Za-z0-9_-]/.test(args[1])) return res.send("Invalid game code.");
@@ -14,6 +67,25 @@ module.exports = {
 						return res.send('Something went wrong! PartMan has been informed.');
 					}
 					return res.send(file.replace('##GAME_STR##', args[1]));
+				});
+				break;
+			}
+			case 'puzzles': case 'puzzle': case 'ugo': {
+				if (!args[1]) return res.send("Sorry, you'll need to specify the name of the puzzle you want to see!");
+				let sudo = false, name = args[1];
+				if (name.endsWith('supersecretsudo')) {
+					name = name.substr(0, name.length - 'supersecretsudo'.length);
+					sudo = true;
+				}
+				let PZ = require('./data/PUZZLES/index.js');
+				if (!PZ.live && !sudo) return res.send("It hasn't started yet!");
+				name = toID(name);
+				if (name === 'constructor') return res.send('Nerd');
+				if (name === 'yinyang') return res.redirect(`https://lovemathboy.github.io/`);
+				fs.readFile(`./pages/UGO/${name}.pdf`, (err, file) => {
+					if (err) return res.send(`Sorry, that wasn't a puzzle! <small>Or was it?</small>`);
+					res.contentType("application/pdf");
+					res.send(file);
 				});
 				break;
 			}
@@ -39,11 +111,22 @@ module.exports = {
 				});
 				break;
 			}
+			case 'regexhunt': case 'regexhunts': {
+				fs.readFile('./pages/regexhunts.html', 'utf8', (err, file) => {
+					if (err) {
+						Bot.log(err);
+						return res.send('Something went wrong! PartMan has been informed.');
+					}
+					return res.send(file);
+				});
+				break;
+			}
 			case 'user': {
 				const user = args[1], key = args[2];
 				if (!Bot.keys[user]) return res.send("Sorry, I don't have any pages for that user.");
 				if (Bot.keys[user] !== parseInt(key)) return res.send("Sorry, invalid key!");
 				return res.send(`<head>\n\t<title>PartBot</title>\n\t<link rel="icon" href="/public/icon.png">\n</head>\n<body>\t${Bot.pageData[user]}</body>`);
+				break;
 			}
 			case 'public': {
 				try {
@@ -62,7 +145,7 @@ module.exports = {
 		const args = req.url.split('/');
 		args.shift();
 		switch (args[0].toLowerCase()) {
-			default: return res.send(`POST-MORTEM`);
+			default: return res.send("Sorry, couldn't find the page you were looking for!");
 		}
 	}
 }

@@ -3,13 +3,14 @@ module.exports = {
 	permissions: 'none',
 	commandFunction: function (Bot, by, args, client) {
 		if (!Bot.pmtimers) Bot.pmtimers = {};
-		let msg = toId(args.join('')), user = toId(by);
+		let msg = toID(args.join('')), user = toID(by);
 		let min = msg.match(/\d+(?:m(?:in(?:utes?)?)?)/), sec = msg.match(/\d+(?:s(?:ec(?:onds?)?)?)/), ttime = 0;
 		if (!min && !sec) return Bot.pm(by, 'Could not detect a valid time.');
 		if (min) ttime += (parseInt(min[0]) * 60 * 1000);
 		if (sec) ttime += (parseInt(sec[0]) * 1000);
 		clearInterval(Bot.pmtimers[user]);
-		Bot.pmtimers[user] = setTimeout(name => {Bot.pm(name, `Time's up!`); delete Bot.pmtimers[user]}, ttime, by.substr(1));
+		Bot.pmtimers[user] = setTimeout(name => { Bot.pm(name, `Time's up!`); delete Bot.pmtimers[user]; }, ttime, by.substr(1));
 		return Bot.pm(by, `A timer has been set for ${tools.toHumanTime(ttime)}.`);
+		// Eventually switch over to the same syntax as the room one
 	}
 }
