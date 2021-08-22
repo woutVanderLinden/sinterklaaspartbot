@@ -21,7 +21,7 @@ If all goes well, you should get a prompt notifying you of your Bot having conne
 
 
 #### Requirements
-Node.js (> Node 12.0.0)
+Node.js (> Node 14.0.0)
 
 
 
