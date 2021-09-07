@@ -1,6 +1,5 @@
 module.exports = function (room, time, by, message) {
 	if (typeof Bot.jpcool[room] === 'object') Object.keys(Bot.jpcool[room]).forEach(user => Bot.jpcool[room][user][0]++);
-	if (([mmroom, "groupchat-partbot-mentalmath"].includes(room)) && /^-?[0-9 ]+$/.test(message) && typeof Bot.rooms[room].ans === "number") return Bot.commandHandler('answer', by, [message], room);
 	if (tools.hasPermission(by, 'none', room)) require('./autores.js').check(message, by, room);
 	if (!message.startsWith(prefix)) return;
 	if (message === `${prefix}eval 1`) return Bot.say(room, '1');
