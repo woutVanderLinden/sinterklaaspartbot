@@ -1,6 +1,6 @@
 var Config = Config || {};
 
-Config.bannedHosts = ['cool.jit.su', 'pokeball-nixonserver.rhcloud.com', 'redcurant.glitch.me', 'redcurantt.glitch.me'];
+Config.bannedHosts = ['cool.jit.su', 'pokeball-nixonserver.rhcloud.com', /\.glitch\.me/];
 
 Config.whitelist = [
 	// general sites
@@ -73,6 +73,7 @@ Config.whitelist = [
 	'victoryroadvgc.com',
 	'pikalytics.com',
 	'vgcstats.com',
+	'worldcupvgc.com',
 
 	// personal sites
 	'breakdown.forumotion.com',
@@ -367,9 +368,29 @@ Config.customcolors = {
 	'havi': 'seejong',
 	'blah': 'shubashubashub',
 	'sfg': 'saltyfrenchguy',
-	'sectoniaservant': '6gv44c3w',
+	'sectonia': '6gv44c3w',
 	'awa': 'awanderingcaelum',
 	'vani': '6an2khng',
+	'duel': 'duelmex',
+	'lily': 'lilburr',
+	'ara': 'phoenixara',
+	'sakito': 'bysakito',
+	'dnb': 'onlyrandomstuff',
+	'niko': 'nikogoh',
+	'ophion': 'ophi0n',
+	'dflo': 'dragonflo',
+	'cleffa': 'momopono',
+	'skies': 'skiesjfk',
+	'empo': 'gsz9pvp6',
+	'devin': 'devwin',
+	'keys': 'dream',
+	'think': 'thinkerino',
+	'rosa': 'glyx',
+	'king': 'kingswordyt',
+	'ltg': 'loltrollgame',
+	'peary': 'hreybb',
+	'alex': '17ot7i28',
+	'elchunko': 'loschunkos', // contest winner
 	'cathy': '' //{color: '#ff5cb6'}
 };
 
@@ -385,7 +406,7 @@ Config.defaultserver = {
 };
 
 /*** Begin automatically generated configuration ***/
-Config.version = "0.11.2 (d9899a14)";
+Config.version = "0.11.2 (bcff0d9a/4d403f0e)";
 
 Config.routes = {
 	root: 'pokemonshowdown.com',
