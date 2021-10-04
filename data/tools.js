@@ -126,6 +126,17 @@ exports.hasPermission = function (user, rank, room) {
 	else return false;
 };
 
+exports.getRoom = function (room) {
+	room = (room?.id || room?.name || room || '').toString().toLowerCase().replace(/[^a-z0-9-]/g, '');
+	if (Bot.rooms.hasOwnProperty(room)) return room;
+	return fs.readdirSync('./data/ROOMS').find(roomFile => {
+		try {
+			const required = require(`./ROOMS/${roomFile}`);
+			if (required.aliases.includes(room)) return true;
+		} catch {}
+	})?.slice(0, -5) || room;
+};
+
 exports.blockedCommand = function (command, room) {
 	try {
 		room = room.toLowerCase().replace(/[^a-z0-9-]/g, '');
