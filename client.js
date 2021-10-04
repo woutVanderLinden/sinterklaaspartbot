@@ -1,16 +1,15 @@
 // Updated version of Ecuacion's connection.
 
-var util = require('util');
-var https = require('https');
-var url = require('url');
-var WebSocketClient = require('websocket').client;
+const util = require('util');
+const https = require('https');
+const url = require('url');
+const EventEmitter = require('events');
+const WebSocketClient = require('websocket').client;
 
 function toID (text) {
 	if (typeof text !== 'string') return text;
 	return text.toLowerCase().replace(/[^a-z0-9]/g, '');
 }
-
-let EventEmitter = require('events');
 
 class Client extends EventEmitter {
 	constructor (server, port, opts) {
@@ -35,8 +34,7 @@ class Client extends EventEmitter {
 			debug: false
 		}
 		if (typeof opts === 'object') {
-			for (var i in opts) 
-				this.opts[i] = opts[i];
+			for (let i in opts) this.opts[i] = opts[i];
 		}
 		this.actionUrl = url.parse(this.opts.loginServer);
 
@@ -136,7 +134,7 @@ Client.prototype.connect = function (retry) {
 	}
 	if (this.status.connected) return this.error("Already connected");
 	this.closed = false;
-	var webSocket = new WebSocketClient({maxReceivedFrameSize: 104857600});
+	const webSocket = new WebSocketClient({maxReceivedFrameSize: 104857600});
 	this.webSocket = webSocket;
 	var self = this;
 	self.rooms = {};
@@ -193,13 +191,13 @@ Client.prototype.connect = function (retry) {
 			}
 		});
 	});
-	var id = ~~(Math.random() * 900) + 100;
-	var chars = 'abcdefghijklmnopqrstuvwxyz0123456789_';
-	var str = '';
-	for (var i = 0, l = chars.length; i < 8; i++) {
+	let id = ~~(Math.random() * 900) + 100;
+	let chars = 'abcdefghijklmnopqrstuvwxyz0123456789_';
+	let str = '';
+	for (let i = 0, l = chars.length; i < 8; i++) {
 		str += chars.charAt(~~(Math.random() * l));
 	}
-	var conStr = 'ws://' + self.opts.server + ':' + self.opts.port + '/showdown/' + id + '/' + str + '/websocket';
+	let conStr = 'ws://' + self.opts.server + ':' + self.opts.port + '/showdown/' + id + '/' + str + '/websocket';
 	self.debug('connecting to ' + conStr + ' - secondary protocols: ' + util.inspect(self.opts.secprotocols));
 	webSocket.connect(conStr, self.opts.secprotocols);
 }
@@ -218,7 +216,7 @@ Client.prototype.softDisconnect = function () {
 *********************************/
 
 Client.prototype.rename = function (nick, pass) {
-	var requestOptions = {
+	const requestOptions = {
 		hostname: this.actionUrl.hostname,
 		port: this.actionUrl.port,
 		path: this.actionUrl.pathname,
@@ -371,7 +369,7 @@ Client.prototype.pm = function (user, msg) {
 }
 
 Client.prototype.roomReply = function (room, user, msg) {
-	this.say(room, `/sendprivatehtmlbox ${user}, ${tools.escapeHTML(msg)}`);
+	this.say(room, `/sendprivatehtmlbox ${user}, ${tools.escapeHTML(msg).replace(/\n/g, '<br/>')}`);
 }
 
 Client.prototype.joinRooms = function (rooms) {
@@ -442,15 +440,15 @@ Client.prototype.receive = function (message) {
 Client.prototype.receiveMsg = function (message) {
 	if (!message) return;
 	if (message.indexOf('\n') > -1) {
-		var spl = message.split('\n');
-		var room = 'lobby';
+		const spl = message.split('\n');
+		let room = 'lobby';
 		if (spl[0].charAt(0) === '>') {
 			room = spl[0].substr(1);
 			if (room === '') room = 'lobby';
 		}
 		for (var i = 0, len = spl.length; i < len; i++) {
 			if (spl[i].split('|')[1] && (spl[i].split('|')[1] === 'init')) {
-				for (var j = i; j < len; j++) {
+				for (let j = i; j < len; j++) {
 					this.receiveLine(room, spl[j], true);
 				}
 				break;
@@ -464,7 +462,7 @@ Client.prototype.receiveMsg = function (message) {
 }
 
 Client.prototype.receiveLine = function (room, message, isIntro) {
-	var larg = message.substr(1).split('|');
+	let larg = message.substr(1).split('|');
 	this.emit('line', room, message, isIntro, larg);
 	if (room.startsWith('battle-')) this.emit('battle', room, message, isIntro, larg);
 	switch (larg[0]) {
@@ -572,8 +570,8 @@ Client.prototype.receiveLine = function (room, message, isIntro) {
 			this.emit('join', toID(larg[1]), room, Date.now());
 			break;
 		case 'n': case 'N': 
-			var by = toID(larg[1]);
-			var old = toID(larg[2]);
+			let by = toID(larg[1]);
+			let old = toID(larg[2]);
 			this.emit('nick', by, old, room, Date.now());
 			this.rooms[room].users.remove(this.rooms[room].users.find(u => toID(u) === toID(old)));
 			this.rooms[room].users.push(larg[1]);
@@ -656,11 +654,11 @@ Client.prototype.receiveLine = function (room, message, isIntro) {
 *********************************/
 
 Client.prototype.startConnectionTimeOut = function () {
-	var self = this;
+	let self = this;
 	this.stopConnectionTimeOut();
 	this.connectionTimeOutInterval = setInterval(function () {
 		if (self.status.connected && self.lastMessage) {
-			var t = Date.now();
+			let t = Date.now();
 			if (t - self.lastMessage > self.opts.connectionTimeout) {
 				self.error("Connection timeout: " + (t - self.lastMessage));
 				self.softDisconnect();
