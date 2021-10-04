@@ -1,5 +1,5 @@
 module.exports = {
-	init: function () {
+	init: function (Bot) {
 		process.on('uncaughtException', error => {
 			console.log(error);
 			Bot.log(error).then(() => {
