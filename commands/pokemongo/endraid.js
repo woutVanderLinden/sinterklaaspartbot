@@ -13,7 +13,8 @@ module.exports = {
 		clearInterval(raid.timer);
 		clearInterval(raid.warningTimer);
 		clearInterval(raid.fiveTimer);
-		Bot.say(room, `/adduhtml RAIDHTML${host}, ${raid.hostName}'s ${raid.pokemon} raid has been ended${host === user ? '' : `by ${by.substr(1)}`}.`);
+		clearInterval(raid.hostTimer);
+		Bot.say(room, `/adduhtml RAIDHTML${host}, ${raid.hostName}'s ${raid.pokemon} raid has been ended${host === user ? '' : ` by ${by.substr(1)}`}.`);
 		delete Bot.rooms[room].raids[host];
 	}
 }
