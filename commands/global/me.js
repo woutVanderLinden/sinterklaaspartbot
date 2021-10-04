@@ -11,15 +11,18 @@ module.exports = {
 				role = 'Locked.';
 				break;
 			case 2:
-				role = 'a pleb.';
+				role = 'muted.';
 				break;
 			case 3:
-				role = 'a Gamma.';
+				role = 'a regular ol\' Joe.';
 				break;
 			case 4:
-				role = 'a Beta.';
+				role = 'a Gamma.';
 				break;
 			case 5:
+				role = 'a Beta.';
+				break;
+			case 6:
 				role = 'an Alpha.';
 				break;
 			case 9:
@@ -32,7 +35,7 @@ module.exports = {
 				role = 'somehow screwing up the Bot code. Definitely not PartMan\'s fault.';
 				break;
 		}
-		if (rank < 3) Bot.pm(by, 'You are ' + role);
+		if (rank < 4) Bot.pm(by, 'You are ' + role);
 		else Bot.say(room, 'You are ' + role);
 	}
 }
