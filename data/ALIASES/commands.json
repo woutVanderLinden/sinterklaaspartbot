@@ -50,5 +50,6 @@
 	"addraid": "addraids",
 	"removeraid": "removeraids",
 	"setraid": "setraids",
-	"raid": "hostraid"
+	"raid": "hostraid",
+	"hundo": "hundos"
 }
