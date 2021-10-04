@@ -4,7 +4,7 @@ module.exports = {
 	commandFunction: function (Bot, by, args, client) {
 		let cargs = args.join(' ').split(',');
 		if (cargs.length < 2) return Bot.pm(by, unxa);
-		let room = cargs.shift().toLowerCase().replace(/[^a-z0-9-]/g, '');
+		let room = tools.getRoom(cargs.shift());
 		if (!room || !Bot.rooms[room]) return Bot.pm(by, "I don't seem to be in that room.");
 		if (!tools.canHTML(room)) return Bot.pm(by, "I don't have the permissions for this, sorry. I need to be roombot.");
 		if (!tools.hasPermission(by, 'beta', room)) return Bot.pm(by, "This command can only be used by roomstaff");

@@ -3,7 +3,7 @@ module.exports = {
 	permissions: 'none',
 	commandFunction: function (Bot, by, args, client) {
 		args = args.join(' ').split(/,\s*/);
-		let room = args[0].toLowerCase().replace(/[^a-z0-9-]/g, '');
+		let room = tools.getRoom(args[0]);
 		if (!room) {
 			let rooms = Bot.getRooms(by);
 			if (!rooms) rooms = [];
@@ -12,7 +12,6 @@ module.exports = {
 			if (rooms.length === 1) room = rooms[0];
 			else return Bot.sendHTML(by, `Multiple rooms found! Which did you mean?<br>` + rooms.map(r => `<button name="send" value="/msg ${Bot.status.nickName},${prefix}q ${r}, random">${Bot.rooms[r].title}</button>`));
 		}
-		room = aliases[room] || room;
 		if (!room || !Bot.rooms[room]) return Bot.pm(by, 'Invalid room.');
 		return Bot.commandHandler('q', by, args[1] ? args[1].split(' ') : [], room, true);
 	}
