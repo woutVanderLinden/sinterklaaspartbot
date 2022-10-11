@@ -26,7 +26,7 @@ Bot.on('battle', (...args) => require('./battle.js').handler(...args));
 
 Bot.chatHandler = require('./chat.js');
 Bot.pmHandler = require('./pmhandler.js');
-Bot.processHandler = require('./processhandler.js').init();
+Bot.processHandler = require('./processhandler.js').init(Bot);
 Bot.on('chat', (room, time, by, message) => Bot.chatHandler(room, time, by, message));
 Bot.on('pm', (by, message) => Bot.pmHandler(by, message));
 
