@@ -9,21 +9,22 @@ module.exports = {
 						resolve();
 					});
 				})).then(() => {
-					process.exit(1);
+					// process.exit(1);
 				});
 			}).catch(err => {
 				Bot.log(err);
-				process.exit(1);
+				// process.exit(1);
 			});
 		});
-		let standard_input = process.stdin;
-		standard_input.setEncoding('utf-8');
-		standard_input.on('data', data => {
+		// TODO: Use readline
+		const stdIn = process.stdin;
+		stdIn.setEncoding('utf-8');
+		stdIn.on('data', line => {
 			try {
-				console.log(eval(data));
-			} catch(e) {
+				console.log(eval(line));
+			} catch (e) {
 				console.log(e);
 			}
 		});
 	}
-}
+};

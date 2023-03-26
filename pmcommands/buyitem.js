@@ -3,16 +3,16 @@ module.exports = {
 	permissions: 'none',
 	commandFunction: function (Bot, by, args, client) {
 		let user = toID(by);
-		let cargs = args.join(' ').split(/\s*,\s*/);
+		const cargs = args.join(' ').split(/\s*,\s*/);
 		if (!cargs[1]) return Bot.pm(by, unxa);
-		let room = cargs.shift().toLowerCase().replace(/[^a-z0-9-]/g, '');
+		const room = cargs.shift().toLowerCase().replace(/[^a-z0-9-]/g, '');
 		if (!room || !Bot.rooms[room]) return Bot.pm(by, 'Invalid room.');
 		if (!Bot.rooms[room].shop) return Bot.pm(by, 'Sorry, that room doesn\'t have a Shop.');
-		let shop = Bot.rooms[room].shop, lb = Bot.rooms[room].lb;
-		let id = toID(cargs.join(''));
-		if (id == 'confirm') {
+		const shop = Bot.rooms[room].shop, lb = Bot.rooms[room].lb;
+		const id = toID(cargs.join(''));
+		if (id === 'confirm') {
 			if (!Bot.rooms[room].shop.temp[user]) return Bot.pm(by, 'You don\'t have anything to confirm!');
-			let item = Bot.rooms[room].shop.inventory[Bot.rooms[room].shop.temp[user]];
+			const item = Bot.rooms[room].shop.inventory[Bot.rooms[room].shop.temp[user]];
 			user = lb.users[user];
 			if (!user) return Bot.pm(by, "Couldn't find your details, sorry.");
 			for (let i = 0; i < user.points.length; i++) {
@@ -38,12 +38,17 @@ module.exports = {
 		Bot.pm(by, `Selected item: ${shop.inventory[id].name}${shop.inventory[id].desc ? ` (${shop.inventory[id].desc})` : ''}.`);
 		user = lb.users[user];
 		if (!user) return Bot.pm(by, 'Sorry, it looks like you can\'t afford that yet!');
-		if (user.points.length !== shop.inventory[id].cost.length || user.points.length !== lb.points.length) return Bot.pm(by, 'Sorry, this went terribly wrong - the item in question has not been coded properly.');
+		if (user.points.length !== shop.inventory[id].cost.length || user.points.length !== lb.points.length) {
+			return Bot.pm(by, 'Sorry, this went terribly wrong - the item in question has not been coded properly.');
+		}
 		for (let i = 0; i < user.points.length; i++) {
-			if (!(user.points[i] >= shop.inventory[id].cost[i])) return Bot.pm(by, `Insufficient balance - you need ${shop.inventory[id].cost[i]} more ${lb.points[i][2]}.`);
+			if (!(user.points[i] >= shop.inventory[id].cost[i])) {
+				return Bot.pm(by, `Insufficient balance - you need ${shop.inventory[id].cost[i]} more ${lb.points[i][2]}.`);
+			}
 		}
 		Bot.rooms[room].shop.temp[toID(by)] = id;
-		let item = shop.inventory[id];
+		const item = shop.inventory[id];
+		// eslint-disable-next-line max-len
 		Bot.pm(by, `You have chosen to buy: ${item.name} for ${tools.listify(lb.points.map((a, i) => item.cost[i] + a[2]))}. Send \`\`${prefix}buyitem ${Bot.rooms[room].title.startsWith('groupchat-') ? room : Bot.rooms[room].title}, confirm\`\` to confirm within a minute.`);
 		return setTimeout(() => {
 			if (Bot.rooms[room].shop.temp[toID(by)]) {
@@ -52,4 +57,4 @@ module.exports = {
 			}
 		}, 60000);
 	}
-}
+};

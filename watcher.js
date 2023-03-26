@@ -13,6 +13,9 @@ module.exports = function watcher () {
 		path: './discord_chat.js',
 		name: 'discord'
 	}, {
+		path: './events.js',
+		name: 'events'
+	}, {
 		path: './data/GAMES',
 		name: 'games'
 	}, {
@@ -25,11 +28,20 @@ module.exports = function watcher () {
 		path: './minorhandler.js',
 		name: 'minor'
 	}, {
+		path: './pages.js',
+		name: 'pages'
+	}, {
 		path: './pmhandler.js',
 		name: 'pms'
 	}, {
+		path: './data/ROOMS',
+		name: 'rooms'
+	}, {
 		path: './router.js',
 		name: 'router'
+	}, {
+		path: './schedule.js',
+		name: 'schedule'
 	}, {
 		path: './ticker.js',
 		name: 'ticker'
@@ -44,7 +56,9 @@ module.exports = function watcher () {
 		name: 'watcher'
 	}];
 	watchHots.forEach(watch => watchers.push(fs.watch(watch.path, (event, name) => {
-		if (event === 'change') return Bot.hotpatch(watch.name, '*Sentinel').then(res => client.channels.cache.get('848835497845194752').send(`Hotpatched: ${res}`)).catch(err => client.channels.cache.get('848835497845194752').send(`Unable to hotpatch ${watch.name} because: ${err}`));
+		if (event === 'change') Bot.hotpatch(watch.name, '*Sentinel')
+			.then(res => client.channels.cache.get('848835497845194752').send(`Hotpatched: ${res}`))
+			.catch(err => client.channels.cache.get('848835497845194752').send(`Unable to hotpatch ${watch.name} because: ${err}`));
 	})));
 	fs.readdirSync('./commands').forEach(folder => {
 		watchers.push(fs.watch(`./commands/${folder}`, (event, name) => {
@@ -63,14 +77,15 @@ module.exports = function watcher () {
 		if (event === 'change') delete require.cache[require.resolve(`./discord/${name}`)];
 	}));
 	['bot.js', 'client.js'].forEach(file => watchers.push(fs.watch(file, (event, name) => {
-		if (event === 'change') client.channels.cache.get('848835497845194752').send(`<@!333219724890603520> Changes have been pushed that require a restart`);
-	})))
-	return ({
-		watchers: watchers,
-		close: () => {
-			watchers.forEach(swatch => swatch.close());
+		if (event === 'change') {
+			const logChannel = client.channels.cache.get('848835497845194752');
+			logChannel.send(`<@!333219724890603520> Changes have been pushed that require a restart`);
 		}
-	});
+	})));
+	return {
+		watchers: watchers,
+		close: () => watchers.forEach(swatch => swatch.close())
+	};
 	// This is untouched, but I'd highly recommend switching out some of the code here and
 	// setting up a small system to detect Git webhooks and automatically hotpatch.
-}
+};

@@ -28,7 +28,7 @@ module.exports = {
 				autostart: false,
 				official: false,
 				starter: false
-			}
+			};
 		}
 		if (args[0] && ['as', 'autostart'].includes(toID(args[0]))) blitzObject[room].autostart = true;
 		if (args[0] && ['o', 'official'].includes(args[0].toLowerCase())) {
@@ -42,9 +42,9 @@ module.exports = {
 			blitzObject[room].active = true;
 			Bot.say(room, '/wall The Blitz has started!');
 		}
-		let blitzTimer = setTimeout(startBlitz, 10000, room);
+		const blitzTimer = setTimeout(startBlitz, 10000, room);
 		Bot.say(room, '/wall A Blitz will start in 10 seconds! Use ' + prefix + 'cast (type) to cast!');
 		blitzTimer;
 		blitzObject[room].prepping = true;
 	}
-}
+};

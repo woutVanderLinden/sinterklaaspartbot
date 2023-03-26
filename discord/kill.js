@@ -5,4 +5,4 @@ module.exports = {
 	commandFunction: function (args, message, Bot) {
 		message.channel.send('o/').then(() => process.exit());
 	}
-}
+};

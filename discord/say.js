@@ -7,4 +7,4 @@ module.exports = {
 		message.channel.send(args.join(' '));
 		message.delete();
 	}
-}
+};

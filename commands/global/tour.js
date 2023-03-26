@@ -5,4 +5,4 @@ module.exports = {
 	commandFunction: function (Bot, room, time, by, args, client) {
 		Bot.say(room, args.length ? '/tour ' + args.join(' ') : 'UwU');
 	}
-}
+};

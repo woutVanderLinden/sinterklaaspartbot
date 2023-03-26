@@ -4,7 +4,7 @@ module.exports = {
 	permissions: 'none',
 	commandFunction: function (Bot, by, args, client) {
 		if (!tools.hasPermission(by, 'beta', 'botdevelopment')) return;
-		let botdev = Bot.rooms.botdevelopment;
+		const botdev = Bot.rooms.botdevelopment;
 		if (!botdev.tourPinged) return Bot.pm(by, "Not yet.");
 		if (botdev.tourPinged === 1) return Bot.pm(by, 'Sniped!');
 		botdev.tourPinged = 1;
@@ -14,4 +14,4 @@ module.exports = {
 			Bot.say('botdevelopment', '~tour poll');
 		}
 	}
-}
+};

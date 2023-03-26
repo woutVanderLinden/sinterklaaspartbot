@@ -5,7 +5,7 @@ module.exports = {
 		if (!args.length) return message.channel.send(unxa);
 		function parseMon (mon) {
 			if (!mon.replace(/[^a-zA-Z0-9]/g, '')) return true;
-			let out = {
+			const out = {
 				name: null,
 				species: null,
 				gender: null,
@@ -33,8 +33,8 @@ module.exports = {
 				},
 				nature: 'Serious',
 				moves: []
-			}
-			let lines = mon.split('\n').map(line => line.trim());
+			};
+			const lines = mon.split('\n').map(line => line.trim());
 			let line = lines.shift().split(' @ ');
 			if (line[1]) out.item = line[1];
 			out.gender = line[0].match(/\([MF]\)$/);
@@ -70,7 +70,7 @@ module.exports = {
 			if (line.startsWith('EVs: ')) {
 				line.substr(5).split(' / ').forEach(stat => {
 					stat = stat.split(' ');
-					let val = parseInt(stat[0]);
+					const val = parseInt(stat[0]);
 					if (isNaN(val)) return null;
 					out.evs[stat[1].toLowerCase()] = val;
 				});
@@ -83,7 +83,7 @@ module.exports = {
 			if (line.startsWith('IVs: ')) {
 				line.substr(5).split(' / ').forEach(stat => {
 					stat = stat.split(' ');
-					let val = parseInt(stat[0]);
+					const val = parseInt(stat[0]);
 					if (isNaN(val)) return null;
 					out.ivs[stat[1].toLowerCase()] = val;
 				});
@@ -95,19 +95,18 @@ module.exports = {
 			}
 			return out;
 		}
-		function utm (text) {
-			return text.split(/\n\s*\n/).map(mon => parseMon(mon)).filter(mon => typeof mon === 'object').map(mon => `${mon.name}|${mon.species || ''}|${toID(mon.item)}|${toID(mon.ability)}|${mon.moves.map(move => toID(move)).join(',')}|${mon.nature}|${Object.values(mon.evs).filter(ev => ev === 0).length === 6 ? '' : Object.values(mon.evs).map(ev => ev || '').join(',')}|${mon.gender || ''}|${Object.values(mon.ivs).filter(iv => iv === 31).length === 6 ? '' : Object.values(mon.ivs).map(iv => iv === 31 ? '' : iv).join(',')}|${mon.shiny ? 'S' : ''}|${mon.level === 100 ? '' : mon.level}|${(mon.happiness !== 255 || mon.hiddenpower) ? [(mon.happiness || ''), (mon.hiddenpower || ''), ''].join(',') : ''}`).join(']');
-		}
 		let link = args.join(' ');
 		if (!link.endsWith('/raw')) link += '/raw';
-		if (!/^https?:\/\/pokepast\.es\/[a-z0-9]+\/raw$/.test(link)) return message.channel.send('Invalid link - I can only use Pokepast.es. :(');
+		if (!/^https?:\/\/pokepast\.es\/[a-z0-9]+\/raw$/.test(link)) {
+			return message.channel.send('Invalid link - I can only use Pokepast.es. :(');
+		}
 		require('request')(link, (error, response, body) => {
 			if (error) return message.channel.send('Unable to get the data...');
 			try {
-				message.channel.send("```" + utm(body) + "```");
+				message.channel.send("```" + tools.utm(body) + "```");
 			} catch (e) {
 				message.channel.send(`Something went wrong: ${e.message}`);
 			}
 		});
 	}
-}
+};

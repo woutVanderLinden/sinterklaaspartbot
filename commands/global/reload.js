@@ -4,7 +4,7 @@ module.exports = {
 	permissions: 'coder',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		if (!args[0]) return Bot.say(room, unxa);
-		let commandName = tools.commandAlias(toID(args.shift()));
+		const commandName = tools.commandAlias(toID(args.shift()));
 		let comRoom = room;
 		if (args[0]) comRoom = toID(args.join(''));
 		fs.readdir('./commands/global', (e, gcommands) => {
@@ -19,10 +19,10 @@ module.exports = {
 				if (files.includes(commandName + '.js')) {
 					delete require.cache[require.resolve('../' + comRoom + '/' +  commandName + '.js')];
 					Bot.log(by.substr(1) + ' reloaded the ' + commandName + ' command.');
-					return Bot.say(room, 'The ' + commandName + ' command has been reloaded.');	
+					return Bot.say(room, 'The ' + commandName + ' command has been reloaded.');
 				}
 				return Bot.say(room, 'It doesn\'t look like that command exists.');
 			});
 		});
 	}
-}
+};

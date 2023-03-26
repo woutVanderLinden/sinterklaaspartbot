@@ -1,35 +1,38 @@
+// TODO: Emit events
+
 module.exports = function (room, tourData, Bot) {
-	if (tourData && tourData[0] === 'create') {
-		if (room === 'hindi') setTimeout(() => Bot.rooms.hindi.tourPinged = false, 10 * 60 * 1000);
+	if (tourData?.[0] === 'create') {
+		// if (room === 'hindi') setTimeout(() => Bot.rooms.hindi.tourPinged = false, 10 * 60 * 1000);
 		try {
-			let roomData = require(`./data/ROOMS/${room}.json`);
+			const roomData = require(`./data/ROOMS/${room}.json`);
 			if (roomData.tour && ['*', '#', '★'].includes(Bot.rooms[room].rank)) {
-				setTimeout(() => Bot.say(room, `/tour autostart ${roomData.tour[0]}\n/tour autodq ${roomData.tour[1]}`), roomData.tour[2] || 2000);
+				setTimeout(() => {
+					Bot.say(room, `/tour autostart ${roomData.tour[0]}\n/tour autodq ${roomData.tour[1]}`);
+				}, roomData.tour[2] || 2000);
 			}
-		} catch {};
+		} catch {}
 	}
 	if (room === 'hindi') {
 		if (!tourData) return;
 		if (tourData[0] === 'battlestart') {
 			Bot.say('', '/j ' + tourData[3]);
 			return setTimeout((room, text) => Bot.say(room, text), 1000, tourData[3], `G'luck!\n/part`);
-		}
-		else if (tourData[0] === 'update') {
+		} else if (tourData[0] === 'update') {
 			try {
-				let json = JSON.parse(tourData[1]);
+				const json = JSON.parse(tourData[1]);
 				if (json.generator !== 'Single Elimination') return;
 				if (!json.bracketData) return;
 				if (json.bracketData.type !== 'tree') return;
 				if (!json.bracketData.rootNode) return;
-				if (json.bracketData.rootNode.state === 'inprogress') Bot.say(room, `/wall Tour finals! <<${json.bracketData.rootNode.room}>>`);
+				if (json.bracketData.rootNode.state === 'inprogress') {
+					Bot.say(room, `/wall Tour finals! <<${json.bracketData.rootNode.room}>>`);
+				}
 			} catch (e) {
 				Bot.log(e);
 			}
-		}
-		else if (tourData[0] === 'end') {
-			// return;
+		} else if (tourData[0] === 'end') {
 			try {
-				let json = JSON.parse(tourData[1]);
+				const json = JSON.parse(tourData[1]);
 				if (json.generator !== 'Single Elimination') return;
 				if (/casual|ignore|no ?points/i.test(json.format || '')) return;
 				if (json.bracketData.type !== 'tree') return;
@@ -41,4 +44,7 @@ module.exports = function (room, tourData, Bot) {
 			}
 		}
 	}
-}
+	if (room === 'groupchat-botdevelopment-p') {
+		Bot.log(tourData);
+	}
+};

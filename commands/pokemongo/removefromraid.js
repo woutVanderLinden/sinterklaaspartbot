@@ -7,7 +7,7 @@ module.exports = {
 		const user = toID(by);
 		args = args.join('').split(',').map(toID);
 		if (args.length < 2) args.unshift(user);
-		const raids = (Bot.rooms[room].raids || {});
+		const raids = Bot.rooms[room].raids || {};
 		if (!Object.keys(raids).length) return Bot.pm(by, "No raids are active, whoops");
 		const host = args.shift();
 		if (!raids.hasOwnProperty(host)) return Bot.pm(by, `B-but who's hosting?`);
@@ -20,4 +20,4 @@ module.exports = {
 		raid.HTML();
 		Bot.say(room, `${toRemoveUser.displayName} was removed from ${raid.hostName}'s raid!`);
 	}
-}
+};

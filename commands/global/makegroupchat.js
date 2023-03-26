@@ -7,4 +7,4 @@ module.exports = {
 		Bot.say(room, `/makegroupchat ${args.join(' ')}`);
 		Bot.say(`groupchat-${toID(Bot.status.nickName)}-${toID(args.join(' '))}`, `/invite ${by}`);
 	}
-}
+};

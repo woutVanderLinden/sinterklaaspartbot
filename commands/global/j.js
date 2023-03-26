@@ -8,4 +8,4 @@ module.exports = {
 		if (Bot.rooms[room].ev) return require('./explodingvoltorb.js').commandFunction(Bot, room, time, by, ['join'], client);
 		if (Bot.rooms[room].CR) return require('./chainreaction.js').commandFunction(Bot, room, time, by, ['join'], client);
 	}
-}
+};

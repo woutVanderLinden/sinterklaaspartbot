@@ -7,4 +7,4 @@ module.exports = {
 		if (!room.startsWith('groupchat-')) return Bot.say(room, 'Not a groupchat.');
 		args.join(' ').split(',').forEach(user => Bot.say(room, `/invite ${user}`));
 	}
-}
+};

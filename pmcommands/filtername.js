@@ -6,11 +6,12 @@ module.exports = {
 		let regex;
 		try {
 			regex = new RegExp(args.join(' ').trim(), 'i');
-			let out = Object.keys(data.pokedex).filter(m => data.pokedex[m].num > 0 && regex.test(m));
+			const out = Object.keys(data.pokedex).filter(m => data.pokedex[m].num > 0 && regex.test(m));
 			if (!out.length) return Bot.pm(by, 'None.');
-			return Bot.sendHTML(by, `<DETAILS style="font-family:\'Arial\',monospace;"><SUMMARY>Results (${out.length})</SUMMARY>` + out.map(m => data.pokedex[m].name).sort().join('<BR>') + '</DETAILS>');
+			// eslint-disable-next-line max-len
+			return Bot.sendHTML(by, `<details style="font-family:\'Arial\',monospace;"><summary>Results (${out.length})</summary>` + out.map(m => data.pokedex[m].name).sort().join('<br>') + '</details>');
 		} catch (e) {
 			Bot.pm(by, e.message);
 		}
 	}
-}
+};

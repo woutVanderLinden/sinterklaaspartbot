@@ -1,3 +1,6 @@
+// TODO: Migrate to /data/GAMES
+// TODO: Use HTML pages
+
 module.exports = {
 	cooldown: 1,
 	help: `The Blackjack module. Syntax: ${prefix}blackjack (new | start | join | help | end)`,
@@ -6,7 +9,7 @@ module.exports = {
 		if (!args.length) args.push('help');
 		switch (args.shift().toLowerCase()) {
 			case 'help': case 'h': {
-				let help	= `The aim of the game is to get more than the dealer and win. However, if your score exceeds 21, you 'bust' and lose. Cards 2-10 have their face values; J, Q, and K are 10 apiece, and A can be 1 or 11. Use ${prefix}hit to draw another card, ${prefix}stay to end, or ${prefix}hand to see your cards.`;
+				const help	= `The aim of the game is to get more than the dealer and win. However, if your score exceeds 21, you 'bust' and lose. Cards 2-10 have their face values; J, Q, and K are 10 apiece, and A can be 1 or 11. Use ${prefix}hit to draw another card, ${prefix}stay to end, or ${prefix}hand to see your cards.`;
 				if (tools.hasPermission(by, 'gamma', room)) return Bot.say(room, help);
 				else return Bot.roomReply(room, by, help);
 				break;
@@ -30,7 +33,7 @@ module.exports = {
 						Bot.rooms[room].blackjack.deck = tools.newDeck(null, 2).shuffle();
 						Bot.rooms[room].blackjack.dealer.push(Bot.rooms[room].blackjack.deck.pop());
 						Bot.rooms[room].blackjack.dealer.push(Bot.rooms[room].blackjack.deck.pop());
-						let str = [];
+						const str = [];
 						Object.keys(Bot.rooms[room].blackjack.players).forEach(player => {
 							Bot.rooms[room].blackjack.players[player].cards.push(Bot.rooms[room].blackjack.deck.pop());
 							Bot.rooms[room].blackjack.players[player].cards.push(Bot.rooms[room].blackjack.deck.pop());
@@ -41,7 +44,7 @@ module.exports = {
 						return Bot.rooms[room].blackjack.nextTurn(room);
 					},
 					nextTurn (room) {
-						let players = Object.keys(Bot.rooms[room].blackjack.players);
+						const players = Object.keys(Bot.rooms[room].blackjack.players);
 						if (!Bot.rooms[room].blackjack.turn) Bot.rooms[room].blackjack.turn = players[0];
 						else if (Bot.rooms[room].blackjack.turn !== players[players.length - 1]) Bot.rooms[room].blackjack.turn = players[players.indexOf(Bot.rooms[room].blackjack.turn) + 1];
 						else {
@@ -50,11 +53,10 @@ module.exports = {
 							if (tools.sumBJ(Bot.rooms[room].blackjack.dealer) > 21) {
 								Bot.say(room, `The dealer has busted with ${score}! (${Bot.rooms[room].blackjack.dealer.map(card => tools.cardFrom(card).join('')).join(', ')})`);
 								score = 0;
-							}
-							else Bot.say(room, `The dealer has ${score}! (${Bot.rooms[room].blackjack.dealer.map(card => tools.cardFrom(card).join('')).join(', ')})`);
-							let winners = Object.keys(Bot.rooms[room].blackjack.players).filter(player => tools.sumBJ(Bot.rooms[room].blackjack.players[player].cards) > score && !Bot.rooms[room].blackjack.players[player].busted).map(player => Bot.rooms[room].blackjack.players[player].name);
+							} else Bot.say(room, `The dealer has ${score}! (${Bot.rooms[room].blackjack.dealer.map(card => tools.cardFrom(card).join('')).join(', ')})`);
+							const winners = Object.keys(Bot.rooms[room].blackjack.players).filter(player => tools.sumBJ(Bot.rooms[room].blackjack.players[player].cards) > score && !Bot.rooms[room].blackjack.players[player].busted).map(player => Bot.rooms[room].blackjack.players[player].name);
 							Bot.say(room, `Winners: ${winners.length ? tools.listify(winners) : 'None'}!`);
-							let nbj = winners.filter(player => Bot.rooms[room].blackjack.players[toID(player)].nbj);
+							const nbj = winners.filter(player => Bot.rooms[room].blackjack.players[toID(player)].nbj);
 							if (nbj.length) Bot.say(room, `${tools.listify(nbj)} ${nbj.length == 1 ? 'has' : 'have'} a natural Blackjack!`);
 							nbj.forEach(player => tools.addPoints(0, player, 5, room));
 							winners.forEach(player => tools.addPoints(0, player, 5, room));
@@ -70,9 +72,9 @@ module.exports = {
 						Bot.say(room, ` ${Bot.rooms[room].blackjack.players[Bot.rooms[room].blackjack.turn].name}'${Bot.rooms[room].blackjack.turn.endsWith('s') ? '' : 's'} turn! Use \`\`${prefix}hit\`\` or \`\`${prefix}stay\`\`!`);
 						return Bot.roomReply(room, Bot.rooms[room].blackjack.turn, `Your cards: ${Bot.rooms[room].blackjack.players[Bot.rooms[room].blackjack.turn].cards.map(card => tools.cardFrom(card).join('')).join(', ')}. Your current sum: ${tools.sumBJ(Bot.rooms[room].blackjack.players[Bot.rooms[room].blackjack.turn].cards)}`);
 					}
-				}
+				};
 				if (args.length) {
-					let time = parseInt(args.join('').replace(/[^0-9]/g, ''));
+					const time = parseInt(args.join('').replace(/[^0-9]/g, ''));
 					if (!isNaN(time) && time >= 20 && time <= 120) {
 						setTimeout(Bot.rooms[room].blackjack.start, time * 1000, room);
 						return Bot.say(room, `A game of Blackjack has been created! Use \`\`${prefix}blackjack join\`\` to join in the next ${time} seconds!`);
@@ -88,7 +90,7 @@ module.exports = {
 				Bot.rooms[room].blackjack.players[toID(by)] = {
 					name: by.substr(1),
 					cards: []
-				}
+				};
 				return Bot.roomReply(room, by, `You have joined the game of Blackjack in ${Bot.rooms[room].title}.`);
 				break;
 			}
@@ -120,4 +122,4 @@ module.exports = {
 			}
 		}
 	}
-}
+};

@@ -499,7 +499,6 @@
 			"isdst": false,
 			"text": "(UTC) Coordinated Universal Time",
 			"utc": [
-				"America/Danmarkshavn",
 				"Etc/GMT"
 			]
 		},
@@ -510,6 +509,7 @@
 			"isdst": false,
 			"text": "(UTC) Edinburgh, London",
 			"utc": [
+				"Etc/GMT",
 				"Europe/Isle_of_Man",
 				"Europe/Guernsey",
 				"Europe/Jersey",

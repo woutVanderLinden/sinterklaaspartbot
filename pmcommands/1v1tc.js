@@ -7,8 +7,9 @@ module.exports = {
 		if (!Bot.baseAuth[tcroom][toID(by)] || Bot.baseAuth[tcroom][toID(by)] < 4) return Bot.pm(by, 'Access denied.');
 		Bot.say('botdevelopment', '/makegroupchat 1v1TC');
 		Bot.say(tcroom, `/invite ${by}`);
-		client.channels.cache.get('542524011066949633').send(`${by.substr(1)} brought the GC online! https://play.pokemonshowdown.com/groupchat-partbot-1v1tc`);
-		let invitees = [].concat(...Object.keys(Bot.baseAuth[tcroom]));
+		const typeChan = client.channels.cache.get('542524011066949633');
+		typeChan.send(`${by.substr(1)} brought the GC online! https://play.pokemonshowdown.com/groupchat-partbot-1v1tc`);
+		const invitees = [].concat(...Object.keys(Bot.baseAuth[tcroom]));
 		if (Bot.tcInvitees) invitees.concat(Bot.tcInvitees);
 		function inviteTimer (i) {
 			if (i >= invitees.length) return;
@@ -18,4 +19,4 @@ module.exports = {
 		inviteTimer(0);
 		return Bot.say(tcroom, 'UwU');
 	}
-}
+};

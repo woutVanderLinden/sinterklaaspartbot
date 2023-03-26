@@ -3,9 +3,11 @@ module.exports = {
 	help: `Displays a list of all joinphrases in the room. Syntax: ${prefix}viewjoinphrases`,
 	permissions: 'beta',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		if (!Bot.jps[room] || !Object.keys(Bot.jps[room]).length) return Bot.say(room, `It doesn't look ike this room has any joinphrases...`);
-		let out = Object.keys(Bot.jps[room]).map((user, index) => `${index + 1})\t${user}${Array.from({length: 21 - user.length}).join('&nbsp;')}: ${Bot.jps[room][user]}`);
-		return Bot.sendHTML(by, out.map(t => t.replace(/</g,'&lt;')).join('<br>'));
-		// Use a table for this instead...
+		if (!Bot.jps[room] || !Object.keys(Bot.jps[room]).length) {
+			return Bot.say(room, `It doesn't look ike this room has any joinphrases...`);
+		}
+		const info = Object.entries(Bot.jps[room]).map(([name, jp]) => [tools.colourize(name), tools.escapeHTML(jp)]);
+		const html = `<table>${info.map(row => `<tr>${row.map(term => `<td>${term}</td>`).join('')}</tr>`).join('')}</table>`;
+		return Bot.sendHTML(by, html);
 	}
-}
+};

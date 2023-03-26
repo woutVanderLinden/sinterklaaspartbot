@@ -1,0 +1,20 @@
+/data/SCAVS/**.js
+
+# Eventually
+
+/commands/groupchat-partbot-1v1tc/**.js
+/discord/godb.js
+
+
+# TODO
+
+/data/GAMES/chess.js
+
+/commands/global/battleship.js
+/commands/global/blackjack.js
+/commands/global/chainreaction.js
+/commands/global/chess.js
+/commands/global/connectfour.js
+/commands/global/explodingvoltorb.js
+/commands/global/lightsout.js
+/commands/global/mastermind.js

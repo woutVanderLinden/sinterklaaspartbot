@@ -8,11 +8,12 @@ At this point, there's way, way too many to list. Honestly just go through the c
 
 ### Setup
 
-1. Download the project and unzip it.
-1. Create a copy of config-example.js and save it as config.js. Enter the Bot prefix, Bot username, Bot password, Bot avatar, Bot status, Bot owner, and an array of rooms you'd like the Bot to join. Scroll down and add the IDs of the users that you would like to set in their respective ranks. For more details on ranks, read below.
+1. Clone the Git repository, or download the project and unzip it.
+1. Open `config.js`. Enter the Bot prefix, Bot username, Bot password, Bot avatar, Bot status, Bot owner, and an array of rooms you'd like the Bot to join. Scroll down and add the IDs of the users that you would like to set in their respective ranks. For more details on ranks, read below.
 1. Open your Terminal and enter the following:
 ```
 npm install
+npm run update-data
 node bot.js
 ```
 
@@ -41,7 +42,7 @@ Admin | Complete access.
 Auth | Rank
 -----|-----
  \+ | Gamma
- \%, $, - | Beta
+ \% | Beta
  \*, @, #, &, ~ | Alpha (~ is still supported for sideservers)
 
 

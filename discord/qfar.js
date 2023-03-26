@@ -9,4 +9,4 @@ module.exports = {
 		const PZ = require('../data/PUZZLES/index.js');
 		message.channel.send("The Puzzles module has been reloaded.");
 	}
-}
+};

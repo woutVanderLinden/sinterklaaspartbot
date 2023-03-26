@@ -2,20 +2,46 @@ module.exports = {
 	help: `Sets a timer! Syntax: ${prefix}timer (x) min, (y) sec`,
 	pm: true,
 	commandFunction: function (args, message, Bot) {
-		if (!client.timers) client.timers = {};
-		if (!args.length) return message.channel.send(unxa);
-		let inp = args.join(' ').split('//');
-		let msg = toID(inp.shift()), reason = inp.join('//');
-		let hrs = msg.match(/\d+(?:h(?:(?:ou?)?r)?)s?/), min = msg.match(/\d+(?:m(?:in(?:utes?)?)?)/), sec = msg.match(/\d+(?:s(?:ec(?:onds?)?)?)/), ttime = 0;
-		if (!hrs && !min && !sec) return message.channel.send('Could not detect a valid time.').then(msg => msg.delete({timeout: 3000}));
-		if (hrs) ttime += (parseInt(hrs[0]) * 60 * 60 * 1000);
-		if (min) ttime += (parseInt(min[0]) * 60 * 1000);
-		if (sec) ttime += (parseInt(sec[0]) * 1000);
-		if (!ttime) return message.channel.send("NERD").then(msg => msg.delete({timeout: 3000}));
-		if (ttime > 86400000) return message.channel.send("Nothing longer than a day, please.").then(msg => msg.delete({timeout: 3000}));
-		clearInterval(client.timers[message.channel.id + message.author.id]);
-		if (reason) reason = '(Reason: ' + reason.replace(/@(?:here|everyone)/g, m => m[0] + ' ' + m.slice(1, m.length)).trim() + ')';
-		client.timers[message.channel.id + message.author.id] = setTimeout(message => message.reply(`time's up! ${reason || ''}`), ttime, message);
-		return message.channel.send(`A timer has been set for ${tools.toHumanTime(ttime)}.`);
+		if (!args.length) return message.channel.send(unxa).then(msg => msg.delete({ timeout: 3000 }));
+		const user = message.author.id;
+		const inp = args.join(' ').split('//');
+		if (['left', 'count', 'togo', 'longer', 'howmuchlonger', 'ongoing', 'current', 'status'].includes(toID(inp[0]))) {
+			if (!message.channel.timers || !message.channel.timers[user]) {
+				return message.channel.send("You do not have an ongoing timer!").then(msg => msg.delete({ timeout: 3000 }));
+			}
+			const timer = message.channel.timers[user];
+			// eslint-disable-next-line max-len
+			message.channel.send(`Your ongoing timer ${timer._reason ? `${timer._reason} ` : ''}will end in ${tools.toHumanTime(timer._endTime - Date.now())}.`);
+			return;
+		}
+		if (['stop', 'end', 'remove', 'delete', 'cancel', 'finish'].includes(toID(inp[0]))) {
+			if (!message.channel.timers || !message.channel.timers[user]) {
+				return message.channel.send("You do not have an ongoing timer!").then(msg => msg.delete({ timeout: 3000 }));
+			}
+			const timer = message.channel.timers[user];
+			// eslint-disable-next-line max-len
+			message.channel.send(`Your timer ${timer._reason ? `${timer._reason} ` : ''}was ended with ${tools.toHumanTime(timer._endTime - Date.now())} left.`);
+			clearTimeout(message.channel.timers[user]);
+			return;
+		}
+		const msg = inp.shift();
+		let reason = inp.join('//');
+		const ttime = tools.fromHumanTime(msg);
+		if (!ttime) return message.channel.send("YOU IS NERD").then(msg => msg.delete({ timeout: 3000 }));
+		if (ttime > 7 * 24 * 60 * 60 * 1000) {
+			return message.channel.send("Nothing longer than a week, please.").then(msg => msg.delete({ timeout: 3000 }));
+		}
+		if (reason) {
+			reason = '(Reason: ' + reason.replace(/@(?:here|everyone)/g, m => m[0] + '\u200b' + m.slice(1, m.length)).trim() + ')';
+		}
+		if (!message.channel.timers) message.channel.timers = {};
+		else clearTimeout(message.channel.timers[user]);
+		message.channel.timers[user] = setTimeout(() => {
+			message.reply(`time's up! ${reason || ''}`);
+			delete message.channel.timers[user];
+		}, ttime);
+		message.channel.timers[user]._endTime = Date.now() + ttime;
+		if (reason) message.channel.timers[user]._reason = reason;
+		message.channel.send(`A timer has been set for ${tools.toHumanTime(ttime)}.`);
 	}
-}
+};

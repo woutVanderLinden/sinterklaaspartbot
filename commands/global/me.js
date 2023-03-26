@@ -4,7 +4,7 @@ module.exports = {
 	permissions: 'locked',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		if (args[0]) return Bot.say(room, unxa);
-		let rank = tools.rankLevel(by, room);
+		const rank = tools.rankLevel(by, room);
 		let role;
 		switch (rank) {
 			case 1:
@@ -29,7 +29,7 @@ module.exports = {
 				role = 'a Coder.';
 				break;
 			case 10:
-				role = 'a Bot Administrator.'
+				role = 'a Bot Administrator.';
 				break;
 			default:
 				role = 'somehow screwing up the Bot code. Definitely not PartMan\'s fault.';
@@ -38,4 +38,4 @@ module.exports = {
 		if (rank < 4) Bot.pm(by, 'You are ' + role);
 		else Bot.say(room, 'You are ' + role);
 	}
-}
+};

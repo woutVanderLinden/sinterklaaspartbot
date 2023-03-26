@@ -8,4 +8,4 @@ module.exports = {
 			Bot.pm(by, e.message);
 		}
 	}
-}
+};

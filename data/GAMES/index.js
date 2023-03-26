@@ -1,12 +1,22 @@
 module.exports = {
 	_games: {},
 	list () {
-		return ['battleship', 'chainreaction', 'chess', 'connectfour', 'lightsout', 'linesofaction', 'mastermind', 'othello', 'scrabble'];
+		return [
+			'battleship',
+			'chainreaction',
+			'chess',
+			'connectfour',
+			'lightsout',
+			'linesofaction',
+			'mastermind',
+			'othello',
+			'scrabble'
+		];
 	},
 	init () {
-		let self = this;
+		const self = this;
 		return Promise.all(self.list().map(game => {
-			return new Promise ((resolve, reject) => {
+			return new Promise((resolve, reject) => {
 				try {
 					self._games[game] = require(`./${game}.js`);
 					resolve();
@@ -17,7 +27,7 @@ module.exports = {
 		}));
 	},
 	reload () {
-		let self = this;
+		const self = this;
 		return new Promise((resolve, reject) => {
 			try {
 				self.list().forEach(game => delete require.cache[require.resolve(`./${game}.js`)]);
@@ -40,4 +50,4 @@ module.exports = {
 		if (!game) return null;
 		return new game(...opts);
 	}
-}
+};

@@ -4,16 +4,19 @@ module.exports = {
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		if (!args[0]) return Bot.say(room, unxa);
-		let commandName = tools.commandAlias(toID(args.join('')));
-		let commandObj = {};
+		const commandName = tools.commandAlias(toID(args.join('')));
+		const commandObj = {};
 		fs.readdir('./commands', (e, rooms) => {
 			if (e) return console.log(e);
 			rooms.filter(folder => !folder.includes('.')).forEach(folder => {
 				commandObj[folder] = [];
-				fs.readdirSync('./commands/' + folder).filter(comm => comm.endsWith('.js')).map(comm => comm.substr(0, comm.length - 3)).forEach(comm => commandObj[folder].push(comm));
+				fs.readdirSync('./commands/' + folder)
+					.filter(comm => comm.endsWith('.js'))
+					.map(comm => comm.substr(0, comm.length - 3))
+					.forEach(comm => commandObj[folder].push(comm));
 			});
-			let foundRooms = [];
-			for (let prop in commandObj) {
+			const foundRooms = [];
+			for (const prop in commandObj) {
 				if (commandObj[prop].includes(commandName)) foundRooms.push(prop);
 			}
 			if (!foundRooms.length) return Bot.say(room, 'It doesn\'t look like the ' + commandName + ' command exists.');
@@ -21,4 +24,4 @@ module.exports = {
 			return Bot.say(room, 'The ' + commandName + ' command can be used in ' + tools.listify(foundRooms) + '.');
 		});
 	}
-}
+};

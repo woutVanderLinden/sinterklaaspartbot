@@ -1,0 +1,254 @@
+{% macro renderCell(rsb, label = '') %}
+	{% set label = label + '_' if label else label %}
+	<div>
+		<b>{{ rsb[label + 'label'] }}</b>:
+		<br/>
+		{% if rsb[label + 'ratio'] or rsb[label + 'dmg_type'] or rsb[label + 'slider'] or rsb[label + 'base'] %}
+			{{ rsb[label + 'ratio'] or '0' }}% {{ rsb[label + 'dmg_type'] or 'Dmg' }} + {{ rsb[label + 'slider'] or '0' }} x (Level - 1) + {{ rsb[label + 'base'] or '0' }}
+		{% elif label and rsb[label + 'true_desc'] %}
+			{{ rsb[label + 'true_desc'] }}
+		{% endif %}
+	</div>
+{% endmacro %}
+
+{% macro renderCells(rsb, prefix = '') %}
+	<div style="display:flex">
+		{% if rsb[prefix + '_label'] %}
+			{{ renderCell(rsb, prefix) }}
+		{% endif %}
+		{% set prefix = prefix + '_' if prefix else prefix %}
+		{% set break = false %}
+		{% for i in range(1, 10) %}
+			{% if not break %}
+				{% if not rsb[prefix + 'add' + i + '_label'] %}
+					{% set break = true %}
+				{% else %}
+					{% if not loop.first or rsb[prefix + 'label'] %}
+						<div style="display:block;width:0;border-left:1px solid;margin:0 25px"></div>
+					{% endif %}
+					{{ renderCell(rsb, prefix + 'add' + i) }}
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+	</div>
+{% endmacro %}
+
+{% macro renderAbility(ability, movetype) %}
+	{% if 'Attack' in ability.name %}
+		<img src="https://d275t8dp8rxb42.cloudfront.net/skills/Attack.png" height="25" width="25" style="vertical-align:middle"/>
+	{% else %}
+		<img src="https://d275t8dp8rxb42.cloudfront.net/skills/{{ mon.name | urlencode }}/{{ ability.name | urlencode }}.png" height="25" width="25" style="vertical-align:middle"/>
+	{% endif %}
+	&nbsp;
+	<span style="font-weight:bold;font-size:1.2em">{{ ability.name }}{% if movetype %} ({{ movetype }}){% endif %}</span>
+	{% if ability.rsb.alert %}
+		<br/>
+		<span style="font-size:0.8em"><b>{{ ability.rsb.alert }}</b></span>
+	{% endif %}
+	{% if ability.type %}
+		<br/><br/>
+		<span style="padding:10px;font-size:0.7em;border-radius:5px;margin:0 5px;background-color:rgba(128,128,128,0.2);fill:#ffd283">
+			<img src="https://i.postimg.cc/yk8dFtSP/newcooldown.png" height="20" width="20" style="vertical-align:middle;"/>
+			&nbsp;
+			{{ ability.cd or ability.cd1 }}s
+		</span>
+		<span style="padding:10px;font-size:0.7em;border-radius:5px;margin:0 5px;background-color:rgba(128,128,128,0.2)">
+			<img src="https://d275t8dp8rxb42.cloudfront.net/skill+labels/{{ ability.type | urlencode }}.png" height="20" width="20" style="vertical-align:middle;"/>
+			&nbsp;
+			{{ ability.type }}
+		</span>
+		<span style="padding:10px;font-size:0.7em;border-radius:5px;margin:0 5px;background-color:rgba(128,128,128,0.2)">
+			<img src="https://i.postimg.cc/xqR8Nnq8/unlockedat.png" height="20" width="20" style="vertical-align:middle;"/>
+			&nbsp;&nbsp;
+			{% if ability.level or ability.level1 %}
+				Lv{{ ability.level or ability.level1 }}
+			{% else %}
+				Lv1 / Lv{{ 2 if mon.early_learn == 'True' else 3 }}
+			{% endif %}
+		</span>
+		{% if ability.level2 %}
+			<span style="padding:10px;font-size:0.7em;border-radius:5px;margin:0 5px;background-color:rgba(128,128,128,0.2)">
+				<img src="https://i.postimg.cc/QFs61XT1/levelreq.png" height="20" width="20" style="vertical-align:middle;"/>
+				&nbsp;&nbsp;
+				Lv{{ ability.level2 }}
+			</span>
+		{% endif %}
+		<br/>
+	{% endif %}
+	<br/>
+	{% if ability.level1 %}
+		<b>Level {{ ability.level1 }}</b>:
+		<br/>
+	{% endif %}
+	{{ ability.rsb.true_desc or ability.description or ability.description1 }}
+	{% if ability.rsb.notes %}
+		<br/><br/>
+		{{ ability.rsb.notes }}
+	{% endif %}
+	<br/><br/>
+	<div style="display:flex">
+		{% if ability.rsb.label %}
+			{{ renderCell(ability.rsb) }}
+		{% endif %}
+		{% if ability.boosted_rsb.label and not ability.boosted_rsb.add1_label %}
+			{% if ability.rsb.label %}
+				<div style="display:block;width:0;border-left:1px solid;margin:0 25px"></div>
+			{% endif %}
+			{{ renderCell(ability.boosted_rsb) }}
+		{% endif %}
+		{% set break = false %}
+		{% for i in range(1, 10) %}
+			{% if not break %}
+				{% if not ability.rsb['add' + i + '_label'] %}
+					{% set break = true %}
+				{% else %}
+					{% if not loop.first or ability.rsb.label %}
+						<div style="display:block;width:0;border-left:1px solid;margin:0 25px"></div>
+					{% endif %}
+					{{ renderCell(ability.rsb, 'add' + i) }}
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+	</div>
+	{% if ability.boosted_rsb.add1_label %}
+		<br/><br/>
+		{{ renderCells(ability.boosted_rsb) }}
+		<br/>
+	{% endif %}
+	{% if ability.rsb.add1_label or ability.rsb.label %}
+		<br/>
+	{% endif %}
+	{% if ability.level2 %}
+		<br/><br/>
+		<b>Level {{ ability.level2 }}</b>:
+		<br/>
+		{{ ability.rsb.enhanced_true_desc or ability.description2 }}
+		<br/><br/>
+		{{ renderCells(ability.rsb, 'enhanced') }}
+	{% endif %}
+	{% if ability.buffs %}
+		<b>Unite Buffs</b> ({{ ability.buff_duration }}s):
+		<br/>
+		{{ ability.buffs }}
+		<br/>
+	{% endif %}
+	{% if ability.secondary_unite_rsb %}
+		{% for ult_move in ability.secondary_unite_rsb %}
+			{# Thanks, Clefable and Hoopa :pout: #}
+			<br/><br/>
+			<img src="https://d275t8dp8rxb42.cloudfront.net/skills/{{ mon.name | urlencode }}/{{ ult_move.name | urlencode }}.png" height="25" width="25" style="vertical-align:middle"/>
+			&nbsp;
+			<span style="font-weight:bold;font-size:1.2em">{{ ult_move.name }}</span>
+			<br/>
+			{{ ult_move.true_desc }}
+			<br/><br/>
+			{{ renderCells(ult_move) }}
+		{% endfor %}
+	{% endif %}
+{% endmacro %}
+
+
+<center style="min-height:170px;">
+	<div style="display:inline-block;margin:0 10px">
+		<img src="https://d275t8dp8rxb42.cloudfront.net/pokemon/portrait/{{ mon.name | urlencode }}.png" height="150" width="150" style="float:left;margin-top:10px{{ ';opacity:0.2' if mon.soon }}"/>
+	</div>
+	<div style="display:inline-block;min-width:200px;margin:0 10px">
+		<br/>
+		<b style="font-size:1.4em">{{ mon.display_name }}</b>
+		<br/><br/>
+		{% if mon.evolution %}
+			{% for evo in mon.evolution %}
+				<psicon pokemon="{{ evo.name }}{{ '-Alola' if evo.name in ['Vulpix'] }}"/>
+				<span style="position:relative;top:-7px">-&nbsp;&nbsp;{{ evo.level }}&nbsp;&nbsp;-</span>
+			{% endfor %}
+		{% endif %}
+		<psicon pokemon="{{ mon.name }}{{ '-Alola' if mon.name in ['Ninetales'] }}">
+		<br/><br/>
+		<i>{{ mon.tags.range }} / {{ mon.tags.role }}</i>
+		<br/><br/>
+		{{ mon.damage_type }} Attacker
+	</div>
+	<div style="display:inline-block;margin:0 10px">
+		<br/>
+		<b style="font-size:1.2em">Lv{{ lv }}</b>
+		<br/><br/>
+		<table style="font-weight: bold">
+			{% for statName, key in [['HP', 'hp'], ['Atk', 'attack'], ['Def', 'defense'], ['SpA', 'sp_attack'], ['SpD', 'sp_defense']] %}
+				<tr>
+					<td>{{ statName }}</td>
+					<td>
+						<span style="display:inline-block;height:10px;min-width:200px;background-color:rgba(128,128,128,0.2);vertical-align:middle">
+							<span style="
+								display: inline-block;
+								height: 10px;
+								min-width: {{ stats[key] / hst[key] * 100 | round }}%;
+								background: rgba({{ (1 - stats[key]/ hst[key]) * 255 | round }}, {{ stats[key] / hst[key] * 255 | round }}, 0, 1);
+								float: left;
+							"></span>
+						</span>
+					</td>
+					<td>{{ stats[key] }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+		Crit rate: {{ stats.crit }}% | CDR: {{ stats.cdr }}% | Lifesteal: {{ stats.lifesteal }}%
+	</div>
+</center>
+<br/>
+<hr/>
+
+<details style="margin:10px"{{ ' open' if redir }}>
+	<summary style="font-size:1.2em;font-weight:bold">Skills</summary>
+	<hr/>
+	<details style="text-align:left">
+		<summary>Passive</summary>
+		<br/>
+		{{ renderAbility(mon.skills[0], 'Passive') }}
+	</details>
+	<hr/>
+	<details style="text-align:left">
+		<summary>Basic Attack</summary>
+		<br/>
+		{{ renderAbility(mon.skills[1], 'Basic') }}
+	</details>
+	<hr/>
+	{% for i in [1, 2] %}
+		<details style="text-align:left">
+			<summary>Move {{ i }} ({{ mon.skills[1 + i].name }})</summary>
+			<br/>
+			{{ renderAbility(mon.skills[1 + i]) }}
+			<br/>
+			{% if mon.standard_moves == 'True' %}
+				<center>
+					<small>=== UPGRADE CHOICES ===</small>
+				</center>
+				<hr style="width:70%"/>
+				<br/>
+				<div style="text-align:center">
+					<div style="display:inline-block;vertical-align:top;width:45%;text-align:left;margin:10px;min-width:240px">
+						<div>{{ renderAbility(mon.skills[1 + i].upgrades[0]) }}</div>
+					</div>
+					{% if mon.skills[i + 1].upgrades[1] %}
+						<div style="display:inline-block;vertical-align:top;width:45%;text-align:left;margin:10px;min-width:240px">
+							<div>{{ renderAbility(mon.skills[1 + i].upgrades[1]) }}</div>
+						</div>
+					{% endif %}
+				</div>
+			{% else %}
+				{{ renderAbility(mon.skills[1 + i].upgrades[0]) }}
+				<br/>
+				{{ renderAbility(mon.skills[1 + i].upgrades[1]) }}
+			{% endif %}
+		</details>
+		<hr/>
+	{% endfor %}
+	<details style="text-align:left">
+		<summary>Unite</summary>
+		<br/>
+		{{ renderAbility(mon.skills[4], 'Unite') }}
+		{% if mon.skills[5] %}
+			<br/><br/>
+			{{ renderAbility(mon.skills[5], 'Unite') }}
+		{% endif %}
+	</details>
+</details>

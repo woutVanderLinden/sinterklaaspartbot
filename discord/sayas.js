@@ -6,6 +6,7 @@ module.exports = {
 		args = args.join(' ').split(/,\s*/);
 		if (!args.length) return message.channel.send(unxa);
 		if (/^[a-zA-Z0-9]/.test(args[0])) args[0] = ' ' + args[0];
+		// eslint-disable-next-line
 		Bot.emit('chat', message.channel.name, Date.now(), args[0].trim().replace(/^[^\^$+%@*#&~]/, c => ' ' + c), args.slice(1).join(','));
 	}
-}
+};

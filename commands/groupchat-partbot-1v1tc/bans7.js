@@ -4,13 +4,13 @@ module.exports = {
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client) {
 		if (!args[0]) args = ['all'];
-		let ftype = toID(args.join(' '));
+		const ftype = toID(args.join(' '));
 		if (!typelist.includes(ftype) && !(ftype == 'all')) return Bot.say(room, 'Invalid type.');
 		if (ftype == 'all') {
 			let out = '';
 			typelist.forEach(type => {
 				out += 'TC ' + tools.colourize(tools.toName(type)) + ' Banlist: ';
-				let bans = require('../../data/VR/TC7/' + type + '.js')[type].bans;
+				const bans = require('../../data/VR/TC7/' + type + '.js')[type].bans;
 				if (bans.length) out += bans.join(', ');
 				else out += 'None';
 				out += '<BR>';
@@ -18,7 +18,7 @@ module.exports = {
 			if (tools.hasPermission(by, 'gamma')) return Bot.say(room, '/adduhtml BANS, ' + out);
 			else return Bot.say(room, '/pminfobox ' + by + ', ' + out);
 		}
-		let bans = require('../../data/VR/TC7/' + ftype + '.js')[ftype].bans;
-		return Bot.say(room, 'TC ' + tools.toName(ftype) + ' Banlist: ' + ((bans.length) ? bans.join(', ') : 'None'));
+		const bans = require('../../data/VR/TC7/' + ftype + '.js')[ftype].bans;
+		return Bot.say(room, 'TC ' + tools.toName(ftype) + ' Banlist: ' + (bans.length ? bans.join(', ') : 'None'));
 	}
-}
+};

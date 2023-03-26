@@ -3,12 +3,12 @@ module.exports = {
 	noDisplay: true,
 	permissions: 'none',
 	commandFunction: function (Bot, by, args, client) {
-		let help = this.help;
+		const help = this.help;
 		if (!args.length) return Bot.pm(by, help);
-		let cargs = args.join(' ').split(/,\s*/);
+		const cargs = args.join(' ').split(/,\s*/);
 		if (!cargs.length) return Bot.pm(by, help);
-		let room = cargs.shift().toLowerCase().replace(/[^a-z0-9-]/g,'');
+		const room = tools.getRoom(cargs.shift());
 		if (!Bot.rooms[room]) return Bot.pm(by, 'Invalid room.');
 		return Bot.commandHandler('explodingvoltorb', by, cargs.join(',').split(' '), room, true);
 	}
-}
+};

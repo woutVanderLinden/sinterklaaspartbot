@@ -2,123 +2,20 @@ module.exports = {
 	cooldown: 0,
 	help: `Testing stuff.`,
 	permissions: 'coder',
-	commandFunction: function (Bot, room, time, by, args, client) {
-		return Bot.say(room, 'What does the Foxx say?');
-		let trs = {
-			tr00swordsdance: "TR00",
-			tr01bodyslam: "TR01",
-			tr02flamethrower: "TR02",
-			tr03hydropump: "TR03",
-			tr04surf: "TR04",
-			tr05icebeam: "TR05",
-			tr06blizzard: "TR06",
-			tr07lowkick: "TR07",
-			tr08thunderbolt: "TR08",
-			tr09thunder: "TR09",
-			tr10earthquake: "TR10",
-			tr11psychic: "TR11",
-			tr12agility: "TR12",
-			tr13focusenergy: "TR13",
-			tr14metronome: "TR14",
-			tr15fireblast: "TR15",
-			tr16waterfall: "TR16",
-			tr17amnesia: "TR17",
-			tr18leechlife: "TR18",
-			tr19triattack: "TR19",
-			tr20substitue: "TR20",
-			tr21reversal: "TR21",
-			tr22sludgebomb: "TR22",
-			tr23spikes: "TR23",
-			tr24outrage: "TR24",
-			tr25psyshock: "TR25",
-			tr26endure: "TR26",
-			tr27sleeptalk: "TR27",
-			tr28megahorn: "TR28",
-			tr29batonpass: "TR29",
-			tr30encore: "TR30",
-			tr31irontail: "TR31",
-			tr32crunch: "TR32",
-			tr33shadowball: "TR33",
-			tr34futuresight: "TR34",
-			tr35uproar: "TR35",
-			tr36heatwave: "TR36",
-			tr37taunt: "TR37",
-			tr38trick: "TR38",
-			tr39superpower: "TR39",
-			tr40skillswap: "TR40",
-			tr41blazekick: "TR41",
-			tr42hypervoice: "TR42",
-			tr43overheat: "TR43",
-			tr44cosmicpower: "TR44",
-			tr45muddywater: "TR45",
-			tr46irondefense: "TR46",
-			tr47dragonclaw: "TR47",
-			tr48bulkup: "TR48",
-			tr49calmmind: "TR49",
-			tr50leafblade: "TR50",
-			tr51dragondance: "TR51",
-			tr52gyroball: "TR52",
-			tr53closecombat: "TR53",
-			tr54toxicspikes: "TR54",
-			tr55flareblitz: "TR55",
-			tr56aurasphere: "TR56",
-			tr57poisonjab: "TR57",
-			tr58darkpulse: "TR58",
-			tr59seedbomb: "TR59",
-			tr60xscissor: "TR60",
-			tr61bugbuzz: "TR61",
-			tr62dragonpulse: "TR62",
-			tr63powergem: "TR63",
-			tr64focusblast: "TR64",
-			tr65energyball: "TR65",
-			tr66bravebird: "TR66",
-			tr67earthpower: "TR67",
-			tr68nastyplot: "TR68",
-			tr69zenheadbutt: "TR69",
-			tr70flashcannon: "TR70",
-			tr71leafstorm: "TR71",
-			tr72powerwhip: "TR72",
-			tr73gunkshot: "TR73",
-			tr74ironhead: "TR74",
-			tr75stoneedge: "TR75",
-			tr76stealthrock: "TR76",
-			tr77grassknot: "TR77",
-			tr78sludgewave: "TR78",
-			tr79heavyslam: "TR79",
-			tr80electroball: "TR80",
-			tr81foulplay: "TR81",
-			tr82storedpower: "TR82",
-			tr83allyswitch: "TR83",
-			tr84scald: "TR84",
-			tr85workup: "TR85",
-			tr86wildcharge: "TR86",
-			tr87drillrun: "TR87",
-			tr88heatcrash: "TR88",
-			tr89hurricane: "TR89",
-			tr90playrough: "TR90",
-			tr91venomdrench: "TR91",
-			tr92dazzlinggleam: "TR92",
-			tr93darkestlariat: "TR93",
-			tr94highhorsepower: "TR94",
-			tr95throatchop: "TR95",
-			tr96pollenpuff: "TR96",
-			tr97psychicfangs: "TR97",
-			tr98liquidation: "TR98",
-			tr99bodypress: "TR99"
-		}
-		return Bot.pm(by, "!code " + Object.keys(trs).filter(m=>!data.moves[m.substr(4)]));
-		return;
-		const symbols = ["H","He","Li","Be","B","C","N","O","F","Ne","Na","Mg","Al","Si","P","S","Cl","Ar","K","Ca","Sc","Ti","V","Cr","Mn","Fe","Co","Ni","Cu","Zn","Ga","Ge","As","Se","Br","Kr","Rb","Sr","Y","Zr","Nb","Mo","Tc","Ru","Rh","Pd","Ag","Cd","In","Sn","Sb","Te","I","Xe","Cs","Ba","La","Ce","Pr","Nd","Pm","Sm","Eu","Gd","Tb","Dy","Ho","Er","Tm","Yb","Lu","Hf","Ta","W","Re","Os","Ir","Pt","Au","Hg","Tl","Pb","Bi","Po","At","Rn","Fr","Ra","Ac","Th","Pa","U","Np","Pu","Am","Cm","Bk","Cf","Es","Fm","Md","No","Lr","Rf","Db","Sg","Bh","Hs","Mt","Ds","Rg","Cn","Nh","Fl","Mc","Lv","Ts","Og"].map(c => c.toLowerCase());
-		function rec (input) {
-			if (!input) return true;
-			if (symbols.filter(sym => input.startsWith(sym) && rec(input.substr(sym.length))).length) return true;
-			return false;
-		}
-		// let mons = ['hooh', 'carbink', 'mewtwo'].filter(m => rec(m));
-		let mons = Object.values(data.pokedex).filter(m => m.num > 0).map(m => toID(m.name)).filter(m => rec(m));
-		Bot.say(room, mons.length);
-		Bot.mn = mons;
-		tools.uploadToPastie(mons.map(m => data.pokedex[m].name).join('\n'), u => Bot.pm(by, u));
-		return;
+	commandFunction: function (Bot, room, time, by, args, client, redir = false) {
+		const pkmn = toID(args.join('')) || 'zacian';
+		const mon = data.unitedex.find(m => toID(m.name) === pkmn);
+		const lv = 15;
+		const stats = data.unitestats.find(m => m.name === mon.name).level[lv - 1];
+		const hst = { ...data.unitestats[0].level[lv - 1] };
+		data.unitestats.forEach(stat => {
+			Object.entries(stat.level[lv - 1]).forEach(([k, v]) => {
+				if (hst[k] < v) hst[k] = v;
+			});
+		});
+		nunjucks.render('unite/character.njk', { mon, lv, hst, stats, redir }, (e, html) => {
+			if (e) console.log(e);
+			else Bot.say(room, `!htmlbox ${html}`);
+		});
 	}
-}
+};

@@ -3,7 +3,7 @@ module.exports = {
 	help: `Deletes a joinphrase. Syntax: ${prefix}deletejoinphrase (user)`,
 	permissions: 'beta',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		let name = toID(args.join(''));
+		const name = toID(args.join(''));
 		if (!Bot.jps[room] || !Bot.jps[room][name]) return Bot.say(room, `It doesn\'t look like that user has a joinphrase...`);
 		delete Bot.jps[room][name];
 		fs.writeFile(`./data/JPS/${room}.json`, JSON.stringify(Bot.jps[room], null, 2), e => {
@@ -11,4 +11,4 @@ module.exports = {
 			Bot.say(room, 'Joinphrase deleted!');
 		});
 	}
-}
+};

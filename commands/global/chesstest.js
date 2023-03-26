@@ -3,7 +3,7 @@ module.exports = {
 	help: `-_-`,
 	permissions: 'coder',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		/*delete require.cache[require.resolve('../../data/chess.js')];
+		/* delete require.cache[require.resolve('../../data/chess.js')];
 		if (!Bot.rooms[room].chess) Bot.rooms[room].chess = new tools.Chess(toID(by), room);
 		let game = Bot.rooms[room].chess;
 		game.B.player = 'partman';
@@ -13,4 +13,4 @@ module.exports = {
 		game.setBoard();
 		return Bot.say(room, `/adduhtml CHESS,${game.boardHTML(room, game.turn)}`);*/
 	}
-}
+};

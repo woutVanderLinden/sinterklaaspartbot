@@ -4,4 +4,4 @@ module.exports = {
 	commandFunction: function (Bot, by, args, client) {
 		return;
 	}
-}
+};

@@ -5,12 +5,12 @@ module.exports = {
 	commandFunction: function (Bot, room, time, by, args, client) {
 		return Bot.pm(by, 'This command is under a constrictor! To avoid being swallowed by a snake, please append a ``7`` to the command and try again.');
 		if (!args[0]) return Bot.say(room, unxa);
-		let gtype = toID(args.join(' '));
+		const gtype = toID(args.join(' '));
 		if (!typelist.includes(gtype)) return Bot.say(room, 'It doesn\'t look like that is a type.');
-		let sampleObj = JSON.parse(fs.readFileSync('./data/SAMPLES/TC/teams.json', 'utf8'));
+		const sampleObj = JSON.parse(fs.readFileSync('./data/SAMPLES/TC/teams.json', 'utf8'));
 		if (!sampleObj[gtype]) return Bot.say(room, 'Error occurred. (Type samples not found)');
-		let out = '<DETAILS><SUMMARY>' + tools.colourize(tools.toName(gtype) + ' Sample Teams', gtype) + '</SUMMARY><HR>' + Object.keys(sampleObj[gtype]).map(team => '<DETAILS><SUMMARY><B>' + team + '</B></SUMMARY><HR>' + sampleObj[gtype][team].replace(/\r?\n/g, '<BR>').replace(/(?:<BR>\s*){7,}/g, '<BR>') + '</DETAILS>').join('<HR>') + '<HR></DETAILS>';
+		const out = '<DETAILS><SUMMARY>' + tools.colourize(tools.toName(gtype) + ' Sample Teams', gtype) + '</SUMMARY><HR>' + Object.keys(sampleObj[gtype]).map(team => '<DETAILS><SUMMARY><B>' + team + '</B></SUMMARY><HR>' + sampleObj[gtype][team].replace(/\r?\n/g, '<BR>').replace(/(?:<BR>\s*){7,}/g, '<BR>') + '</DETAILS>').join('<HR>') + '<HR></DETAILS>';
 		if (tools.hasPermission(by, 'gamma', room)) return Bot.say(room, '/adduhtml SAMPLETEAMS, ' + out);
 		else return Bot.say(room, '/pminfobox ' + by + ', ' + out);
 	}
-}
+};

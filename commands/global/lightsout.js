@@ -1,5 +1,4 @@
 module.exports = {
-	cooldown: 1,
 	help: `The Lights Out game! Use \`\`${prefix}lightsout new\`\` to create a game, and just click from there.`,
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client, isPM) {
@@ -33,7 +32,7 @@ module.exports = {
 			case 'click': case 'c': {
 				if (!LO[user]) return Bot.roomReply(room, by, "Err, you don't have any running games - try making one?");
 				args = args.map(t => parseInt(t));
-				let out = LO[user].click(...args);
+				const out = LO[user].click(...args);
 				const header = `<div style="display: inline-block; float: left; font-weight: bold;">My Solution: ${LO[user].soln.length} moves</div><div style="display: inline-block; float: right; font-weight: bold;">Moves Made: ${LO[user].moves.length} moves</div><br /><br /><br />`;
 				if (out === null) return Bot.roomReply(room, by, "Use the buttons. O-onegai.");
 				LO[user].ff = false;
@@ -50,6 +49,8 @@ module.exports = {
 						Bot.say(room, `/adduhtml Lights Out @ ${Date.now()}, ${LO[user].boardHTML(false, LO[user].problem, true)}`);
 						Bot.say(room, `${by.substr(1)} solved this in ${LO[user].moves.length} moves! (My solution was ${LO[user].soln.length} moves)`);
 					}
+					const smugUsers = ['asxier', 'aegii', 'partoru', 'tanpat'];
+					if (smugUsers.includes(user) && LO[user].soln.length < LO[user].moves.length) Bot.roomReply(room, by, `PFFFT IMAGINE LOSING TO A BOT`);
 					delete LO[user];
 					return;
 				}
@@ -72,7 +73,7 @@ module.exports = {
 			}
 			case 'unspectate': case 'us': case 'unwatch': case 'uw': {
 				if (!args.length) {
-					let ind = Object.values(LO).find(game => game.spectators.includes(user));
+					const ind = Object.values(LO).find(game => game.spectators.includes(user));
 					if (ind) args = [ind];
 					else return Bot.roomReply(room, by, "Err, whose game do you want to stop watching?");
 				}
@@ -86,9 +87,9 @@ module.exports = {
 			case 'rejoin': case 'rj': {
 				if (args.length) user = toID(args.join(''));
 				if (!LO[user]) return Bot.roomReply(room, by, `Could not join ${user}'s game.`);
-				let header = `<div style="display: inline-block; float: left; font-weight: bold;">My Solution: ${LO[user].soln.length} moves</div><div style="display: inline-block; float: right; font-weight: bold;">Moves Made: ${LO[user].moves.length} moves</div><br /><br /><br />`;
+				const header = `<div style="display: inline-block; float: left; font-weight: bold;">My Solution: ${LO[user].soln.length} moves</div><div style="display: inline-block; float: right; font-weight: bold;">Moves Made: ${LO[user].moves.length} moves</div><br /><br /><br />`;
 				if (user === toID(by)) return Bot.say(room, `/sendhtmlpage ${by}, Lights Out (${by.substr(1)}), ${header + LO[user].boardHTML(true)}`);
-				if (LO[user].spectators.includes(toID(by))) return Bot.say(room, `/sendhtmlpage ${by}, Lights Out (${player}), ${header + LO[player].boardHTML()}`);;
+				if (LO[user].spectators.includes(toID(by))) return Bot.say(room, `/sendhtmlpage ${by}, Lights Out (${player}), ${header + LO[player].boardHTML()}`);
 				return Bot.roomReply(room, by, "Err, you werent' a spectator there.");
 				break;
 			}
@@ -108,4 +109,4 @@ module.exports = {
 			}
 		}
 	}
-}
+};

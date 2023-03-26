@@ -6,12 +6,13 @@ module.exports = {
 		try {
 			let func = args.join(' ');
 			if (!func.includes('return')) func = 'return ' + func;
-			let filter = new Function(`return function (m, dex) {${func}}`)();
-			let out = Object.keys(data.pokedex).filter(m => filter(m, data.pokedex));
+			const filter = new Function(`return function (m, dex) {${func}}`)();
+			const out = Object.keys(data.pokedex).filter(m => filter(m, data.pokedex));
 			if (!out.length) return Bot.pm(by, 'None.');
+			// eslint-disable-next-line max-len
 			return Bot.sendHTML(by, `<DETAILS><SUMMARY>Results (${out.length})</SUMMARY>` + out.map(m => data.pokedex[m].name).sort().join('<BR>') + '</DETAILS>');
 		} catch (e) {
 			Bot.pm(by, e.message);
 		}
 	}
-}
+};

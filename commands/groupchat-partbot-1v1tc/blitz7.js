@@ -12,7 +12,7 @@ module.exports = {
 				official: false,
 				starter: false,
 				gen: 0
-			}
+			};
 		}
 		if (args[0] && (args[0].toLowerCase() === 'status' || args[0].toLowerCase() === 'show' || args[0].toLowerCase() === 'view' || args[0].toLowerCase() === 'display')) {
 			if (!Bot.rooms[room].blitzObject.active && !Bot.rooms[room].blitzObject.prepping) return Bot.say(room, 'No Blitz is currently active.');
@@ -34,7 +34,7 @@ module.exports = {
 				official: false,
 				starter: false,
 				gen: 7
-			}
+			};
 		}
 		if (args[0] && ['as', 'autostart'].includes(toID(args[0]))) Bot.rooms[room].blitzObject.autostart = true;
 		if (args[0] && ['o', 'official'].includes(args[0].toLowerCase())) {
@@ -53,4 +53,4 @@ module.exports = {
 		Bot.say(room, '/wall A Blitz will start in 10 seconds! Use ' + prefix + 'cast (type) to cast!');
 		Bot.rooms[room].blitzObject.prepping = true;
 	}
-}
+};

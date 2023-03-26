@@ -4,4 +4,4 @@ module.exports = {
 	commandFunction: function (Bot, by, args, client) {
 		Bot.pm(by, `/me tests ${args.length ? args.join(' ') : by.substr(1)}`);
 	}
-}
+};

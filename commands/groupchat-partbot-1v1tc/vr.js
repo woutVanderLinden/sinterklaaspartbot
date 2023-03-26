@@ -6,20 +6,20 @@ module.exports = {
 		return Bot.pm(by, 'This command is under a constrictor! To avoid being swallowed by a snake, please append a ``7`` to the command and try again.');
 		if (!args[0]) return Bot.say(room, unxa);
 		if (args[1]) return Bot.say(room, unxa);
-		let giventype = args[0].toLowerCase();
+		const giventype = args[0].toLowerCase();
 		if (!typelist.includes(giventype)) return Bot.say(room, 'Type not found.');
-		let ftype = require(`../../data/VR/TC/${giventype}.js`)[giventype];
-		let etype = require('../../data/EXPERTS/tc.js')[giventype];
-		let tbdis = ['sp', 's', 'sm', 'ap', 'a', 'am', 'bp', 'b', 'bm', 'cp', 'c', 'cm', 'd', 'unt', 'e'];
-		let pctbdis = [];
-		tbdis.forEach(function(element) {
+		const ftype = require(`../../data/VR/TC/${giventype}.js`)[giventype];
+		const etype = require('../../data/EXPERTS/tc.js')[giventype];
+		const tbdis = ['sp', 's', 'sm', 'ap', 'a', 'am', 'bp', 'b', 'bm', 'cp', 'c', 'cm', 'd', 'unt', 'e'];
+		const pctbdis = [];
+		tbdis.forEach(function (element) {
 			if (ftype[element] == "undefined") return;
-			if (ftype[element].length == 0) return;			
+			if (ftype[element].length == 0) return;
 			pctbdis.push(element);
 		});
-		let ftr = [];
-		var texpert = '';
-		var bans = '';
+		const ftr = [];
+		let texpert = '';
+		let bans = '';
 		if (pctbdis.includes('sp')) ftr.push('S+: ' + ftype.sp.join(', '));
 		if (pctbdis.includes('s')) ftr.push('S: ' + ftype.s.join(', '));
 		if (pctbdis.includes('sm')) ftr.push('S-: ' + ftype.sm.join(', '));
@@ -38,13 +38,13 @@ module.exports = {
 		if (etype.length == 1) texpert = `Expert: ${tools.colourize(tools.toName(etype[0]))}`;
 		else if (etype.length == 0) texpert = 'Experts: None';
 		else {
-			let earr = etype.sort().map(exp => tools.colourize(tools.toName(exp)));
+			const earr = etype.sort().map(exp => tools.colourize(tools.toName(exp)));
 			texpert = `Experts: ${earr.join(', ')}`;
 		}
 		if (ftype.bans.length == 0) bans = 'None';
 		else bans = ftype.bans.join(', ');
-		let outstr = `<DETAILS><SUMMARY>${tools.colourize(tools.toName(args[0].toLowerCase()) + ' VR', args[0])}</SUMMARY><HR>${ftr.join('<BR>')}<BR><BR>Bans: ${bans}<BR><BR>${texpert}</DETAILS>`;
+		const outstr = `<DETAILS><SUMMARY>${tools.colourize(tools.toName(args[0].toLowerCase()) + ' VR', args[0])}</SUMMARY><HR>${ftr.join('<BR>')}<BR><BR>Bans: ${bans}<BR><BR>${texpert}</DETAILS>`;
 		if (tools.hasPermission(by, 'gamma', room)) Bot.say(room, `/addhtmlbox ` + outstr);
 		else Bot.say(room, '/pminfobox ' + by + ', ' + outstr);
 	}
-}
+};

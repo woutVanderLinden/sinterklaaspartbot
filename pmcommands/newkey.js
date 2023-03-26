@@ -11,4 +11,4 @@ module.exports = {
 		Bot.keys[toID(by)] = key;
 		return Bot.serve(by, 'New key generated!');
 	}
-}
+};

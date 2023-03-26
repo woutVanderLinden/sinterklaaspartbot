@@ -1,8 +1,8 @@
 module.exports = {
-	help: `Mastermind, the code-breaking game! Type \`\`${prefix}mastermind new (guess limit, optional)\`\` to make a game, and \`\`${prefix}mastermind guess (your guess; eg 5694)\`\` to make a guess. Rules: https://en.wikipedia.org/wiki/Mastermind_(board_game)`,
+	help: `Mastermind, the code-breaking game! Type \`\`${prefix}mastermind new (guess limit, optional)\`\` to make a game. Rules: https://docs.google.com/document/u/1/d/e/2PACX-1vRiZyg6D3sg-TS5ya-MOBBvbnM-NuQm_jrkV3hXtzFYnXSV-FnATcLs8LftjKUr4i_yCbIW-eZJppdj/pub`,
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client, pm) {
-		if (!tools.canHTML(room)) {
+		if (!tools.canHTML(room) && !room.startsWith('groupchat-')) {
 			return Bot.say(room, "Sorry, can't do that here - I need to be a room Bot.");
 		}
 		let user;
@@ -15,7 +15,7 @@ module.exports = {
 			}
 			case 'new': case 'n': {
 				if (!Bot.rooms[room].mastermind) Bot.rooms[room].mastermind = {};
-				let mm = Bot.rooms[room].mastermind;
+				const mm = Bot.rooms[room].mastermind;
 				user = toID(by);
 				if (mm[user]) return Bot.roomReply(room, by, `You're already playing one! If you want to end the current one, do \`\`${prefix}mastermind end\`\`.`);
 				if (pm) return Bot.roomReply(room, by, "Can't start one from PMs. o.o");
@@ -29,16 +29,16 @@ module.exports = {
 				mm[user] = GAMES.create('mastermind', room, by, limit);
 				Bot.say(room, `/adduhtml MM${user},<hr/>${by.substr(1)} is playing a round of Mastermind!&nbsp;&nbsp;&nbsp;<button name="send" value="/botmsg ${Bot.status.nickName}, ${prefix}mastermind ${room} watch ${user}">Watch</button><br/><br/><form data-submitsend="/msgroom ${room}, /botmsg ${Bot.status.nickName},${prefix}mastermind ${room} setcode ${user}, {code}"><label for="choosecode">Set Code: </label><input type="text" id="choosecode" name="code" style="width: 30px;"> &nbsp;&nbsp;<input type="submit" value="Set"/></form><hr/>`);
 				mm[user].sendPages();
-				return
+				return;
 				break;
 			}
 			case 'guess': case 'g': case 'play': case 'p': {
 				if (!Bot.rooms[room].mastermind) return Bot.roomReply(room, by, "No games are active.");
-				let mm = Bot.rooms[room].mastermind;
+				const mm = Bot.rooms[room].mastermind;
 				user = toID(by);
 				if (!mm[user]) return Bot.roomReply(room, by, "You're not playing...");
 				if (!args.length) return Bot.roomReply(room, by, unxa);
-				let guess = args.join('').replace(/[^0-7]/g, '');
+				const guess = args.join('').replace(/[^0-7]/g, '');
 				if (guess.length !== 4) {
 					mm[user].sendPages(true);
 					return Bot.roomReply(room, by, "Invalid guess - your guess must contain four valid numbers from 0-7.");
@@ -52,7 +52,7 @@ module.exports = {
 						}
 						case 1: {
 							Bot.say(room, `/changeuhtml MM${user}, <hr/>${tools.escapeHTML(by.substr(1))} is playing a round of Mastermind!<hr/>`);
-							Bot.say(room, `${by.substr(1)} successfully cracked ${mm[user].sol.join('')} in ${mm[user].guesses.length} tries!`);
+							Bot.say(room, `${by.substr(1)} successfully cracked ${mm[user].sol.join('')} in ${mm[user].guesses.length} tr${mm[user].guesses.length === 1 ? 'y' : 'ies'}!`);
 							mm[user].sendPages();
 							return delete mm[user];
 							break;
@@ -73,8 +73,8 @@ module.exports = {
 			}
 			case 'setcode': {
 				if (!Bot.rooms[room].mastermind) return Bot.roomReply(room, by, "No games are active.");
-				let mm = Bot.rooms[room].mastermind;
-				let [target, code] = args.join(' ').split(',').map(toID);
+				const mm = Bot.rooms[room].mastermind;
+				const [target, code] = args.join(' ').split(',').map(toID);
 				if (!target || !/^[0-7]{4}$/.test(code)) return Bot.roomReply(room, by, 'Welp, that wasn\'t a valid code - try again in another match!');
 				if (!mm.hasOwnProperty(target)) return Bot.roomReply(room, by, "Don't have anyone by that name playing");
 				const game = mm[target];
@@ -91,7 +91,7 @@ module.exports = {
 			}
 			case 'spectate': case 's': case 'watch': case 'w': {
 				if (!Bot.rooms[room].mastermind) return Bot.roomReply(room, by, "No games are active.");
-				let mm = Bot.rooms[room].mastermind;
+				const mm = Bot.rooms[room].mastermind;
 				user = toID(by);
 				let input;
 				if (!Object.keys(mm).length) return Bot.roomReply(room, by, "NOBODY. NOBODY AT ALL.");
@@ -107,11 +107,11 @@ module.exports = {
 			}
 			case 'unspectate': case 'us': case 'unwatch': case 'uw': case 'u': {
 				if (!Bot.rooms[room].mastermind) return Bot.roomReply(room, by, "No games are active.");
-				let mm = Bot.rooms[room].mastermind;
+				const mm = Bot.rooms[room].mastermind;
 				user = toID(by);
 				let input;
 				if (!Object.keys(mm).length) return Bot.roomReply(room, by, "NOBODY. NOBODY AT ALL.");
-				let games = Object.values(mm).filter(game => game.spectators.includes(user));
+				const games = Object.values(mm).filter(game => game.spectators.includes(user));
 				if (games.length === 1) input = games[0].player;
 				if (args.length) input = toID(args.join(''));
 				if (!mm[input]) return Bot.roomReply(room, by, `Sorry, didn't find ${input}'s game.`);
@@ -123,10 +123,10 @@ module.exports = {
 			}
 			case 'rejoin': case 'rj': {
 				if (!Bot.rooms[room].mastermind) return Bot.roomReply(room, by, "No games are active.");
-				let mm = Bot.rooms[room].mastermind;
+				const mm = Bot.rooms[room].mastermind;
 				user = toID(by);
 				if (!mm[user]) return Bot.roomReply(room, by, "You're not playing...");
-				let users = [];
+				const users = [];
 				Object.values(mm).forEach(game => {
 					if (game.spectators.includes(user) || game.player === user) users.push(game.player);
 				});
@@ -135,7 +135,7 @@ module.exports = {
 			}
 			case 'forfeit': case 'ff': case 'f': case 'resign': case 'r': case 'end': case 'e': {
 				if (!Bot.rooms[room].mastermind) return Bot.roomReply(room, by, "No games are active.");
-				let mm = Bot.rooms[room].mastermind; user = toID(by);
+				const mm = Bot.rooms[room].mastermind; user = toID(by);
 				if (!mm[user]) return Bot.roomReply(room, by, "You're not playing...");
 				Bot.say(room, `${by.substr(1)} was unable to crack ${mm[user].sol.join('')} in ${mm[user].guesses.length} tries. ;-;`);
 				return delete mm[user];
@@ -143,11 +143,11 @@ module.exports = {
 			}
 			case 'type': case 't': {
 				if (!Bot.rooms[room].mastermind) return Bot.roomReply(room, by, "No games are active.");
-				let mm = Bot.rooms[room].mastermind;
+				const mm = Bot.rooms[room].mastermind;
 				user = toID(by);
 				if (!mm[user]) return Bot.roomReply(room, by, "You're not playing...");
 				if (!args.length) return Bot.roomReply(room, by, unxa);
-				let guess = args.join('').replace(/[^0-7]/g, '');
+				const guess = args.join('').replace(/[^0-7]/g, '');
 				if (guess.length !== 1) return Bot.roomReply(room, by, "Invalid - your message must contain exactly one valid number from 0-7.");
 				if (!mm[user].type(...guess)) {
 					Bot.log(mm[user]);
@@ -158,7 +158,7 @@ module.exports = {
 			}
 			case 'backspace': case 'b': {
 				if (!Bot.rooms[room].mastermind) return Bot.roomReply(room, by, "No games are active.");
-				let mm = Bot.rooms[room].mastermind;
+				const mm = Bot.rooms[room].mastermind;
 				user = toID(by);
 				if (!mm[user]) return Bot.roomReply(room, by, "You're not playing...");
 				if (mm[user].backspace()) mm[user].sendPages();
@@ -170,4 +170,4 @@ module.exports = {
 			}
 		}
 	}
-}
+};

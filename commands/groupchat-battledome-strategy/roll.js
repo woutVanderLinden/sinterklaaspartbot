@@ -3,6 +3,7 @@ module.exports = {
 	help: `Rolls stuff.`,
 	permissions: 'none',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		Bot.say(room, `${tools.hasPermission(by,'gamma') ? `!roll ${args.length ? args.join(' ') : '20'}` : `/w ${by},!roll ${args.length ? args.join(' ') : '20'}`}`);
+		const rollStr = `!roll ${args.length ? args.join(' ') : '20'}`;
+		Bot.say(room, tools.hasPermission(by, 'gamma') ? rollStr : `/w ${by},${rollStr}`);
 	}
-}
+};

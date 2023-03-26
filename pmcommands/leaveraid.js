@@ -8,7 +8,7 @@ module.exports = {
 		if (!Bot.rooms[room]) return Bot.pm(by, `Uhh I'm not in Pokemon Go`);
 		const user = toID(by);
 		if (!Bot.rooms[room].users.find(u => toID(u) === user)) return Bot.pm(by, `<<pokemongo>>`);
-		const raids = (Bot.rooms[room].raids || {});
+		const raids = Bot.rooms[room].raids || {};
 		if (!Object.keys(raids).length) return Bot.pm(by, "No raids are active, whoops");
 		const host = toID(args.join(''));
 		if (host === user) return Bot.pm(by, 'Kden');
@@ -21,4 +21,4 @@ module.exports = {
 		raid.HTML();
 		Bot.say(room, `${by.substr(1)} left ${raid.hostName}'s raid.`);
 	}
-}
+};

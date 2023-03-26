@@ -7,4 +7,4 @@ module.exports = {
 		require('child_process').exec('refresh');
 		console.log(`Refreshed!`);
 	}
-}
+};

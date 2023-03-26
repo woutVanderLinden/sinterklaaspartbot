@@ -1,90 +1,56 @@
 [
 	{
 		"index": "1",
-		"title": "Survivor",
-		"id": "survivor",
+		"title": "A Slice of the Action",
+		"id": "asliceoftheaction",
 		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/survivor",
-		"solution": "RESTAURANT"
+		"url": "https://cdn.discordapp.com/attachments/816341849076793394/982899869758922802/A_Slice_of_the_Action.pdf",
+		"aliases": ["scyther"],
+		"solution": "AVERAGE"
 	},
 	{
 		"index": "2",
-		"title": "Battle Dome",
-		"id": "battledome",
+		"title": "Bridge of Stars",
+		"id": "bridgeofstars",
 		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/battledome",
-		"solution": "QUARANTINE"
+		"url": "https://cdn.discordapp.com/attachments/816341849076793394/982679066714992670/Bridge_of_Stars.pdf",
+		"aliases": ["empoleon"],
+		"solution": "CRESCENT"
 	},
 	{
 		"index": "3",
-		"title": "Trivia",
-		"id": "trivia",
+		"title": "Color Coded",
+		"id": "colorcoded",
 		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/trivia",
-		"solution": "EGGSCAPADE"
+		"url": "https://cdn.discordapp.com/attachments/816341849076793394/982682131912347668/Color_Coded.pdf",
+		"aliases": ["phantump"],
+		"solution": "SEA LEMON"
 	},
 	{
 		"index": "4",
-		"title": "Mafia",
-		"id": "mafia",
+		"title": "New Species",
+		"id": "newspecies",
 		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/mafia",
-		"solution": "TREASONOUS"
+		"url": "https://cdn.discordapp.com/attachments/816341849076793394/982679068052979813/New_Species.pdf",
+		"aliases": ["regidrago"],
+		"solution": "WOODSHEDS"
 	},
 	{
 		"index": "5",
-		"title": "Game Corner",
-		"id": "gamecorner",
+		"title": "Rate My Team",
+		"id": "ratemyteam",
 		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/gamecorner",
-		"solution": "HANDPRINTS"
-	},
-	{
-		"index": "6",
-		"title": "Transfusion",
-		"id": "transfusion",
-		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/transfusion",
-		"solution": "BLOOD DONOR"
-	},
-	{
-		"index": "7",
-		"title": "Dance Moves",
-		"id": "dancemoves",
-		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/dancemoves",
-		"solution": "FOREST WOOD"
-	},
-	{
-		"index": "8",
-		"title": "Ups and Downs",
-		"id": "upsanddowns",
-		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/upsanddowns",
-		"solution": "OVERSORROW"
-	},
-	{
-		"index": "9",
-		"title": "Left and Right",
-		"id": "leftandright",
-		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/leftandright",
-		"solution": "LEMON BLOOM"
-	},
-	{
-		"index": "10",
-		"title": "Yin-Yang",
-		"id": "yinyang",
-		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/yinyang",
-		"solution": "MONOCHROME"
+		"url": "https://cdn.discordapp.com/attachments/816341849076793394/982709355801620491/Rate_My_Team.pdf",
+		"aliases": ["spinda"],
+		"solution": "RUBBLE"
 	},
 	{
 		"index": "M",
-		"title": "Ring Binder",
-		"id": "ringbinder",
+		"title": "Purification",
+		"id": "purification",
 		"embedFields": [],
-		"url": "http://partbot.partman.co.in/ugo/ringbinder",
-		"solution": "RUN RINGS AROUND IT"
+		"url": "https://cdn.discordapp.com/attachments/816341849076793394/982679075963408384/Purification_Meta.pdf",
+		"aliases": ["meta"],
+		"solution": "SHINE LIGHT"
 	}
 ]

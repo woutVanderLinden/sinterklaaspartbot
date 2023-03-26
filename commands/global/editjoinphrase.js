@@ -3,13 +3,17 @@ module.exports = {
 	help: `Edits a joinphrase. Syntax: ${prefix}editjoinphrase (user), (joinphrase)`,
 	permissions: 'beta',
 	commandFunction: function (Bot, room, time, by, args, client) {
-		let cargs = args.join(' ').split(/,/);
+		const cargs = args.join(' ').split(/,/);
 		if (!cargs[1]) return Bot.say(room, unxa);
-		let name = toID(cargs.shift());
-		if (!Bot.jps[room] || !Bot.jps[room][name]) return Bot.say(room, `It doesn\'t look like that user has a joinphrase... Try using ${prefix}addjoinphrase instead?`);
-		if (Bot.rooms[room].shop && Bot.rooms[room].shop.jpl && Bot.rooms[room].shop.jpl.length && !Bot.rooms[room].shop.jpl.includes(name)) return Bot.say(room, `They don't have a license, though. That's illegal. :(`);
+		const name = toID(cargs.shift());
+		if (!Bot.jps[room] || !Bot.jps[room][name]) {
+			return Bot.say(room, `It doesn\'t look like that user has a joinphrase... Try using ${prefix}addjoinphrase instead?`);
+		}
+		if (Bot.rooms[room].shop?.jpl?.length && !Bot.rooms[room].shop.jpl.includes(name)) {
+			return Bot.say(room, `They don't have a license, though. That's illegal. :(`);
+		}
 		let jp = cargs.join(',').trim();
-		if (/(?:kick|punt)s? .*\bSnom\b/i.test(jp)) return Bot.say(room, `That's not acceptable.`);
+		if (/(?:kick|punt)s? .*\bSnom\b/i.test(jp)) return Bot.say(room, `Unacceptable.`);
 		if (/^\/[^\/]/.test(jp) && !/^\/mee? /.test(jp)) jp = '/' + jp;
 		if (/^!/.test(jp) && !/^!n?da?(?:ta?|s) /.test(jp)) jp = ' ' + jp;
 		Bot.jps[room][name] = jp;
@@ -18,4 +22,4 @@ module.exports = {
 			Bot.say(room, 'Joinphrase edited!');
 		});
 	}
-}
+};

@@ -5,4 +5,4 @@ module.exports = {
 	commandFunction: function (Bot, room, time, by, args, client) {
 		Bot.say(room, `${args[0] ? ' [[]] ' + args.join(' ') : '/me echoes nothing'}`);
 	}
-}
+};

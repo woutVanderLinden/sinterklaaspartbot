@@ -4,4 +4,4 @@ module.exports = {
 	commandFunction: function (Bot, by, args, client) {
 		Bot.pm(by, `https://github.com/PartMan7/PartBot`);
 	}
-}
+};

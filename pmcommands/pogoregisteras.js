@@ -14,4 +14,4 @@ module.exports = {
 		}).split(' ');
 		return Bot.commandHandler('setuser', isBy, args, room, by);
 	}
-}
+};

@@ -1,10 +1,10 @@
 class Chess {
-	constructor(id, room, restore) {
+	constructor (id, room, restore) {
 		this.id = id;
 		this.room = room;
 		this.started = false;
 		this.W = {
-			player: null,
+			id: null,
 			name: null,
 			Km: false,
 			Ram: false,
@@ -14,7 +14,7 @@ class Chess {
 			isPromoting: false
 		};
 		this.B = {
-			player: null,
+			id: null,
 			name: null,
 			Km: false,
 			Ram: false,
@@ -31,9 +31,9 @@ class Chess {
 		// pieces are saved as BN, WP, WQ, etc.
 		this.turn = 'W';
 		if (restore) Object.keys(restore).forEach(key => this[key] = restore[key]);
-		/* this.imgsrc = {
+		this.imgsrc = {
 			WK: `<img src="${websiteLink}/public/chess/WK.png" height="25" width="25" style="height: 25; width: 25" />`,
-			WQ: `<img src="${websiteLink}/public/chess/WQ.png" height="25" width="25" style="height: 25; width: 25" />`,
+			WQ: `<img src="${Math.random() > 0.9 ? 'https://emoji.gg/assets/emoji/6215_RitaQueenHead.png' : `${websiteLink}/public/chess/WQ.png`}" height="25" width="25" style="height: 25; width: 25" />`,
 			WB: `<img src="${websiteLink}/public/chess/WB.png" height="25" width="25" style="height: 25; width: 25" />`,
 			WN: `<img src="${websiteLink}/public/chess/WN.png" height="25" width="25" style="height: 25; width: 25" />`,
 			WR: `<img src="${websiteLink}/public/chess/WR.png" height="25" width="25" style="height: 25; width: 25" />`,
@@ -44,21 +44,7 @@ class Chess {
 			BN: `<img src="${websiteLink}/public/chess/BN.png" height="25" width="25" style="height: 25; width: 25" />`,
 			BR: `<img src="${websiteLink}/public/chess/BR.png" height="25" width="25" style="height: 25; width: 25" />`,
 			BP: `<img src="${websiteLink}/public/chess/BP.png" height="25" width="25" style="height: 25; width: 25" />`
-		} */
-		this.imgsrc = {
-			WK: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863871282675712/WK.png" height="25" width="25" style="height: 25; width: 25" />`,
-			WQ: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863868733194251/WQ.png" height="25" width="25" style="height: 25; width: 25" />`,
-			WB: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863867017592842/WB.png" height="25" width="25" style="height: 25; width: 25" />`,
-			WN: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863866195247144/WN.png" height="25" width="25" style="height: 25; width: 25" />`,
-			WR: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863864915853362/WR.png" height="25" width="25" style="height: 25; width: 25" />`,
-			WP: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863863578656818/WP.png" height="25" width="25" style="height: 25; width: 25" />`,
-			BK: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863805268525116/BK.png" height="25" width="25" style="height: 25; width: 25" />`,
-			BQ: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863803649523742/BQ.png" height="25" width="25" style="height: 25; width: 25" />`,
-			BB: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863802211663872/BB.png" height="25" width="25" style="height: 25; width: 25" />`,
-			BN: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863800672092170/BN.png" height="25" width="25" style="height: 25; width: 25" />`,
-			BR: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863799401349170/BR.png" height="25" width="25" style="height: 25; width: 25" />`,
-			BP: `<img src="https://cdn.discordapp.com/attachments/762324232948023316/781863797580234772/BP.png" height="25" width="25" style="height: 25; width: 25" />`
-		}
+		};
 		this.emosrc = {
 			WK: '<div style="font-size:25px; color: black;">♔</div>',
 			WQ: '<div style="font-size:25px; color: black;">♕</div>',
@@ -72,12 +58,14 @@ class Chess {
 			BN: '<div style="font-size:25px; color: black;">♞</div>',
 			BR: '<div style="font-size:25px; color: black;">♜</div>',
 			BP: '<div style="font-size:25px; color: black;">♟</div>'
-		}
+		};
 		this.src = null;
-		this.colours = JSON.parse(fs.readFileSync('./data/DATA/chess_themes.json', 'utf8'))[Bot.AFD ? 'wario' : 'green'];
+		this.colours = JSON.parse(fs.readFileSync('./data/DATA/chess_themes.json', 'utf8'))[Bot.AFD ? 'wario' : 'spooky'];
 		this.spectators = {};
 	}
-	increment(character) {
+
+	// TODO: Holy shit there is SO much to optimize here
+	increment (character) {
 		switch (character) {
 			case 'a': return 'b';
 			case 'b': return 'c';
@@ -89,7 +77,7 @@ class Chess {
 			default: return null;
 		}
 	}
-	decrement(character) {
+	decrement (character) {
 		switch (character) {
 			case 'b': return 'a';
 			case 'c': return 'b';
@@ -101,7 +89,7 @@ class Chess {
 			default: return null;
 		}
 	}
-	setBoard() {
+	setBoard () {
 		this.board.a[1] = 'WR';
 		this.board.b[1] = 'WN';
 		this.board.c[1] = 'WB';
@@ -141,15 +129,15 @@ class Chess {
 
 		this.started = true;
 	}
-	switchSides() {
-		this.turn = (this.turn === 'W' ? 'B' : 'W');
+	switchSides () {
+		this.turn = this.turn === 'W' ? 'B' : 'W';
 		return;
 	}
-	getPiece(square, board) {
+	getPiece (square, board) {
 		if (board) return board[square[0]][square[1]].split('');
 		return this.board[square[0]][square[1]].split('');
 	}
-	adjFiles(file) {
+	adjFiles (file) {
 		switch (file) {
 			case 'a': return ['b'];
 			case 'b': return ['a', 'c'];
@@ -162,7 +150,7 @@ class Chess {
 			default: return [];
 		}
 	}
-	knightSquares(file, rank) {
+	knightSquares (file, rank) {
 		rank = parseInt(String(rank));
 		let ranks1 = [], ranks2 = [], files1 = this.adjFiles(file), files2, squares = [];
 		if (rank + 1 < 9) ranks1.push(rank + 1);
@@ -199,7 +187,7 @@ class Chess {
 				break;
 			}
 			case 'h':
-				{
+			{
 				files2 = ['f'];
 				break;
 			}
@@ -217,17 +205,16 @@ class Chess {
 		});
 		return squares;
 	}
-	getSquares(square, board, pre) {
+	getSquares (square, board, pre) {
 		if (!board) {
 			if (pre) {
 				board = {};
 				['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].forEach(file => board[file] = ['', '', '', '', '', '', '', '', '']);
-			}
-			else board = this.board;
+			} else board = this.board;
 		}
-		let recept = this.getPiece(square, pre ? null : board);
+		const recept = this.getPiece(square, pre ? null : board);
 		if (!(recept.length === 2)) return [];
-		let piece = recept[1], side = recept[0];
+		const piece = recept[1], side = recept[0];
 		if (!piece);
 		square = [square[0], parseInt(square[1])];
 		if (pre) board[square[0]][square[1]] = recept;
@@ -237,14 +224,14 @@ class Chess {
 				switch (side) {
 					case 'W': {
 						if (square[1] < 8 && (pre || !board[square[0]][square[1] + 1])) squares.push(square[0] + (square[1] + 1));
-						if (square[1] === 2 && (pre || (!board[square[0]][3] && !board[square[0]][4]))) squares.push(square[0] + '4');
+						if (square[1] === 2 && (pre || !board[square[0]][3] && !board[square[0]][4])) squares.push(square[0] + '4');
 						this.adjFiles(square[0]).forEach(file => {
 							if (pre || board[file][square[1] + 1][0] === 'B') squares.push(file + (square[1] + 1));
 						});
 						break;
 					}
 					case 'B': {
-						if (square[1] === 7 && (pre || (!board[square[0]][6] && !board[square[0]][5]))) squares.push(square[0] + '5');
+						if (square[1] === 7 && (pre || !board[square[0]][6] && !board[square[0]][5])) squares.push(square[0] + '5');
 						if (square[1] > 1 && (pre || !board[square[0]][square[1] - 1])) squares.push(square[0] + (square[1] - 1));
 						this.adjFiles(square[0]).forEach(file => {
 							if (pre || board[file][square[1] - 1][0] === 'W') squares.push(file + (square[1] - 1));
@@ -256,15 +243,15 @@ class Chess {
 				break;
 			}
 			case 'K': {
-				let files = this.adjFiles(square[0]);
+				const files = this.adjFiles(square[0]);
 				files.push(square[0]);
 				files.forEach(file => {
 					for (let i = -1; i < 2; i++) {
-						if (pre || ((square[1] + i < 9) && (square[1] + i > 0) && !(file === square[0] && !i) && (!board[file][square[1] + i] || !board[file][square[1] + i].startsWith(side)))) squares.push(file + (square[1] + i));
+						if (pre || square[1] + i < 9 && square[1] + i > 0 && !(file === square[0] && !i) && (!board[file][square[1] + i] || !board[file][square[1] + i].startsWith(side))) squares.push(file + (square[1] + i));
 					}
 				});
 				if (pre) {
-					let opp = this.turn === 'W' ? 'B' : 'W';
+					const opp = this.turn === 'W' ? 'B' : 'W';
 					if (this[opp].Km) break;
 					if (!this[opp].Rhm) squares.push('g' + square[1]);
 					if (!this[opp].Ram) squares.push('c' + square[1]);
@@ -324,7 +311,7 @@ class Chess {
 			}
 			case 'B': {
 				let j = 0;
-				for (let i = this.increment(square[0]); i && (square[1] + j < 8); i = this.increment(i)) {
+				for (let i = this.increment(square[0]); i && square[1] + j < 8; i = this.increment(i)) {
 					if (!board[i][square[1] + ++j]) {
 						squares.push(i + (square[1] + j));
 						continue;
@@ -336,7 +323,7 @@ class Chess {
 					}
 				}
 				j = 0;
-				for (let i = this.increment(square[0]); i && (square[1] - j > 1); i = this.increment(i)) {
+				for (let i = this.increment(square[0]); i && square[1] - j > 1; i = this.increment(i)) {
 					if (!board[i][square[1] - ++j]) {
 						squares.push(i + (square[1] - j));
 						continue;
@@ -348,7 +335,7 @@ class Chess {
 					}
 				}
 				j = 0;
-				for (let i = this.decrement(square[0]); i && (square[1] + j < 8); i = this.decrement(i)) {
+				for (let i = this.decrement(square[0]); i && square[1] + j < 8; i = this.decrement(i)) {
 					if (!board[i][square[1] + ++j]) {
 						squares.push(i + (square[1] + j));
 						continue;
@@ -360,7 +347,7 @@ class Chess {
 					}
 				}
 				j = 0;
-				for (let i = this.decrement(square[0]); i && (square[1] - j > 1); i = this.decrement(i)) {
+				for (let i = this.decrement(square[0]); i && square[1] - j > 1; i = this.decrement(i)) {
 					if (!board[i][square[1] - ++j]) {
 						squares.push(i + (square[1] - j));
 						continue;
@@ -419,7 +406,7 @@ class Chess {
 					}
 				}
 				let j = 0;
-				for (let i = this.increment(square[0]); i && (square[1] + j < 8); i = this.increment(i)) {
+				for (let i = this.increment(square[0]); i && square[1] + j < 8; i = this.increment(i)) {
 					if (!board[i][square[1] + ++j]) {
 						squares.push(i + (square[1] + j));
 						continue;
@@ -431,7 +418,7 @@ class Chess {
 					}
 				}
 				j = 0;
-				for (let i = this.increment(square[0]); i && (square[1] - j > 1); i = this.increment(i)) {
+				for (let i = this.increment(square[0]); i && square[1] - j > 1; i = this.increment(i)) {
 					if (!board[i][square[1] - ++j]) {
 						squares.push(i + (square[1] - j));
 						continue;
@@ -443,7 +430,7 @@ class Chess {
 					}
 				}
 				j = 0;
-				for (let i = this.decrement(square[0]); i && (square[1] + j < 8); i = this.decrement(i)) {
+				for (let i = this.decrement(square[0]); i && square[1] + j < 8; i = this.decrement(i)) {
 					if (!board[i][square[1] + ++j]) {
 						squares.push(i + (square[1] + j));
 						continue;
@@ -455,7 +442,7 @@ class Chess {
 					}
 				}
 				j = 0;
-				for (let i = this.decrement(square[0]); i && (square[1] - j > 1); i = this.decrement(i)) {
+				for (let i = this.decrement(square[0]); i && square[1] - j > 1; i = this.decrement(i)) {
 					if (!board[i][square[1] - ++j]) {
 						squares.push(i + (square[1] - j));
 						continue;
@@ -472,11 +459,11 @@ class Chess {
 		}
 		return squares;
 	}
-	getLocationsOfPiecesAgainst(piece, final, board) {
+	getLocationsOfPiecesAgainst (piece, final, board) {
 		if (!board) board = this.board;
 		if (Array.isArray(final)) final = final.join('');
 		if (!/^[BW][PKQRBN]$/.test(piece)) return null;
-		let out = [];
+		const out = [];
 		Object.keys(board).forEach(l => {
 			for (let i = 1; i < 9; i++) {
 				if (board[l][i] === piece) out.push(l + i);
@@ -484,20 +471,20 @@ class Chess {
 		});
 		return out.filter(loc => this.getSquares(loc, board).includes(final));
 	}
-	checkChecks(side, board) {
+	checkChecks (side, board) {
 		if (!board) board = this.board;
 		let kSquare = null, checkedSquares = [];
-		for (let file of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']) {
-			for (let rank of [1, 2, 3, 4, 5, 6, 7, 8]) {
+		for (const file of ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']) {
+			for (const rank of [1, 2, 3, 4, 5, 6, 7, 8]) {
 				if (!board[file][rank]) continue;
 				if (side === board[file][rank][0]) {
 					if (board[file][rank][1] === 'K') {
-						kSquare = (file + rank);
+						kSquare = file + rank;
 						if (checkedSquares.includes(kSquare)) return true;
 					}
 					continue;
 				}
-				for (let square of this.getSquares(file + rank, board)) {
+				for (const square of this.getSquares(file + rank, board)) {
 					if (!kSquare && !checkedSquares.includes(square)) checkedSquares.push(square);
 					else {
 						if (kSquare && square === kSquare) {
@@ -509,7 +496,7 @@ class Chess {
 		}
 		return false;
 	}
-	allValidMoves(side, board) {
+	allValidMoves (side, board) {
 		if (!board) board = this.board;
 		let valids = [];
 		['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].forEach(file => {
@@ -523,7 +510,7 @@ class Chess {
 		});
 		return valids;
 	}
-	checkAttacksAgainst(square, side, board) {
+	checkAttacksAgainst (square, side, board) {
 		if (!board) board = this.board;
 		let flag = false;
 		if (Array.isArray(square)) square = square.join('');
@@ -537,15 +524,15 @@ class Chess {
 		});
 		return flag;
 	}
-	simPlay(side, piece, origin, final, board) {
+	simPlay (side, piece, origin, final, board) {
 		if (!board) board = JSON.parse(JSON.stringify(this.board));
 		else board = JSON.parse(JSON.stringify(board));
 		board[origin[0]][origin[1]] = '';
 		board[final[0]][final[1]] = side + piece;
 		return board;
 	}
-	getValidMoves(square, board) {
-		let recept = this.getPiece(square), piece = recept[1], side = recept[0];
+	getValidMoves (square, board) {
+		const recept = this.getPiece(square), piece = recept[1], side = recept[0];
 		if (!board) board = this.board;
 		square = [square[0], parseInt(square[1])];
 		let simSquares = [];
@@ -561,8 +548,8 @@ class Chess {
 		simSquares = simSquares.concat(this.getSquares(square, board));
 		return simSquares.filter(squ => !this.checkChecks(side, this.simPlay(side, piece, square, squ, board)));
 	}
-	play(side, origin, final, callback) {
-		if (!side || !(typeof (side) === 'string') || !origin || !(typeof (origin) === 'string') || !final || !(typeof (final) === 'string') || !callback || !(typeof (callback) === 'function')) return console.log('Invalid arguments.');
+	play (side, origin, final, callback) {
+		if (!side || !(typeof side === 'string') || !origin || !(typeof origin === 'string') || !final || !(typeof final === 'string') || !callback || !(typeof callback === 'function')) return console.log('Invalid arguments.');
 		if (!(this.turn === side)) return callback(0, 'Not your turn.');
 		let moves = this.getValidMoves(origin), piece = this.getPiece(origin), captureFlag = '', curBoard = JSON.parse(JSON.stringify(this.board));
 		if (piece[0] !== side) return;
@@ -571,10 +558,10 @@ class Chess {
 		if (!moves.includes(final)) return callback(0, 'Move was invalid.');
 		this.lastMove = [origin, final];
 		if (this.board[final[0]][final[1]] && !this.board[final[0]][final[1]].startsWith(side)) {
-			let capture = this.board[final[0]][final[1]];
+			const capture = this.board[final[0]][final[1]];
 			captureFlag = 'x';
 			this[side].captures.push(capture[1]);
-			if (capture[1] === 'R' && capture[0] !== side && (['a1', 'a8', 'h1', 'h8'].includes(final)) && !this[(side === 'W' ? 'B' : 'W')]['R' + final[0] + 'm']) this[(side === 'W' ? 'B' : 'W')]['R' + final[0] + 'm'] = true;
+			if (capture[1] === 'R' && capture[0] !== side && ['a1', 'a8', 'h1', 'h8'].includes(final) && !this[side === 'W' ? 'B' : 'W']['R' + final[0] + 'm']) this[side === 'W' ? 'B' : 'W']['R' + final[0] + 'm'] = true;
 		}
 		if (piece === 'P' && !(final[0] === origin[0]) && !this.board[final[0]][final[1]]) {
 			this[side].captures.push('P');
@@ -647,7 +634,7 @@ class Chess {
 			}
 			this[side].Km = true;
 		}
-		if (piece === 'R' && (['a1', 'a8', 'h1', 'h8'].includes(origin))) this[side]['R' + origin[0] + 'm'] = true;
+		if (piece === 'R' && ['a1', 'a8', 'h1', 'h8'].includes(origin)) this[side]['R' + origin[0] + 'm'] = true;
 		this.board[origin[0]][origin[1]] = '';
 		this.board[final[0]][final[1]] = side + piece;
 		if (piece === 'P' && [1, 8].includes(parseInt(final[1]))) {
@@ -657,24 +644,24 @@ class Chess {
 		}
 		switch (piece) {
 			case 'P':
-				{
-					this.moves.push(captureFlag ? `${origin[0]}x${final[0]}${final[1]}` : final);
-					break;
-				}
+			{
+				this.moves.push(captureFlag ? `${origin[0]}x${final[0]}${final[1]}` : final);
+				break;
+			}
 			case 'K':
-				{
-					this.moves.push(`K${captureFlag}${final}`);
-					break;
-				}
+			{
+				this.moves.push(`K${captureFlag}${final}`);
+				break;
+			}
 			default:
-				{
-					let pos = this.getLocationsOfPiecesAgainst(this.turn + piece, final, curBoard);
-					if (pos.length === 1) this.moves.push(piece + captureFlag + final);
-					else if (pos.filter(loc => loc[0] === origin[0]).length === 1) this.moves.push(piece + origin[0] + captureFlag + final);
-					else if (pos.filter(loc => loc[1] === origin[1]).length === 1) this.moves.push(piece + origin[1] + captureFlag + final);
-					else this.moves.push(piece + origin + captureFlag + final);
-					break;
-				}
+			{
+				const pos = this.getLocationsOfPiecesAgainst(this.turn + piece, final, curBoard);
+				if (pos.length === 1) this.moves.push(piece + captureFlag + final);
+				else if (pos.filter(loc => loc[0] === origin[0]).length === 1) this.moves.push(piece + origin[0] + captureFlag + final);
+				else if (pos.filter(loc => loc[1] === origin[1]).length === 1) this.moves.push(piece + origin[1] + captureFlag + final);
+				else this.moves.push(piece + origin + captureFlag + final);
+				break;
+			}
 		}
 		this.switchSides();
 		if (!this.allValidMoves(this.turn, this.board).length) {
@@ -689,9 +676,9 @@ class Chess {
 		if (this.checkChecks(this.turn, this.board)) this.moves[this.moves.length - 1] += '+';
 		return callback(1);
 	}
-	promote(piece, square, side, callback) {
-		if (!(this.turn === side) || !this[side].isPromoting || !(this.board[square[0]][square[1]]) === side + 'P') return null;
-		let captureFlag = this[side].isPromoting === 1 ? '' : this[side].isPromoting + 'x';
+	promote (piece, square, side, callback) {
+		if (!(this.turn === side) || !this[side].isPromoting || !this.board[square[0]][square[1]] === side + 'P') return null;
+		const captureFlag = this[side].isPromoting === 1 ? '' : this[side].isPromoting + 'x';
 		this[side].isPromoting = false;
 		this.board[square[0]][square[1]] = side + piece;
 		this.moves.push(captureFlag + square + '=' + piece);
@@ -705,25 +692,28 @@ class Chess {
 		if (this.checkChecks(this.turn, this.board)) this.moves[this.moves.length - 1] += '+';
 		return callback(1);
 	}
-	getColourOf(square, flag) {
+	getColourOf (square, flag) {
 		if (flag) {
 			if (flag === 'last' && this.colours.last) return this.colours.last;
 			if (flag === 'sel' && this.colours.sel) return this.colours.sel;
 			if (flag === 'hl' && this.colours.hl) return this.colours.hl;
 		}
-		if (typeof (square) === 'number') return (square % 2) ? this.colours.B : this.colours.W;
+		if (typeof square === 'number') return square % 2 ? this.colours.B : this.colours.W;
 		let a = parseInt(square[1]), b = 0;
 		if (['b', 'd', 'f', 'h'].includes(square[0])) b = 1;
-		return ((a + b) % 2) ? this.colours.B : this.colours.W;
+		return (a + b) % 2 ? this.colours.B : this.colours.W;
 	}
-	boardHTML(side, selected, highlighted, spectatorSide) {
+	boardHTML (side, selected, highlighted, spectatorSide) {
 		let html = '', imgsrc, room = this.room;
 		if (room.startsWith('groupchat-') || this.useEmo) imgsrc = this.emosrc;
 		else imgsrc = this.imgsrc;
-		let iT = side === this.turn;
+		const iT = side === this.turn;
 		if (selected && this.getPiece(selected)[0] !== side) selected = highlighted = null;
-		let board = this.board;
+		const board = this.board;
 		if (!spectatorSide) spectatorSide = 'W';
+		// TODO: ...I'm crying now
+		// Why is this code so horrible
+		// 2020 PartMan, you suck
 		switch (side) {
 			case 'W': {
 				html += `<table style="border-collapse:collapse;" border="1"><tr style="height: 15;"><th width="15" height="15"></th><th width="40">A</th><th width="40">B</th><th width="40">C</th><th width="40">D</th><th width="40">E</th><th width="40">F</th><th width="40">G</th><th width="40">H</th><th width="15"></th></tr>`;
@@ -731,16 +721,16 @@ class Chess {
 				for (let i = 8; i > 0; i--) {
 					html += `<tr style="height: 40;"><td height="40"><b><center>${i}</center></b></td>`;
 					html += Object.keys(board).map(file => {
-						if (selected && (file + i === selected)) return ['sel', board[file][i], file];
+						if (selected && file + i === selected) return ['sel', board[file][i], file];
 						if (highlighted && highlighted.includes(file + i)) return ['hl', board[file][i], file];
 						if (this.colours.last && this.lastMove && this.lastMove.length && this.lastMove.includes(file + i)) return ['last', board[file][i], file];
 						if (this.colours.last && this.W.preMove && this.W.preMove.length && this.W.preMove.includes(file + i)) return ['last', board[file][i], file];
 						return [0, board[file][i], file];
 					}).map(piece => {
-						if (piece[0] === 0) return `<td style="background: ${this.getColourOf(j++)};" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} select ${this.id} ${piece[2]}${i}" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</button></td>`;
-						if (piece[0] === 'hl') return `<td style="background: linear-gradient(${this.getColourOf(j, 'hl')}, ${this.getColourOf(j, 'hl')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)});" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} ${iT ? 'play' : 'premove'} ${this.id} ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</button></td>`;
-						if (piece[0] === 'sel') return `<td style="background: linear-gradient(${this.getColourOf(j, 'sel')}, ${this.getColourOf(j, 'sel')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)});" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} deselect ${this.id}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</button></td>`;
-						if (piece[0] === 'last') return `<td style="background: linear-gradient(${this.getColourOf(j, 'last')}, ${this.getColourOf(j, 'last')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)}); text-align: center;" height="40">${iT ? '' : `<button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} select ${this.id} ${piece[2]}${i}" style="background: none; border: none;">`}${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}${iT ? '' : '</button>'}</td>`;
+						if (piece[0] === 0) return `<td style="background: ${this.getColourOf(j++)};" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} select ${this.id} ${piece[2]}${i}" style="background: none; border: none;">${piece[1] ? imgsrc[piece[1]] || piece[1] : ''}</button></td>`;
+						if (piece[0] === 'hl') return `<td style="background: linear-gradient(${this.getColourOf(j, 'hl')}, ${this.getColourOf(j, 'hl')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)});" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} ${iT ? 'play' : 'premove'} ${this.id} ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${piece[1] ? imgsrc[piece[1]] || piece[1] : ''}</button></td>`;
+						if (piece[0] === 'sel') return `<td style="background: linear-gradient(${this.getColourOf(j, 'sel')}, ${this.getColourOf(j, 'sel')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)});" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} deselect ${this.id}" style="background: none; border: none; width: 100%; height: 100%;">${piece[1] ? imgsrc[piece[1]] || piece[1] : ''}</button></td>`;
+						if (piece[0] === 'last') return `<td style="background: linear-gradient(${this.getColourOf(j, 'last')}, ${this.getColourOf(j, 'last')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)}); text-align: center;" height="40">${iT ? '' : `<button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} select ${this.id} ${piece[2]}${i}" style="background: none; border: none;">`}${piece[1] ? imgsrc[piece[1]] || piece[1] : ''}${iT ? '' : '</button>'}</td>`;
 						return null;
 					}).join('');
 					html += `<th>${i}</th></tr>`;
@@ -755,16 +745,16 @@ class Chess {
 				for (let i = 1; i < 9; i++) {
 					html += `<tr style="height: 40;"><td height="40"><b><center>${i}</center></b></td>`;
 					html += Object.keys(board).reverse().map(file => {
-						if (selected && (file + i === selected)) return ['sel', board[file][i], file];
+						if (selected && file + i === selected) return ['sel', board[file][i], file];
 						if (highlighted && highlighted.includes(file + i)) return ['hl', board[file][i], file];
 						if (this.colours.last && this.lastMove && this.lastMove.length && this.lastMove.includes(file + i)) return ['last', board[file][i], file];
 						if (this.colours.last && this.B.preMove && this.B.preMove.length && this.B.preMove.includes(file + i)) return ['last', board[file][i], file];
 						return [0, board[file][i], file];
 					}).map(piece => {
-						if (piece[0] === 0) return `<td style="background: ${this.getColourOf(j++)};" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} select ${this.id} ${piece[2]}${i}" style="background: none; border: none;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</button></td>`;
-						if (piece[0] === 'hl') return `<td style="background: linear-gradient(${this.getColourOf(j, 'hl')}, ${this.getColourOf(j, 'hl')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)});" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} ${iT ? 'play' : 'premove'} ${this.id} ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</button></td>`;
-						if (piece[0] === 'sel') return `<td style="background: linear-gradient(${this.getColourOf(j, 'sel')}, ${this.getColourOf(j, 'sel')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)});" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} deselect ${this.id}" style="background: none; border: none; width: 100%; height: 100%;">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</button></td>`;
-						if (piece[0] === 'last') return `<td style="background: linear-gradient(${this.getColourOf(j, 'last')}, ${this.getColourOf(j, 'last')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)}); text-align: center;" height="40">${iT ? '' : `<button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} select ${this.id} ${piece[2]}${i}" style="background: none; border: none;">`}${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}${iT ? '' : '</button>'}</td>`;
+						if (piece[0] === 0) return `<td style="background: ${this.getColourOf(j++)};" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} select ${this.id} ${piece[2]}${i}" style="background: none; border: none;">${piece[1] ? imgsrc[piece[1]] || piece[1] : ''}</button></td>`;
+						if (piece[0] === 'hl') return `<td style="background: linear-gradient(${this.getColourOf(j, 'hl')}, ${this.getColourOf(j, 'hl')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)});" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} ${iT ? 'play' : 'premove'} ${this.id} ${selected}-${piece[2]}${i}" style="background: none; border: none; width: 100%; height: 100%;">${piece[1] ? imgsrc[piece[1]] || piece[1] : ''}</button></td>`;
+						if (piece[0] === 'sel') return `<td style="background: linear-gradient(${this.getColourOf(j, 'sel')}, ${this.getColourOf(j, 'sel')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)});" height="40"><button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} deselect ${this.id}" style="background: none; border: none; width: 100%; height: 100%;">${piece[1] ? imgsrc[piece[1]] || piece[1] : ''}</button></td>`;
+						if (piece[0] === 'last') return `<td style="background: linear-gradient(${this.getColourOf(j, 'last')}, ${this.getColourOf(j, 'last')}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j++)}); text-align: center;" height="40">${iT ? '' : `<button name="send" value="/msgroom ${this.room},/botmsg ${Bot.status.nickName}, ${prefix}chess ${this.room} select ${this.id} ${piece[2]}${i}" style="background: none; border: none;">`}${piece[1] ? imgsrc[piece[1]] || piece[1] : ''}${iT ? '' : '</button>'}</td>`;
 						return null;
 					}).join('');
 					html += `<th width="15">${i}</th></tr>`;
@@ -781,12 +771,12 @@ class Chess {
 						for (let i = 1; i < 9; i++) {
 							html += `<tr style="height: 40;"><td height="40"><b><center>${i}</center></b></td>`;
 							html += Object.keys(board).reverse().map(file => {
-								if (selected && (file + i === selected)) return ['sel', board[file][i], file];
+								if (selected && file + i === selected) return ['sel', board[file][i], file];
 								if (highlighted && highlighted.includes(file + i)) return ['hl', board[file][i], file];
 								if (this.colours.last && this.lastMove && this.lastMove.length && this.lastMove.includes(file + i)) return ['last', board[file][i], file];
 								return [0, board[file][i], file];
 							}).map(piece => {
-								let out = `<td style="text-align: center; background: ${piece[0] ? `linear-gradient(${this.getColourOf(j, piece[0])}, ${this.getColourOf(j, piece[0])}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j)})` : this.getColourOf(j)};" height="40" width="40">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</td>`;
+								const out = `<td style="text-align: center; background: ${piece[0] ? `linear-gradient(${this.getColourOf(j, piece[0])}, ${this.getColourOf(j, piece[0])}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j)})` : this.getColourOf(j)};" height="40" width="40">${piece[1] ? imgsrc[piece[1]] || piece[1] : ''}</td>`;
 								j++;
 								return out;
 							}).join('');
@@ -802,12 +792,12 @@ class Chess {
 						for (let i = 8; i > 0; i--) {
 							html += `<tr style="height: 40;"><td height="40"><b><center>${i}</center></b></td>`;
 							html += Object.keys(board).map(file => {
-								if (selected && (file + i === selected)) return ['sel', board[file][i], file];
+								if (selected && file + i === selected) return ['sel', board[file][i], file];
 								if (highlighted && highlighted.includes(file + i)) return ['hl', board[file][i], file];
 								if (this.colours.last && this.lastMove && this.lastMove.length && this.lastMove.includes(file + i)) return ['last', board[file][i], file];
 								return [0, board[file][i], file];
 							}).map(piece => {
-								let out = `<td style="text-align: center; background: ${piece[0] ? `linear-gradient(${this.getColourOf(j, piece[0])}, ${this.getColourOf(j, piece[0])}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j)})` : this.getColourOf(j)};" height="40" width="40">${(piece[1] ? (imgsrc[piece[1]] || piece[1]) : '')}</td>`;
+								const out = `<td style="text-align: center; background: ${piece[0] ? `linear-gradient(${this.getColourOf(j, piece[0])}, ${this.getColourOf(j, piece[0])}), linear-gradient(${this.getColourOf(j)}, ${this.getColourOf(j)})` : this.getColourOf(j)};" height="40" width="40">${piece[1] ? imgsrc[piece[1]] || piece[1] : ''}</td>`;
 								j++;
 								return out;
 							}).join('');
@@ -822,16 +812,56 @@ class Chess {
 		}
 		return html;
 	}
-	spectatorSend(html) {
-		return new Promise ((resolve, reject) => {
-			let sender = list => {
+	spectatorSend (html) {
+		return new Promise((resolve, reject) => {
+			const sender = list => {
 				if (!list.length) return resolve();
 				Bot.say(this.room, `/sendhtmlpage ${list[0]}, Chess + ${this.room} + ${this.id}, ${html.replace('BOARDHTML', this.boardHTML(null, null, null, this.spectators[list.shift()]))}`);
 				setTimeout(sender, 200, list);
-			}
-			let list = Object.keys(this.spectators);
+			};
+			const list = Object.keys(this.spectators);
 			sender(list);
 		});
+	}
+
+	static toPGN (game) {
+		const out = [];
+		game.moves.forEach((move, index) => {
+			if (index % 2 === 0) out.push(index / 2 + 1 + '.');
+			out.push(move);
+		});
+		out.push(game.result);
+		const header = `[White "${game.W.name.replace(/"/g, '')}"]\n[Black "${game.B.name.replace(/"/g, '')}"]\n\n`;
+		return header + out.join(' ').replace(/\$/g, '');
+	}
+
+	static FEN (line) {
+		return new Promise((resolve, reject) => {
+			const args = line.trim().split(' ');
+			if (!args[0]) return reject(new Error('Missing board state'));
+			if (!args[1]) return reject(new Error('Missing white/black\'s turn'));
+			const turn = toID(args[1])[0];
+			if (!'wb'.includes(turn)) return reject(new Error('Turn only works with W/B'));
+			const expanded = args[0].replace(/\d/g, n => Array.from({ length: parseInt(n) }).map(() => '-').join(''));
+			if (!/^(?:[rnbqkpRNBQKP-]{8}\/){7}[rnbqkpRNBQKP-]{8}/.test(expanded)) return reject(new Error('Invalid FEN'));
+			const board = {}, files = 'abcdefgh';
+			for (let i = 0; i < 8; i++) board[files[i]] = Array.from({ length: 9 }).map(() => null);
+			expanded.split('/').forEach((term, i) => {
+				const rank = 8 - i, row = term.split('');
+				for (let j = 0; j < 8; j++) {
+					const char = row.shift();
+					switch (char) {
+						case '-': board[files[j]][rank] = '  '; break;
+						default: board[files[j]][rank] = `${char === char.toUpperCase() ? 'W' : 'B'}${char.toUpperCase()}`;
+					}
+				}
+			});
+			return resolve([board, turn.toUpperCase()]);
+		});
+	}
+
+	static uploadToLichess (text, callback) {
+		return axios.post('https://lichess.org/api/import', { pgn: text }).then(res => res.data.url);
 	}
 }
 

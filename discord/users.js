@@ -6,4 +6,4 @@ module.exports = {
 		if (!Bot.rooms[message.channel.name]) return message.channel.send('Not in this room. ;-;');
 		message.channel.send(`\`\`\`${Bot.rooms[message.channel.name].users.join(', ')}\`\`\``);
 	}
-}
+};

@@ -2,15 +2,23 @@ module.exports = {
 	help: `Displays a list of commands that can be used by the user. For details of individual commands, use ${prefix}help (command)`,
 	permissions: 'locked',
 	commandFunction: function (Bot, by, args, client) {
-		let commands = {global: null, pm: null};
-		let rankLevel = tools.rankLevel(by);
-		new Promise ((resolve, reject) => {
-			Object.keys(commands).forEach(category => commands[category] = {admin: [], coder: [], alpha: [], beta: [], gamma: [], none: [], locked: []});
+		const commands = { global: null, pm: null };
+		const rankLevel = tools.rankLevel(by);
+		new Promise((resolve, reject) => {
+			Object.keys(commands).forEach(category => commands[category] = {
+				admin: [],
+				coder: [],
+				alpha: [],
+				beta: [],
+				gamma: [],
+				none: [],
+				locked: []
+			});
 			// Global commands
 			fs.readdir('./commands/global', (err, files) => {
 				if (err) return reject(console.log(err));
 				files.forEach(file => {
-					let req = require(`../commands/global/${file}`);
+					const req = require(`../commands/global/${file}`);
 					if (!req || !commands.global[req.permissions] || req.noDisplay) return;
 					commands.global[req.permissions].push(file.slice(0, file.length - 3));
 				});
@@ -26,7 +34,7 @@ module.exports = {
 				fs.readdir('./pmcommands', (err, files) => {
 					if (err) return reject(console.log(err));
 					files.forEach(file => {
-						let req = require(`./${file}`);
+						const req = require(`./${file}`);
 						if (!req || !commands.pm[req.permissions] || req.noDisplay) return;
 						commands.pm[req.permissions].push(file.slice(0, file.length - 3));
 					});
@@ -38,10 +46,12 @@ module.exports = {
 				});
 			});
 		}).then(() => {
-			let out = '<HR><DETAILS><SUMMARY>Commands</SUMMARY><HR><DETAILS><SUMMARY><B>Global Commands</B></SUMMARY><HR>These commands can be used in any chatroom.<HR>';
+			// eslint-disable-next-line max-len
+			let out = '<hr><details><summary>Commands</summary><hr><details><summary><b>Global Commands</b></summary><hr>These commands can be used in any chatroom.<hr>';
 			['Admin', 'Coder', 'Alpha', 'Beta', 'Gamma'].forEach(rank => {
 				if (commands.global[rank.toLowerCase()] && tools.hasPermission(rankLevel, rank.toLowerCase())) {
-					out += `<DETAILS><SUMMARY>${rank} Commands</SUMMARY><HR>${tools.listify(commands.global[rank.toLowerCase()])}</DETAILS><HR>`;
+					// eslint-disable-next-line max-len
+					out += `<details><summary>${rank} Commands</summary><hr>${tools.listify(commands.global[rank.toLowerCase()])}</details><hr>`;
 				}
 			});
 			if (tools.hasPermission(by, 'none')) {
@@ -50,15 +60,18 @@ module.exports = {
 				commands.pm.locked.push(...commands.pm.none);
 				commands.pm.locked.sort();
 			}
-			out += `<DETAILS><SUMMARY>Commands</SUMMARY><HR>${tools.listify(commands.global.locked) || 'None.'}</DETAILS><HR></DETAILS><HR><DETAILS><SUMMARY><B>PM Commands</B></SUMMARY><HR>These commands can be used in PMs.<HR>`;
+			// eslint-disable-next-line max-len
+			out += `<details><summary>Commands</summary><hr>${tools.listify(commands.global.locked) || 'None.'}</details><hr></details><hr><details><summary><b>PM Commands</b></summary><hr>These commands can be used in PMs.<hr>`;
 			['Admin', 'Coder', 'Alpha', 'Beta', 'Gamma'].forEach(rank => {
 				if (commands.pm[rank.toLowerCase()] && tools.hasPermission(rankLevel, rank.toLowerCase())) {
-					out += `<DETAILS><SUMMARY>${rank} Commands</SUMMARY><HR>${tools.listify(commands.pm[rank.toLowerCase()])}</DETAILS><HR>`;
+					// eslint-disable-next-line max-len
+					out += `<details><summary>${rank} Commands</summary><hr>${tools.listify(commands.pm[rank.toLowerCase()])}</details><hr>`;
 				}
 			});
-			out += `<DETAILS><SUMMARY>Commands</SUMMARY><HR>${tools.listify(commands.pm.locked) || 'None.'}</DETAILS><HR></DETAILS><HR>`;
-			out += '</DETAILS><HR>';
+			// eslint-disable-next-line max-len
+			out += `<details><summary>Commands</summary><hr>${tools.listify(commands.pm.locked) || 'None.'}</details><hr></details><hr>`;
+			out += '</details><hr>';
 			Bot.sendHTML(by, out);
 		});
 	}
-}
+};

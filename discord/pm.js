@@ -7,4 +7,4 @@ module.exports = {
 		if (!args.length) return message.channel.send(unxa);
 		Bot.pm(args[0], args.slice(1).join(','));
 	}
-}
+};

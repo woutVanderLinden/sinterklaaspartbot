@@ -2,7 +2,7 @@ module.exports = {
 	help: `Deletes the cache for a command.`,
 	admin: true,
 	commandFunction: function (args, message, Bot) {
-		if (!args.length) return message.channel.send(unxa).then(msg => msg.delete({timeout: 3000}));
+		if (!args.length) return message.channel.send(unxa).then(msg => msg.delete({ timeout: 3000 }));
 		let command = toID(args.join(''));
 		command = require('../data/ALIASES/discord.json')[command] || command;
 		if (!fs.readdirSync(`./discord`).includes(command + '.js')) return message.channel.send("Not found.");
@@ -10,4 +10,4 @@ module.exports = {
 		message.channel.send(`Reloaded ${command}.`);
 		Bot.log(`${message.author.username} reloaded ${command}.`);
 	}
-}
+};

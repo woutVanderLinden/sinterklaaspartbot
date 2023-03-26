@@ -6,4 +6,4 @@ module.exports = {
 		if (tools.hasPermission(by, 'gamma', room)) Bot.say(room, 'https://github.com/PartMan7/PartBot');
 		else Bot.pm(by, `https://github.com/PartMan7/PartBot`);
 	}
-}
+};

@@ -6,4 +6,4 @@ module.exports = {
 	commandFunction: function (args, message, Bot) {
 		message.channel.send(PZ.help(message.channel.id === PZ.IDs.staffChannel));
 	}
-}
+};

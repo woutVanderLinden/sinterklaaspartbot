@@ -2,8 +2,19 @@ module.exports = {
 	help: `Displays a random (or specified) xkcd.`,
 	pm: true,
 	commandFunction: function (args, message, Bot) {
-		let max = 2426, rand = args.length ? toID(args.join('')) : Math.floor(Math.random() * (max - 1)) + 1;
-		if (!(rand <= max)) return message.channel.send(`Out of the ${max} XKCD comics I'm aware of, that doesn't seem to look like a valid number.`);
-		require('axios').get(`https://xkcd.com/${rand}/info.0.json`).then(res => message.channel.send(`${res.data.safe_title} [#${rand}]`).then(msg => message.channel.send(res.data.img)));
+		const id = toID(args.join(''));
+		if (id) {
+			axios.get(`https://xkcd.com/${id}/info.0.json`)
+				.then(res => message.channel.send(`${res.data.safe_title} [#${id}]`).then(() => message.channel.send(res.data.img)))
+				.catch(() => message.channel.send(`That doesn't seem to look like a valid number for an xkcd comic...`));
+		} else {
+			axios.get('https://c.xkcd.com/random/comic/')
+				.then(res => axios.get(res.request.res.responseUrl + 'info.0.json'))
+				.then(res => {
+					message.channel.send(`${res.data.safe_title} [#${res.data.num}]`);
+					message.channel.send(res.data.img);
+				})
+				.catch(err => Bot.log(err) || message.channel.send(`Umm something went wrong whoops`));
+		}
 	}
-}
+};

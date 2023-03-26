@@ -5,4 +5,4 @@ module.exports = {
 	commandFunction: function (Bot, room, time, by, args, client) {
 		Bot.say(room, `${tools.toHumanTime(Date.now() - time)}`);
 	}
-}
+};

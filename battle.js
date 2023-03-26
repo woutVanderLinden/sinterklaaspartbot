@@ -1,12 +1,10 @@
+// TODO: Have various handlers for custom responses
+
 exports.handler = function (room, message, isIntro, args) {
 	args = Array.from(args);
 	let game = BattleAI.games[room];
+
 	switch (args[0]) {
-		case 'init': {
-			Bot.setAvatar(config.avatar);
-			return;
-			break;
-		}
 		case 'request': {
 			if (isIntro) break;
 			if (args[1]) {
@@ -18,21 +16,29 @@ exports.handler = function (room, message, isIntro, args) {
 						obj = JSON.parse(game.temp);
 						delete game.temp;
 					}
-					if (toID(obj.side.name) !== toID(Bot.status.nickName)) return Bot.say(room, "THIS ISN'T ME AAAA");
+					if (toID(obj.side.name) !== toID(Bot.status.nickName)) return Bot.say(room, `THIS ISN'T ME AAAA`);
 					Bot.say(room, `/timer on`);
 					if (!game) game = BattleAI.newGame(room, obj.side);
 					if (temp) game.temp = temp;
-					//Bot.say(room, '!code ' + JSON.stringify(obj, null, 2));
-					if (!game || !game.started) return;
+					// Bot.say(room, '!code ' + JSON.stringify(obj, null, 2));
+					if (!game.started) {
+						if (room.startsWith('battle-gen8metronomebattle-')) {
+							game.started = true;
+							game.tier = '[Gen 8] Metronome Battle';
+							Bot.say(room, `G'luck!`);
+							game.noSwitch = true;
+						} else return;
+					}
 					if (obj.side) game.side = obj.side;
 					if (obj.active) game.active = obj.active;
 					if (game.tier === '[Gen 8] Metronome Battle') return Bot.say(room, `/choose move 1,move 1`);
 					if (obj.forceSwitch) return Bot.say(room, `/choose switch ${game.switchPick(true)}`);
 					else {
 						setTimeout(() => {
-							let pick = game.switchPick();
-							if (pick && ((obj.active && obj.active[0]) ? !obj.active[0].trapped : true)) return Bot.say(room, `/switch ${pick}`);
-							else return Bot.say(room, `/move ${game.pickMove()}`);
+							const pick = game.switchPick();
+							if (pick && (obj.active && obj.active[0] ? !obj.active[0].trapped : true)) {
+								return Bot.say(room, `/switch ${pick}`);
+							} else return Bot.say(room, `/move ${game.pickMove()}`);
 						}, 100);
 					}
 				} catch (e) {
@@ -49,6 +55,7 @@ exports.handler = function (room, message, isIntro, args) {
 		case 'tier': {
 			if (isIntro) break;
 			if (!game) return;
+			Bot.say(room, `G'luck!`);
 			game.tier = args[1];
 			if (['[Gen 8] Random Battle', '[Gen 8] Super Staff Bros 4 (Wii U)'].includes(game.tier)) {
 				if (game.tier === '[Gen 8] Super Staff Bros 4 (Wii U)') {
@@ -57,16 +64,13 @@ exports.handler = function (room, message, isIntro, args) {
 				}
 				game.started = true;
 				Bot.emit('battle', room, ``, false, ['request', '{ "selfPassed": true }']);
-				return Bot.say(room, "G'luck!");
 			}
 			break;
 		}
 		case 'teampreview': {
 			if (isIntro) break;
-			Bot.say(room, "G'luck!");
 			if (!game) break;
 			return Bot.say(room, `/team ${game.firstPick()}`);
-			break;
 		}
 		case 'faint': {
 			if (isIntro || !game) break;
@@ -78,8 +82,7 @@ exports.handler = function (room, message, isIntro, args) {
 			if (!game) return;
 			if (args[1].startsWith(game.side.id)) {
 				game.selfBoosts[args[2]] += parseInt(args[3]);
-			}
-			else game.enemyData.boosts[args[2]] += parseInt(args[3]);
+			} else game.enemyData.boosts[args[2]] += parseInt(args[3]);
 			break;
 		}
 		case '-setboost': {
@@ -87,8 +90,7 @@ exports.handler = function (room, message, isIntro, args) {
 			if (!game) return;
 			if (args[1].startsWith(game.side.id)) {
 				game.selfBoosts[args[2]] = parseInt(args[3]);
-			}
-			else game.enemyData.boosts[args[2]] = parseInt(args[3]);
+			} else game.enemyData.boosts[args[2]] = parseInt(args[3]);
 			break;
 		}
 		case '-unboost': {
@@ -96,32 +98,36 @@ exports.handler = function (room, message, isIntro, args) {
 			if (!game) return;
 			if (args[1].startsWith(game.side.id)) {
 				game.selfBoosts[args[2]] -= parseInt(args[3]);
-			}
-			else game.enemyData.boosts[args[2]] -= parseInt(args[3]);
+			} else game.enemyData.boosts[args[2]] -= parseInt(args[3]);
 			break;
 		}
 		case '-miss': {
 			if (isIntro) break;
 			return Bot.say(room, 'F');
-			break;
 		}
 		case '-crit': {
 			if (isIntro) break;
 			return Bot.say(room, '>crit');
-			break;
 		}
 		case '-sidestart': {
 			if (isIntro) break;
 			if (!game) return;
 			if (args[1].startsWith(game.side.id)) {
-				if (args[2] == 'move: Stealth Rock') game.sideHazards.sr = true;
-				else if (args[2] == 'move: Spikes') game.sideHazards.spikes = (game.sideHazards.spikes ? game.sideHazards.spikes + 1 : 1);
-				else if (args[2] == 'move: Toxic Spikes') game.sideHazards.tspikes = (game.sideHazards.tspikes ? game.sideHazards.tspikes + 1 : 1);
-			}
-			else {
-				if (args[2] == 'move: Stealth Rock') game.setHazards.sr = true;
-				else if (args[2] == 'move: Spikes') game.setHazards.spikes = (game.setHazards.spikes ? game.setHazards.spikes + 1 : 1);
-				else if (args[2] == 'move: Toxic Spikes') game.setHazards.tspikes = (game.setHazards.tspikes ? game.setHazards.tspikes + 1 : 1);
+				if (args[2] === 'move: Stealth Rock') {
+					game.sideHazards.sr = true;
+				} else if (args[2] === 'move: Spikes') {
+					game.sideHazards.spikes = game.sideHazards.spikes ? game.sideHazards.spikes + 1 : 1;
+				} else if (args[2] === 'move: Toxic Spikes') {
+					game.sideHazards.tspikes = game.sideHazards.tspikes ? game.sideHazards.tspikes + 1 : 1;
+				}
+			} else {
+				if (args[2] === 'move: Stealth Rock') {
+					game.setHazards.sr = true;
+				} else if (args[2] === 'move: Spikes') {
+					game.setHazards.spikes = game.setHazards.spikes ? game.setHazards.spikes + 1 : 1;
+				} else if (args[2] === 'move: Toxic Spikes') {
+					game.setHazards.tspikes = game.setHazards.tspikes ? game.setHazards.tspikes + 1 : 1;
+				}
 			}
 			break;
 		}
@@ -147,14 +153,13 @@ exports.handler = function (room, message, isIntro, args) {
 			if (isIntro) break;
 			if (!game) return;
 			if (args[1].startsWith(game.side.id)) {
-				if (args[2] == 'move: Stealth Rock') game.sideHazards.sr = false;
-				else if (args[2] == 'move: Spikes') game.sideHazards.spikes = 0;
-				else if (args[2] == 'move: Toxic Spikes') game.sideHazards.tspikes = 0;
-			}
-			else {
-				if (args[2] == 'move: Stealth Rock') game.setHazards.sr = false;
-				else if (args[2] == 'move: Spikes') game.setHazards.spikes = 0;
-				else if (args[2] == 'move: Toxic Spikes') game.setHazards.tspikes = 0;
+				if (args[2] === 'move: Stealth Rock') game.sideHazards.sr = false;
+				else if (args[2] === 'move: Spikes') game.sideHazards.spikes = 0;
+				else if (args[2] === 'move: Toxic Spikes') game.sideHazards.tspikes = 0;
+			} else {
+				if (args[2] === 'move: Stealth Rock') game.setHazards.sr = false;
+				else if (args[2] === 'move: Spikes') game.setHazards.spikes = 0;
+				else if (args[2] === 'move: Toxic Spikes') game.setHazards.tspikes = 0;
 			}
 			break;
 		}
@@ -171,14 +176,15 @@ exports.handler = function (room, message, isIntro, args) {
 			if (game && toID(args[1]) !== toID(Bot.status.nickName)) Bot.say(room, 'Welp, GG!');
 			else if (game) Bot.say(room, 'Well played! GG!');
 			else Bot.say(room, 'GG, both!');
-			Bot.say(room, '/part')
+			Bot.say(room, '/part');
 			if (game) {
-				// if (game.tier === '[Gen 8] Super Staff Bros 4 (Wii U)' && !Bot.stopBattles) Bot.say('', '/search gen8superstaffbros4wiiu');
+				/*
+				if (game.tier === '[Gen 8] Super Staff Bros 4 (Wii U)' && config.autoLadder) {
+					Bot.say('', '/search gen8superstaffbros4wiiu');
+				}
+				*/
 				return delete BattleAI.games[room];
-			}
-			else return;
-			break;
+			} else return;
 		}
-		default: return;
 	}
-}
+};

@@ -22,7 +22,6 @@ module.exports = {
 					case 'simple': return res.sendFile(`${__dirname}/pages/aifa_s.html`);
 					default: return res.send(`?`);
 				}
-				break;
 			}
 			case 'connectfour': {
 				if (!args[1]) return res.send("Err, it looks like you forgot to specify the game code, sorry.");
@@ -48,8 +47,7 @@ module.exports = {
 				break;
 			}
 			case 'hpi': {
-				return res.redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ&feature=youtu.be");
-				break;
+				return res.redirect("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 			}
 			case 'hpl': {
 				fs.readFile(`./pages/${req.url}.html`, 'utf8', (err, file) => {
@@ -77,7 +75,7 @@ module.exports = {
 					name = name.substr(0, name.length - 'supersecretsudo'.length);
 					sudo = true;
 				}
-				let PZ = require('./data/PUZZLES/index.js');
+				const PZ = require('./data/PUZZLES/index.js');
 				if (!PZ.live && !sudo) return res.send("It hasn't started yet!");
 				name = toID(name);
 				if (name === 'constructor') return res.send('Nerd');
@@ -91,7 +89,7 @@ module.exports = {
 			}
 			case 'quotes': {
 				if (!args[1]) return res.send(`Hi, you'll need to specify the room! Simply go to ${websiteLink}/quotes/(room)!`);
-				let room = args.slice(1).join('').toLowerCase().replace(/[^a-z0-9-]/g, '');
+				const room = args.slice(1).join('').toLowerCase().replace(/[^a-z0-9-]/g, '');
 				fs.readdir(`./data/QUOTES`, (e, files) => {
 					if (e) {
 						Bot.log(e);
@@ -105,7 +103,10 @@ module.exports = {
 						}
 						fs.readFile(`./pages/quotes.html`, 'utf8', (err, html) => {
 							if (err) return res.send(err.message);
-							return res.send(Bot.temp = html.replace('###QUOTEINFO###', JSON.parse(dt).map((q, i) => `			<span class="num">${i + 1})</span>\n			<div class="quote">\n				${tools.quoteParse(q)}\n			</div>`).join('\n			<hr />\n')));
+							const quoteHtml = JSON.parse(dt).quotes
+								.map((q, i) => `<span class="num">${i + 1})</span><div class="quote">${tools.quoteParse(q)}</div>`)
+								.join('<hr />');
+							return res.send(html.replace('###QUOTEINFO###', quoteHtml));
 						});
 					});
 				});
@@ -125,8 +126,8 @@ module.exports = {
 				const user = args[1], key = args[2];
 				if (!Bot.keys[user]) return res.send("Sorry, I don't have any pages for that user.");
 				if (Bot.keys[user] !== parseInt(key)) return res.send("Sorry, invalid key!");
-				return res.send(`<head>\n\t<title>PartBot</title>\n\t<link rel="icon" href="/public/icon.png">\n</head>\n<body>\t${Bot.pageData[user]}</body>`);
-				break;
+				const header = `<head><title>PartBot</title><link rel="icon" href="/public/icon.png"></head>`;
+				return res.send(`${header}<body>${Bot.pageData[user]}</body>`);
 			}
 			case 'public': {
 				try {
@@ -144,8 +145,8 @@ module.exports = {
 	post: function (req, res) {
 		const args = req.url.split('/');
 		args.shift();
-		switch (args[0].toLowerCase()) {
+		switch (args[0].toLowerCase()) { 
 			default: return res.send("Sorry, couldn't find the page you were looking for!");
 		}
 	}
-}
+};

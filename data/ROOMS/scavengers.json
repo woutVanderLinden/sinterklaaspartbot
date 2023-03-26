@@ -1,3 +1,13 @@
 {
-	"ignore": true
+	"ignore": true,
+	"whitelist": [
+		"namecolour",
+		"q"
+	],
+	"aliases": [
+		"scav",
+		"scavs",
+		"scavenger",
+		"wherethereadingishard"
+	]
 }

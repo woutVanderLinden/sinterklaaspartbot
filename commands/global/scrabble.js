@@ -1,3 +1,17 @@
+function gameTimer (game, turn) {
+	const time = 120;
+	if (!Bot.rooms[game.room]) return;
+	if (!Bot.rooms[game.room].gameTimers) Bot.rooms[game.room].gameTimers = {};
+	const gameTimers = Bot.rooms[game.room].gameTimers;
+	clearTimeout(gameTimers[game.id]);
+	// TODO: (For all games) Make timer mention game
+	gameTimers[game.id] = setTimeout(() => Bot.say(game.room, `${turn} hasn't played for the past ${time} seconds...`), time * 1000);
+}
+
+function clearGameTimer (game) {
+	clearTimeout(Bot.rooms[game.room]?.gameTimers?.[game.id]);
+}
+
 module.exports = {
 	help: `Scrabble! \`\`${prefix}scrabble new\`\`, \`\`${prefix}scrabble join\`\`, and \`\`${prefix}scrabble start\`\``,
 	permissions: 'none',
@@ -5,47 +19,49 @@ module.exports = {
 		by = toID(by);
 		if (context && games[context]) return games[context];
 		if (~~context) return null;
-		let gs = Object.values(games);
+		const gs = Object.values(games);
 		if (gs.length === 1) return gs[0];
-		let cargs = (context || '').toString().split(/(?:,|\s+v(?:er)?s(?:us)?\.?\s+)/).map(toID);
+		const cargs = (context || '').toString().split(/(?:,|\s+v(?:er)?s(?:us)?\.?\s+)/).map(toID);
 		if (type !== 'sub' && cargs.length >= 2 && cargs.length <= 4) {
-			let fgs = gs.filter(game => !cargs.find(u => !game.players[u]));
+			const fgs = gs.filter(game => !cargs.find(u => !game.players[u]));
 			if (fgs.length === 1) return fgs[0];
 		}
 		switch (type) {
 			case 'join': {
-				let fgs = gs.filter(game => !game.started && !game.players[by]);
+				const fgs = gs.filter(game => !game.started && !game.players[by]);
 				if (fgs.length === 1) return fgs[0];
 				break;
 			}
 			case 'start': {
-				let fgs = gs.filter(game => !game.started);
+				const fgs = gs.filter(game => !game.started);
 				if (fgs.length === 1) return fgs[0];
 				break;
 			}
 			case 'gamerule': {
-				let fgs = gs.filter(game => !game.placed.flat().find(tile => tile));
+				const fgs = gs.filter(game => !game.placed.flat().find(tile => tile));
 				if (fgs.length === 1) return fgs[0];
 				break;
 			}
 			case 'action': {
-				let fgs = gs.filter(game => by ? game.players[by] : true);
+				const fgs = gs.filter(game => by ? game.players[by] : true);
 				if (fgs.length === 1) return fgs[0];
 				break;
 			}
 			case 'watch': {
-				let fgs = gs.filter(game => by ? !(game.players[by] || game.spectators.includes(by)) : true);
+				const fgs = gs.filter(game => by ? !(game.players[by] || game.spectators.includes(by)) : true);
 				if (fgs.length === 1) return fgs[0];
 				break;
 			}
 			case 'unwatch': {
-				let fgs = gs.filter(game => by ? game.spectators.includes(by) : true);
+				const fgs = gs.filter(game => by ? game.spectators.includes(by) : true);
 				if (fgs.length === 1) return fgs[0];
 				break;
 			}
 			case 'sub': {
 				if (cargs.length !== 2) break;
-				let fgs = gs.filter(game => (game.players[cargs[0]] && !game.players[cargs[1]]) || (game.players[cargs[1]] && !game.players[cargs[0]]));
+				const fgs = gs.filter(game => {
+					return game.players[cargs[0]] && !game.players[cargs[1]] || game.players[cargs[1]] && !game.players[cargs[0]];
+				});
 				if (fgs.length === 1) return fgs[0];
 			}
 		}
@@ -55,7 +71,8 @@ module.exports = {
 		if (!args.length) args.push('help');
 		switch (toID(args[0])) {
 			case 'help': case 'h': case 'aaaa': {
-				let help = 'The Scrabble module! For Scrabble rules, visit https://scrabble.hasbro.com/en-us/rules. You can play just by clicking on the board and typing your words!';
+				// eslint-disable-next-line max-len
+				const help = 'The Scrabble module! For Scrabble rules, visit https://scrabble.hasbro.com/en-us/rules. You can play just by clicking on the board and typing your words!';
 				if (tools.hasPermission(by, 'gamma', room) && !isPM) Bot.say(room, help);
 				else Bot.roomReply(room, by, help);
 				break;
@@ -65,10 +82,12 @@ module.exports = {
 				if (isPM) return Bot.roomReply(room, by, "Do it in the room ya nerd");
 				if (!tools.canHTML(room)) return Bot.say(room, `I need * permissions for this`);
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = Bot.rooms[room].scrabble;
-				let ID = Date.now();
+				const $ = Bot.rooms[room].scrabble;
+				const ID = Date.now();
 				$[ID] = GAMES.create('scrabble', ID, room);
+				// eslint-disable-next-line max-len
 				Bot.say(room, `/adduhtml SCRABBLE-${ID}, <hr><h1>Scrabble Signups have begun!</h1><button name="send" value="/msg ${Bot.status.nickName}, ${prefix}scrabble ${room}, join ${ID}">Join!</button><hr>`);
+				// eslint-disable-next-line max-len
 				Bot.say(room, '/notifyrank all, Scrabble, A new game of Scrabble has been created!, A new game of Scrabble has been created.');
 				fs.writeFile(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, JSON.stringify($), e => {
 					if (e) console.log(e);
@@ -77,8 +96,9 @@ module.exports = {
 			}
 			case 'join': case 'j': case 'iwanttoplaytoo': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame(by, args.slice(1).join(' '), Bot.rooms[room].scrabble, 'join');
+				const $ = this.findGame(by, args.slice(1).join(' '), Bot.rooms[room].scrabble, 'join');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
+				const user = toID(by);
 				$.addPlayer(by.replace(/^[^a-zA-Z0-9]/, '')).then(() => {
 					Bot.say(room, `${by.substr(1)} joined the game!`);
 					fs.writeFile(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, JSON.stringify($), e => {
@@ -89,7 +109,7 @@ module.exports = {
 			}
 			case 'leave': case 'l': case 'part': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame(by, args.slice(1).join(' '), Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame(by, args.slice(1).join(' '), Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
 				$.removePlayer(by.replace(/^[^a-zA-Z0-9]/, '')).then(() => {
 					Bot.say(room, `${by.substr(1)} left the game!`);
@@ -102,10 +122,11 @@ module.exports = {
 			case 'start': case 's': case 'hajime': {
 				if (!tools.hasPermission(by, 'gamma', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame('', args.slice(1).join(' '), Bot.rooms[room].scrabble, 'start');
+				const $ = this.findGame('', args.slice(1).join(' '), Bot.rooms[room].scrabble, 'start');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
 				$.start().then(() => {
-					Bot.say(room, `/adduhtml SCRABBLE-${$.id},<hr />${tools.listify(Object.values($.players).map(u => tools.colourize(u.name)))}! <div style="text-align: right; display: inline-block; font-size: 0.9em; float: right;"><button name="send" value="/msg ${Bot.status.nickName}, ${prefix}scrabble ${room} spectate ${$.id}">Watch!</button></div><hr />`);
+					// eslint-disable-next-line max-len
+					Bot.say(room, `/adduhtml SCRABBLE-${$.id},<hr>${tools.listify(Object.values($.players).map(u => tools.colourize(u.name)))}! <div style="text-align: right; display: inline-block; font-size: 0.9em; float: right;"><button name="send" value="/msg ${Bot.status.nickName}, ${prefix}scrabble ${room} spectate ${$.id}">Watch!</button></div><hr>`);
 					$.spectators.forEach(u => Bot.say(room, $.HTML(u)));
 					Object.keys($.players).forEach(u => Bot.say(room, $.HTML(u)));
 					Bot.say(room, $.highlight());
@@ -117,23 +138,29 @@ module.exports = {
 			}
 			case 'play': case 'place': case 'p': case 'click': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, "Game not found");
 				if (!$.isTurn(by)) return Bot.roomReply(room, by, 'Not your turn!');
 				if (~~args[1]) args.shift();
 				args.shift();
-				let coords = args.shift().split(',').map(n => ~~n);
+				const coords = args.shift().split(',').map(n => ~~n);
 				if (coords.length !== 2) return Bot.roomReply(room, by, "You're supposed to click a tile first");
-				let dir = args.shift(), down;
+				const dir = args.shift();
+				let down;
 				switch (toID(dir || '')[0]) {
 					case 'd': down = true; break;
 					case 'r': down = false; break;
 					default: return Bot.roomReply(room, by, `Direction must be right/down, not ${dir}`);
 				}
-				let word = args.join('');
+				const word = args.join('');
 				$.play(coords, down, word).then(res => {
-					let [name, score, scores, bingo] = res;
+					const [name, score, scores, bingo, receivedTiles] = res;
+					// eslint-disable-next-line max-len
 					Bot.say(room, `/adduhtml scrabbleplay${$.id},<hr/>${bingo ? '<b>BINGO!</b> ' : ''}${tools.colourize(name)} scored ${score} (${scores.join('/')})<hr/>`);
+					if (receivedTiles.includes(' ')) {
+						// eslint-disable-next-line max-len
+						Bot.roomReply(room, by, `If you want to use one of your blank tiles, then enter the letter you want the blank to be used as followed by a '. For example, if you’re trying to play the word trace and want to use your blank as a C, then you would type TRAC'E into the ‘Type your word here’ box.`);
+					}
 					if (Object.values($.players).find(player => player.tiles.length === 0)) { // Game ends
 						$.ended = true;
 						$.deduct();
@@ -144,9 +171,11 @@ module.exports = {
 						Bot.say(room, `/adduhtml SCRABBLEBOARD${$.id},${$.boardHTML()}`);
 						Bot.say(room, `/adduhtml SCRABBLEPOINTS${$.id},${$.pointsHTML()}`);
 						fs.unlink(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, () => {});
+						clearGameTimer($);
 						delete Bot.rooms[room].scrabble[$.id];
 						return;
 					}
+					gameTimer($, $.players[$.order[$.turn]].name);
 					$.spectators.forEach(u => Bot.say(room, $.HTML(u)));
 					Object.keys($.players).forEach(u => Bot.say(room, $.HTML(u)));
 					Bot.say(room, $.highlight());
@@ -161,13 +190,13 @@ module.exports = {
 			}
 			case 'select': case 'choose': case 'c': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, "Game not found");
 				if (!$.isTurn(by)) return Bot.roomReply(room, by, 'Not your turn!');
-				let player = $.getPlayer($.turn);
+				const player = $.getPlayer($.turn);
 				args.shift();
 				if (parseInt(args[0]) > 30) args.shift();
-				let cargs = args.join(' ').match(/\b\d+\b/g).map(n => ~~n);
+				const cargs = args.join(' ').match(/\b\d+\b/g).map(n => ~~n);
 				if (cargs.length !== 2) return Bot.roomReply(room, by, 'Selections must have exactly two numbers');
 				player.selected = cargs.join(',');
 				Bot.say(room, $.HTML(by));
@@ -175,38 +204,45 @@ module.exports = {
 			}
 			case 'openexchange': case 'oe': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, "Game not found");
 				if (!$.isTurn(by)) return Bot.roomReply(room, by, 'Not your turn!');
-				let player = $.getPlayer($.turn);
+				const player = $.getPlayer($.turn);
 				player.exchange = true;
 				Bot.say(room, $.HTML(by));
 				break;
 			}
 			case 'closeexchange': case 'ce': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, "Game not found");
 				if (!$.isTurn(by)) return Bot.roomReply(room, by, 'Not your turn!');
-				let player = $.getPlayer($.turn);
+				const player = $.getPlayer($.turn);
 				player.exchange = false;
 				Bot.say(room, $.HTML(by));
 				break;
 			}
 			case 'exchange': case 'x': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, "Game not found");
 				if (!$.isTurn(by)) return Bot.roomReply(room, by, 'Not your turn!');
-				let player = $.getPlayer($.turn);
+				const player = $.getPlayer($.turn);
 				args.shift();
 				if (parseInt(args[0]) > 30) args.shift();
 				$.exchange(args.join('')).then(res => {
+					const newLetters = res[1];
+					if (newLetters.includes(' ')) {
+						// eslint-disable-next-line max-len
+						Bot.roomReply(room, by, `If you want to use one of your blank tiles, then enter the letter you want the blank to be used as followed by a '. For example, if you’re trying to play the word trace and want to use your blank as a C, then you would type TRAC'E into the ‘Type your word here’ box.`);
+					}
+					// eslint-disable-next-line max-len
 					Bot.say(room, `/adduhtml scrabbleplay${$.id},<hr/>${tools.colourize(by.substr(1))} exchanged ${res[0].length} tile(s)<hr/>`);
 					$.nextTurn();
 					$.spectators.forEach(u => Bot.say(room, $.HTML(u)));
 					Bot.say(room, $.highlight());
 					Object.keys($.players).forEach(u => Bot.say(room, $.HTML(u)));
+					clearGameTimer($);
 					fs.writeFile(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, JSON.stringify($), e => {
 						if (e) console.log(e);
 					});
@@ -217,7 +253,7 @@ module.exports = {
 			}
 			case 'pass': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, "Game not found");
 				if (!$.isTurn(by)) return Bot.roomReply(room, by, 'Not your turn!');
 				if ($.nextTurn(true)) /* Game ends */ {
@@ -229,10 +265,12 @@ module.exports = {
 					Bot.say(room, `/adduhtml SCRABBLEBOARD${$.id},${$.boardHTML()}`);
 					Bot.say(room, `/adduhtml SCRABBLEPOINTS${$.id},${$.pointsHTML()}`);
 					fs.unlink(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, () => {});
+					clearGameTimer($);
 					delete Bot.rooms[room].scrabble[$.id];
 					return;
 				}
 				Bot.say(room, `/adduhtml scrabbleplay${$.id},<hr/>${tools.colourize(by.substr(1))} passed<hr/>`);
+				gameTimer($, $.players[$.order[$.turn]].name);
 				$.spectators.forEach(u => Bot.say(room, $.HTML(u)));
 				Object.keys($.players).forEach(u => Bot.say(room, $.HTML(u)));
 				Bot.say(room, $.highlight());
@@ -244,13 +282,13 @@ module.exports = {
 			case 'end': case 'e': {
 				if (!tools.hasPermission(by, 'gamma', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame('', args.slice(1).join(' '), Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame('', args.slice(1).join(' '), Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
-				Bot.say(room, `/adduhtml SCRABBLE-${$.id},<hr />Ended game #${$.id}<hr />`);
+				Bot.say(room, `/adduhtml SCRABBLE-${$.id},<hr>Ended game #${$.id}<hr>`);
 				if ($.started) {
 					$.deduct();
 					Bot.say(room, `/adduhtml SCRABBLEBOARD${$.id},${$.boardHTML()}`);
-					Bot.say(room, `/adduhtml SCRABBLEPOINTS${$.id},${$.pointsHTML()}`);		
+					Bot.say(room, `/adduhtml SCRABBLEPOINTS${$.id},${$.pointsHTML()}`);
 				}
 				fs.unlink(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, () => {});
 				delete Bot.rooms[room].scrabble[$.id];
@@ -259,9 +297,9 @@ module.exports = {
 			case 'endsilent': case 'es': case 'endquiet': case 'eq': {
 				if (!tools.hasPermission(by, 'gamma', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame('', args.slice(1).join(' '), Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame('', args.slice(1).join(' '), Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
-				Bot.say(room, `/adduhtml SCRABBLE-${$.id},<hr />Ended game #${$.id}<hr />`);
+				Bot.say(room, `/adduhtml SCRABBLE-${$.id},<hr>Ended game #${$.id}<hr>`);
 				fs.unlink(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, () => {});
 				delete Bot.rooms[room].scrabble[$.id];
 				break;
@@ -269,15 +307,17 @@ module.exports = {
 			case 'stash': case 'store': {
 				if (!tools.hasPermission(by, 'gamma', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame('', args.slice(1).join(' '), Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame('', args.slice(1).join(' '), Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
-				Bot.say(room, `/adduhtml SCRABBLE-${$.id},<hr />Stashed game #${$.id}<hr />`);
+				Bot.say(room, `/adduhtml SCRABBLE-${$.id},<hr>Stashed game #${$.id}<hr>`);
 				delete Bot.rooms[room].scrabble[$.id];
 				break;
 			}
 			case 'rejoin': case 'rj': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let games = Object.values(Bot.rooms[room].scrabble).filter($ => $.players[toID(by)] || $.spectators.includes(toID(by)));
+				const games = Object.values(Bot.rooms[room].scrabble)
+					.filter($ => $.players[toID(by)] || $.spectators.includes(toID(by)))
+					.filter($ => $.started);
 				if (!games.length) return Bot.roomReply(room, by, 'No game(s) found');
 				games.forEach($ => Bot.say(room, $.HTML(by)));
 				break;
@@ -285,9 +325,9 @@ module.exports = {
 			case 'spectate': case 's': case 'watch': case 'w': case 'see': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
 				args.shift();
-				let $ = this.findGame(by, args.join(' '), Bot.rooms[room].scrabble, 'watch');
+				const $ = this.findGame(by, args.join(' '), Bot.rooms[room].scrabble, 'watch');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
-				let ID = toID(by);
+				const ID = toID(by);
 				if ($.getPlayer(ID)) return Bot.roomReply(room, by, "You're a player!");
 				if ($.spectators.includes(ID)) return Bot.roomReply(room, by, 'You are already spectating this game!');
 				$.spectators.push(ID);
@@ -298,9 +338,9 @@ module.exports = {
 			case 'unspectate': case 'us': case 'unwatch': case 'uw': case 'unsee': case 'u': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
 				args.shift();
-				let $ = this.findGame(by, args.join(' '), Bot.rooms[room].scrabble, 'unwatch');
+				const $ = this.findGame(by, args.join(' '), Bot.rooms[room].scrabble, 'unwatch');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
-				let ID = toID(by);
+				const ID = toID(by);
 				if ($.getPlayer(ID)) return Bot.roomReply(room, by, "You're a player!");
 				if (!$.spectators.includes(ID)) return Bot.roomReply(room, by, 'You aren\'t spectating this game!');
 				$.spectators.remove(ID);
@@ -309,10 +349,10 @@ module.exports = {
 			}
 			case 'forfeit': case 'leave': case 'f': case 'ff': case 'ihavebeenpwned': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, "Game not found");
 				if (!$.getPlayer(by)) return Bot.roomReply(room, by, "You're not a player!");
-				let isTurn = $.isTurn(by);
+				const isTurn = $.isTurn(by);
 				$.removePlayer(by).then(res => {
 					if (res) {
 						$.ended = true;
@@ -323,10 +363,12 @@ module.exports = {
 						Bot.say(room, `/adduhtml SCRABBLEBOARD${$.id},${$.boardHTML()}`);
 						Bot.say(room, `/adduhtml SCRABBLEPOINTS${$.id},${$.pointsHTML()}`);
 						fs.unlink(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, () => {});
+						clearGameTimer($);
 						delete Bot.rooms[room].scrabble[$.id];
 						return;
 					}
 					Bot.say(room, `/adduhtml scrabbleplay${$.id},<hr/>${tools.colourize(by.substr(1))} forfeited<hr/>`);
+					gameTimer($, $.players[$.order[$.turn]].name);
 					$.spectators.forEach(u => Bot.say(room, $.HTML(u)));
 					Object.keys($.players).forEach(u => Bot.say(room, $.HTML(u)));
 					fs.writeFile(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, JSON.stringify($), e => {
@@ -337,35 +379,38 @@ module.exports = {
 				});
 				break;
 			}
-			case 'backups': case 'stashed': {
+			case 'backups': case 'bu': case 'stashed': {
 				if (!tools.hasPermission(by, 'gamma', room)) return Bot.roomReply(room, by, "Access denied.");
 				fs.readdir('./data/BACKUPS', (err, files) => {
 					if (err) {
 						Bot.say(room, err);
 						return Bot.log(err);
 					}
-					let games = files.filter(file => file.startsWith(`scrabble-${room}-`)).map(file => file.slice(0, -5)).map(file => file.split('-').pop());
+					const games = files
+						.filter(file => file.startsWith(`scrabble-${room}-`))
+						.map(file => file.slice(0, -5))
+						.map(file => file.split('-').pop());
 					if (games.length) {
-						Bot.say(room, `/adduhtml SCRABBLEBACKUPS, <details><summary>Game Backups</summary><hr />${games.map(game => {
-							let $ = require(`../../data/BACKUPS/scrabble-${room}-${game}.json`);
+						Bot.say(room, `/adduhtml SCRABBLEBACKUPS, <details><summary>Game Backups</summary><hr>${games.map(game => {
+							const $ = require(`../../data/BACKUPS/scrabble-${room}-${game}.json`);
+							// eslint-disable-next-line max-len
 							return `<button name="send" value="/msg ${Bot.status.nickName},${prefix}scrabble ${room} restore ${game}">${tools.escapeHTML(tools.listify($.order.map(p => $.players[p].name))) || '(no one)'}</button>`;
-						}).join('<br />')}</details>`);
-					}
-					else Bot.say(room, "No backups found.");
+						}).join('<br>')}</details>`);
+					} else Bot.say(room, "No backups found.");
 				});
 				break;
 			}
 			case 'restore': case 'resume': case 'r': {
 				args.shift();
 				if (!tools.hasPermission(by, 'gamma', room)) return Bot.roomReply(room, by, "Access denied.");
-				let id = parseInt(args.join(''));
+				const id = parseInt(args.join(''));
 				if (!id) return Bot.roomReply(room, by, "Invalid ID.");
 				if (Bot.rooms[room].scrabble?.[id]) return Bot.roomReply(room, by, "Sorry, that game is already in progress!");
 				fs.readFile(`./data/BACKUPS/scrabble-${room}-${id}.json`, 'utf8', (err, file) => {
 					if (err) return Bot.roomReply(room, by, "Sorry, couldn't find that game!");
 					if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
 					Bot.rooms[room].scrabble[id] = GAMES.create('scrabble', id, room, JSON.parse(file));
-					let $ = Bot.rooms[room].scrabble[id];
+					const $ = Bot.rooms[room].scrabble[id];
 					Bot.say(room, `The game between ${tools.listify($.order.map(p => $.players[p].name))} has been restored!`);
 					$.spectators.forEach(u => Bot.say(room, $.HTML(u)));
 					Object.keys($.players).forEach(u => Bot.say(room, $.HTML(u)));
@@ -373,25 +418,26 @@ module.exports = {
 				break;
 			}
 			case 'menu': case 'm': case 'list': case 'l': case 'players': {
-				let scrabble = Bot.rooms[room].scrabble;
+				const scrabble = Bot.rooms[room].scrabble;
 				if (!scrabble || !Object.keys(scrabble).length) {
 					if (tools.hasPermission(by, 'gamma', room) && !isPM) return Bot.say(room, "Sorry, no games found.");
 					return Bot.roomReply(room, by, "Sorry, no games found.");
 				}
-				let html = `<hr />${Object.keys(scrabble).map(id => {
-					let $ = scrabble[id];
+				const html = `<hr>${Object.keys(scrabble).map(id => {
+					const $ = scrabble[id];
+					// eslint-disable-next-line max-len
 					return `${$.started ? `${tools.listify($.order.map(u => tools.colourize($.players[u].name)))} <button name="send" value="/msg ${Bot.status.nickName},${prefix}scrabble ${room} spectate ${$.id}">Watch!</button>` : `<button name="send" value="/msg ${Bot.status.nickName},${prefix}scrabble ${room} join ${$.id}">Join</button>`}(#${id})`;
-				}).join('<br />')}<hr />`;
-				let staffHTML = `<hr />${Object.keys(scrabble).map(id => {
-					let $ = scrabble[id];
+				}).join('<br>')}<hr>`;
+				const staffHTML = `<hr>${Object.keys(scrabble).map(id => {
+					const $ = scrabble[id];
+					// eslint-disable-next-line max-len
 					return `${$.started ? `${tools.listify($.order.map(u => tools.colourize($.players[u].name)))} <button name="send" value="/msg ${Bot.status.nickName},${prefix}scrabble ${room} spectate ${$.id}">Watch!</button>` : `<button name="send" value="/msg ${Bot.status.nickName},${prefix}scrabble ${room} join ${$.id}">Join</button>`}<button name="send" value="/msg ${Bot.status.nickName},${prefix}scrabble ${room} end ${$.id}">End</button><button name="send" value="/msg ${Bot.status.nickName},${prefix}scrabble ${room} stash ${$.id}">Stash</button>(#${id})`;
-				}).join('<br />')}<hr />`;
+				}).join('<br>')}<hr>`;
 				if (isPM === 'export') return [html, staffHTML];
 				if (tools.hasPermission(by, 'gamma', room) && !isPM) {
 					Bot.say(room, `/adduhtml SCRABBLEMENU,${html}`);
 					Bot.say(room, `/changerankuhtml +, SCRABBLEMENU, ${staffHTML}`);
-				}
-				else Bot.say(room, `/sendprivatehtmlbox ${by}, ${html}`);
+				} else Bot.say(room, `/sendprivatehtmlbox ${by}, ${html}`);
 				break;
 			}
 			case 'disqualify': case 'dq': {
@@ -401,10 +447,10 @@ module.exports = {
 				args.shift();
 				let context = '';
 				if (~~args[0]) context = args.shift();
-				let $ = this.findGame(args.join(' '), context, Bot.rooms[room].scrabble, 'action');
+				const $ = this.findGame(args.join(' '), context, Bot.rooms[room].scrabble, 'action');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
-				let user = toID(args.join(''));
-				let isTurn = $.isTurn(user);
+				const user = toID(args.join(''));
+				const isTurn = $.isTurn(user);
 				$.removePlayer(user).then(res => {
 					if (res) {
 						$.ended = true;
@@ -432,34 +478,35 @@ module.exports = {
 			}
 			case 'bag': case 'left': case 'b': {
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'unwatch');
+				const $ = this.findGame(by, args[1], Bot.rooms[room].scrabble, 'unwatch');
 				if (!$) return Bot.roomReply(room, by, "Game not found");
-				let tiles = $.bag.length;
+				const tiles = $.bag.length;
+				if (isPM) return Bot.pm(by, `The bag has ${tiles} tile(s) left.`);
 				if (tools.hasPermission(by, 'gamma', room)) Bot.say(room, `The bag has ${tiles} tile(s) left.`);
 				else Bot.roomReply(room, by, `The bag has ${tiles} tile(s) left.`);
 				break;
 			}
 			case 'sub': case 'substitute': {
-				if (!tools.hasPermission(by, 'beta', room)) return Bot.roomReply(room, by, 'Access denied.');
+				if (!tools.hasPermission(by, 'gamma', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (isPM) return Bot.roomReply(room, by, 'Scum do it in chat');
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
 				args.shift();
 				let context = '';
 				if (~~args[0]) context = args.shift();
 				else context = args.join(' ');
-				let $ = this.findGame('', context, Bot.rooms[room].scrabble, 'sub');
+				const $ = this.findGame('', context, Bot.rooms[room].scrabble, 'sub');
 				if (!$) return Bot.roomReply(room, by, `Unable to find the game you meant to sub people in!`);
 				let first;
-				let ctx = args.join(' ').split(/(?:,|\s+v(?:er)?s(?:us)?\.?\s+)/);
+				const ctx = args.join(' ').split(/(?:,|\s+v(?:er)?s(?:us)?\.?\s+)/);
 				if (ctx.length !== 2) return Bot.roomReply(room, by, `Err, I sub one in and one out; that's how this works`);
 				if ($.players[toID(ctx[0])] && !$.players[toID(ctx[1])]) first = true;
 				else if (!$.players[toID(ctx[0])] && $.players[toID(ctx[1])]) first = false;
 				else {
 					Bot.log($);
-					return Bot.roomReply(room, by, 'Something went wrong! (PartMan is investigating)')
+					return Bot.roomReply(room, by, 'Something went wrong! (PartMan is investigating)');
 				}
-				let going = first ? ctx[0] : ctx[1];
-				let coming = first ? ctx[1] : ctx[0];
+				const going = first ? ctx[0] : ctx[1];
+				const coming = first ? ctx[1] : ctx[0];
 				$.players[toID(coming)] = $.players[toID(going)];
 				delete $.players[toID(going)];
 				$.players[toID(coming)].name = coming;
@@ -477,13 +524,15 @@ module.exports = {
 			case 'dict': case 'd': case 'dictionary': case 'usedict': case 'ud': case 'usedictionary': case 'use': {
 				if (!tools.hasPermission(by, 'gamma', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let cargs = args.slice(1).join(' ').split(',');
-				let $ = this.findGame('', cargs[0], Bot.rooms[room].scrabble, 'gamerule');
+				const cargs = args.slice(1).join(' ').split(',');
+				const $ = this.findGame('', cargs[0], Bot.rooms[room].scrabble, 'gamerule');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
 				if (!toID(cargs.join(''))) return Bot.say(room, `The current dictionary is ${$.dict?.toUpperCase() || 'CSW21'}.`);
-				if ($.started && $.placed.flat().find(tile => tile)) return Bot.say(room, `You may not change the dictionary after a word has been played.`);
+				if ($.started && $.placed.flat().find(tile => tile)) {
+					return Bot.say(room, `You may not change the dictionary after a word has been played.`);
+				}
 				if (~~cargs[0]) cargs.shift();
-				let dict = toID(cargs.join(''));
+				const dict = toID(cargs.join(''));
 				if (!require('../../data/WORDS/index.js').isDict(dict)) return Bot.say(room, 'Invalid dictionary!');
 				$.dict = dict;
 				fs.writeFile(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, JSON.stringify($), e => {
@@ -492,23 +541,32 @@ module.exports = {
 				Bot.say(room, `Scrabble #${$.id} is now using ${dict.toUpperCase()}.`);
 				break;
 			}
-			case 'mod': case 'mode': case 'om': case 'gamemode': case 'modify': case 'gamemod': {
+			case 'mod': case 'mode': case 'om': case 'gamemode': case 'modify': case 'gamemod': case 'fm': case 'forcemod': {
 				if (!tools.hasPermission(by, 'gamma', room)) return Bot.roomReply(room, by, 'Access denied.');
 				if (!Bot.rooms[room].scrabble) Bot.rooms[room].scrabble = {};
-				let cargs = args.slice(1).join(' ').split(',');
-				let $ = this.findGame('', cargs[0], Bot.rooms[room].scrabble, 'gamerule');
+				const cargs = args.slice(1).join(' ').split(',');
+				const $ = this.findGame('', cargs[0], Bot.rooms[room].scrabble, 'gamerule');
 				if (!$) return Bot.roomReply(room, by, 'No game specified/found');
-				if ($.started && $.placed.flat().find(tile => tile)) return Bot.say(room, `You may not apply a mod after a word has been played.`);
+				if ($.started && $.placed.flat().find(tile => tile)) {
+					return Bot.say(room, `You may not apply a mod after a word has been played.`);
+				}
 				if (~~cargs[0]) cargs.shift();
-				let mod = toID(cargs.join(''));
-				if (!$.mod(mod)) return Bot.say(room, `Unable to find that mod!`);
+				const mod = toID(cargs.join(''));
+				const modded = $.mod(mod);
+				if (!modded) return Bot.say(room, `Unable to find that mod!`);
+				if (modded === 'pokemon' && !['forcemod', 'fm'].includes(toID(args[0]))) {
+					if (Math.random() < 0.2) {
+						Bot.say(room, `Uh-oh it looks like I dropped a CRAZY bomb!`);
+						Bot.say(room, `Scrabble #${$.id} has accidentally enabled the mod CRAZYMONS!`);
+						$.mod('crazymons');
+					} else Bot.say(room, `Scrabble #${$.id} has enabled the mod ${mod}.`);
+				} else Bot.say(room, `Scrabble #${$.id} has enabled the mod ${mod}.`);
 				fs.writeFile(`./data/BACKUPS/scrabble-${$.room}-${$.id}.json`, JSON.stringify($), e => {
 					if (e) console.log(e);
 				});
-				Bot.say(room, `Scrabble #${$.id} has enabled the mod ${mod}.`);
 				break;
 			}
 			default: Bot.roomReply(room, by, 'No idea what that option was supposed to do');
 		}
 	}
-}
+};
