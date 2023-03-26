@@ -1,10 +1,10 @@
 const debug = false;
 
-exports.prefix = "]";
+exports.prefix = "PREFIX_HERE";
 exports.PORT = 8080;
 exports.avatar = 'supernerd';
-exports.nickName = "PartProfessor";
-exports.pass = "Hi, Foxxeyy.";
+exports.nickName = "USERNAME_HERE";
+exports.pass = "PASSWORD_HERE";
 exports.token = "DISCORD_TOKEN_HERE"; // leave blank to disable Discord
 exports.autoJoin = debug ? ['botdevelopment'] : ['botdevelopment']; // The second is the rooms to be joined normally
 exports.status = false; // Set to a string if you want a status
