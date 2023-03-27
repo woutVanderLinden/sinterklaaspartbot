@@ -20,27 +20,6 @@ exports.quoteParse = function (quote, smogon, utg) {
 	}).join(smogon ? '\n' : '');
 };
 
-exports.grantPseudo = function (user, room) {
-	// TODO: Make ranks use an array and generate everything instead of hardcoding
-	const rank = user.charAt(0);
-	const name = toID(user);
-	const preAuth = tools.rankLevel(user, room) - 2;
-	switch (rank) {
-		case '~': case '&': case '#': case '@': case '*': case '☆': case '★':
-			if (!preAuth) Bot.auth.pseudoalpha.push(name);
-			break;
-		case '%': case '–': case '$': case '§':
-			if (!preAuth) Bot.auth.pseudobeta.push(name);
-			break;
-		case '+':
-			if (room && !room.startsWith('groupchat-') || !room && !preAuth) Bot.auth.pseudogamma.push(name);
-			break;
-		default:
-			break;
-	}
-	return;
-};
-
 exports.aliasDB = require('./ALIASES/commands.json');
 exports.pmAliasDB = require('./ALIASES/pmcommands.json');
 exports.goAliasDB = require('./ALIASES/go.json');
@@ -53,24 +32,6 @@ exports.commandAlias = function (alias) {
 exports.pmCommandAlias = function (alias) {
 	if (exports.pmAliasDB[toID(alias)]) alias = exports.pmAliasDB[toID(alias)];
 	return toID(alias);
-};
-
-exports.spliceRank = function (user) {
-	const rank = user.charAt(0);
-	const name = toID(user);
-	switch (rank) {
-		case '~': case '&': case '#': case '@': case '*': case '☆':
-			if (Bot.auth.pseudoalpha.includes(name)) Bot.auth.pseudoalpha.remove(name);
-			break;
-		case '%': case '–': case '$': case '§':
-			if (Bot.auth.pseudobeta.includes(name)) Bot.auth.pseudobeta.remove(name);
-			break;
-		case '+':
-			if (Bot.auth.pseudogamma.includes(name)) Bot.auth.pseudogamma.remove(name);
-			break;
-		default:
-			break;
-	}
 };
 
 exports.rankLevel = function (name, room) {

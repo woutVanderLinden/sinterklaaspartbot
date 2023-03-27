@@ -53,11 +53,11 @@ For room-specific authority, edit the ./data/DATA/roomauth.json file, and add th
 PartBot has the following structure:
 1. `client.js` is responsible for handling the connection between the Bot and the server. You will almost never be needed to edit this.
 2. `bot.js` is the main file. It contains references to all the other files and initiates the Bot. It also contains the PM handler.
-3. `chat.js` handles messages sent in chat, and messages that start with the prefix are redirected to the command handler, whose code can be found in `commands.js`.
-4. `discord.js` contains the Discord command handler.
-5. `autores.js` and `discord_chat.js` handle the PS and Discord autores, respectively.
+3. `handlers/chat.js` handles messages sent in chat, and messages that start with the prefix are redirected to the command handler, whose code can be found in `commands.js`.
+4. `handlers/discord.js` contains the Discord command handler.
+5. `handlers/autores.js` and `discord_chat.js` handle the PS and Discord autores, respectively.
 6. `global.js` instantiates all global variables, including data.
-7. `battle.js` handles the battle interface, `router.js` handles the website, `ticker.js` handles the internal ticker (a function which runs periodically every 20 seconds), `tours.js` handles tournament-related stuff.
+7. `handlers/battle.js` handles the battle interface, `handlers/router.js` handles the website, `handlers/schedule.js` has scheduled daily functions, `handlers/ticker.js` handles the internal ticker (a function which runs periodically every 20 seconds), `handlers/tours.js` handles tournament-related stuff.
 8. Commands can be found in `commands/ROOM/COMMAND.js`, with ROOM being 'global' for global commands. PM commands, similarly, are all in `pmcommands`.
 9. `pages` contains most of the HTML-related templates and pages for the website, while `public` files can be accessed from anywhere through `${websiteLink}/public/filepath`.
 10. The `data` folder contains all the relevant data files required to run the Bot. It also contains the `tools.js` and `hotpatch.js` files, which are used to expose the utilities and hotpatching mechanisms.
@@ -75,7 +75,7 @@ PartBot's code has a variety of global variables, all of which can be found from
 
 ### Discord Setup
 Once you've set up the configuration file, there are still a couple steps left to set up Discord. If you have ``token`` set to false, ignore these steps.
-1. Open `./config.js` and replace the string ``'ADMIN_ID'`` with your Discord ID.
+1. Open `config.js` and replace the string ``'ADMIN_ID'`` with your Discord ID.
 
 (Yeah, that was it)
 

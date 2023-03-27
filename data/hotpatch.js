@@ -128,7 +128,7 @@ module.exports = function (type, by) {
 			}
 
 			case 'autores': case 'ar': {
-				delete require.cache[require.resolve('../autores.js')];
+				delete require.cache[require.resolve('../handlers/autores.js')];
 				Bot.log(`${by} hotpatched autores.`);
 				return resolve('autores');
 			}
@@ -155,55 +155,55 @@ module.exports = function (type, by) {
 			}
 
 			case 'battle': case 'ai': case 'battleai': case 'battles': {
-				delete require.cache[require.resolve('../battle.js')];
+				delete require.cache[require.resolve('../handlers/battle.js')];
 				Bot.log(`${by} hotpatched battles.`);
 				return resolve('battles');
 			}
 
 			case 'discordchat': case 'discord': case 'disc': {
-				delete require.cache[require.resolve('../discord_chat.js')];
+				delete require.cache[require.resolve('../handlers/discord_chat.js')];
 				Bot.log(`${by} hotpatched Discord chat.`);
 				return resolve('Discord chat');
 			}
 
 			case 'chathandler': case 'chat': {
-				delete require.cache[require.resolve('../chat.js')];
+				delete require.cache[require.resolve('../handlers/chat.js')];
 				delete Bot.chatHandler;
-				Bot.chatHandler = require('../chat.js');
+				Bot.chatHandler = require('../handlers/chat.js');
 				Bot.log(`${by} hotpatched the chat handler.`);
 				return resolve('chat handler');
 			}
 
 			case 'pmhandler': case 'pms': {
-				delete require.cache[require.resolve('../pmhandler.js')];
+				delete require.cache[require.resolve('../handlers/pmhandler.js')];
 				delete Bot.pmHandler;
-				Bot.pmHandler = require('../pmhandler.js');
+				Bot.pmHandler = require('../handlers/pmhandler.js');
 				Bot.log(`${by} hotpatched the PM handler.`);
 				return resolve('PM handler');
 			}
 
 			case 'pages': case 'page': case 'pagehandler': {
 				delete Bot.pageHandler;
-				delete require.cache[require.resolve('../pages.js')];
-				Bot.pageHandler = require('../pages.js');
+				delete require.cache[require.resolve('../handlers/pages.js')];
+				Bot.pageHandler = require('../handlers/pages.js');
 				return resolve('page handler');
 			}
 
 			case 'tour': case 'tours': case 'tournaments': case 'tournament': {
-				delete require.cache[require.resolve('../tours.js')];
+				delete require.cache[require.resolve('../handlers/tours.js')];
 				Bot.log(`${by} hotpatched tournaments.`);
 				return resolve('tournaments');
 			}
 
 			case 'ticker': case 'tick': {
-				delete require.cache[require.resolve('../ticker.js')];
+				delete require.cache[require.resolve('../handlers/ticker.js')];
 				Bot.log(`${by} hotpatched the ticker.`);
 				return resolve('ticker');
 			}
 
 			case 'minor': case 'minorhandler': case 'minors': {
-				delete require.cache[require.resolve('../minorhandler.js')];
-				const minor = require('../minorhandler.js');
+				delete require.cache[require.resolve('../handlers/minorhandler.js')];
+				const minor = require('../handlers/minorhandler.js');
 				minor.initialize();
 				Object.keys(minor).forEach(key => Bot._events[key] = minor[key]);
 				Bot.log(`${by} hotpatched the minorhandler.`);
@@ -212,8 +212,8 @@ module.exports = function (type, by) {
 
 			case 'router': case 'route': case 'routes': case 'site': {
 				delete Bot.router;
-				delete require.cache[require.resolve('../router.js')];
-				Bot.router = require('../router.js');
+				delete require.cache[require.resolve('../handlers/router.js')];
+				Bot.router = require('../handlers/router.js');
 				Bot.log(`${by} hotpatched the router.`);
 				return resolve('router');
 			}
@@ -221,8 +221,8 @@ module.exports = function (type, by) {
 			case 'watcher': case 'watch': {
 				Bot.watcher.close();
 				delete Bot.watcher;
-				delete require.cache[require.resolve('../watcher.js')];
-				Bot.watcher = require('../watcher.js')();
+				delete require.cache[require.resolve('../handlers/watcher.js')];
+				Bot.watcher = require('../handlers/watcher.js')();
 				Bot.log(`${by} hotpatched the watcher.`);
 				return resolve('watcher');
 			}
@@ -248,9 +248,9 @@ module.exports = function (type, by) {
 
 			case 'commandhandler': case 'commands': {
 				try {
-					delete require.cache[require.resolve(`../commands.js`)];
-					const handler = require('../commands.js');
+					delete require.cache[require.resolve(`../handlers/commands.js`)];
 					delete Bot.commandHandler;
+					const handler = require('../handlers/commands.js');
 					Bot.commandHandler = handler;
 					return resolve('command handler');
 				} catch (e) {
@@ -263,8 +263,8 @@ module.exports = function (type, by) {
 				try {
 					Object.values(Bot.schedule || {}).forEach(timer => timer._repeat ? clearInterval(timer) : clearTimeout(timer));
 					delete Bot.schedule;
-					delete require.cache[require.resolve('../schedule.js')];
-					const setSchedule = require('../schedule.js');
+					delete require.cache[require.resolve('../handlers/schedule.js')];
+					const setSchedule = require('../handlers/schedule.js');
 					Bot.schedule = setSchedule();
 					return resolve('schedule');
 				} catch (e) {

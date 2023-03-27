@@ -21,7 +21,7 @@ global.util = require('util');
 
 global.BattleAI = require('./data/BATTLE/ai.js').AI;
 global.COLORS = require('./data/DATA/colors.json');
-global.DATABASE = require('./database.js');
+global.DATABASE = require('./handlers/database.js');
 global.GAMES = require('./data/GAMES/index.js');
 
 
