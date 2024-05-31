@@ -21,7 +21,7 @@ class Client extends EventEmitter {
 			port: 80,
 			secprotocols: [],
 			connectionTimeout: 2 * 60 * 1000,
-			loginServer: 'https://play.pokemonshowdown.com/~~showdown/action.php',
+			loginServer: 'https://play.pokemonshowdown.com/showdown/action.php',
 			nickName: null,
 			pass: null,
 			avatar: null,
@@ -32,7 +32,7 @@ class Client extends EventEmitter {
 			autoReconnectDelay: 5 * 1000,
 			autoJoin: [],
 			showErrors: true,
-			debug: false
+			debug: true
 		};
 		Object.assign(this.opts, opts);
 
@@ -184,7 +184,7 @@ Client.prototype.connect = function (retry) {
 	const id = ~~(Math.random() * 900) + 100;
 	const chars = 'abcdefghijklmnopqrstuvwxyz0123456789_'.split('');
 	const str = Array.from({ length: 8 }).map(() => chars.random()).join('');
-	const conStr = `ws://${this.opts.server}:${this.opts.port}/showdown/${id}/${str}/websocket`;
+	const conStr = `wss://${this.opts.server}:${this.opts.port}/showdown/${id}/${str}/websocket`;
 	this.debug(`Connecting to ${conStr} - secondary protocols: ${util.inspect(this.opts.secprotocols)}`);
 	webSocket.connect(conStr, this.opts.secprotocols);
 };
