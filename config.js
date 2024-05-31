@@ -12,12 +12,12 @@ exports.ignoreRooms = []; // Will be phased out
 exports.websiteLink = `http://localhost:${exports.webPort}`; // Local address; IP addresses and hosted domains both work
 exports.logRooms = []; // Do NOT use this without permission from a room owner
 
-exports.owner = 'YOUR_USERNAME_HERE';
+exports.owner = 'kingbaruk';
 exports.discordAdmins = ['ADMIN_ID']; // Array of Discord IDs of administrators
 
 exports.auth = {
-	admin: ['ADMIN_USERID_HERE'],
-	coder: [],
+	admin: ['kingbaruk'],
+	coder: ['kingbaruk'],
 	alpha: [],
 	beta: [],
 	gamma: [],
